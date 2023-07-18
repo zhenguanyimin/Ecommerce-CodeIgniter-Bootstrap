@@ -1,0 +1,7 @@
+{
+    "require": {
+        "yansongda/pay": "~3.3.0",
+        "guzzlehttp/guzzle": "^7.0",
+        "hyperf/pimple": "~2.1.0"
+    }
+}

@@ -1,0 +1,15 @@
+var lang = { 
+added_to_cart:"添加到购物车",
+error_to_cart:"购物车有问题!再试一次",
+no_products:"没有产品",
+confirm_clear_cart:"您确定要删除购物车中的商品吗?",
+cleared_cart:"你的购物车是空的",
+are_you_sure:"你确定吗?",
+yes:"是",
+no:"否",
+clear_all:"Clear",
+checkout:"付款",
+remove_from_cart:"从购物车中删除",
+enter_valid_email:"请输入有效的电子邮件地址",
+discountCodeInvalid:"折扣代码无效",
+};

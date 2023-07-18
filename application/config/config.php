@@ -100,10 +100,10 @@ $config['admin_history'] = false;
   | hepler for help.. :)
   |
  */
-$config['language'] = 'english';
-$config['language_abbr'] = 'en';
-$config['currency'] = '€';
-$config['currencyKey'] = 'EUR';
+$config['language'] = 'chinese';
+$config['language_abbr'] = 'zh';
+$config['currency'] = '￥';
+$config['currencyKey'] = 'CNY';
 
 /*
   |--------------------------------------------------------------------------
