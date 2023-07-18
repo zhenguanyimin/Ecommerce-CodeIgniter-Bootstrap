@@ -38,8 +38,13 @@
                 <?php if ($multiVendor == 1) { ?>
                     <div id="top-user-panel">
                         <div class="container">
-                            <a href="<?= LANG_URL . '/vendor/register' ?>" class="btn btn-default"><?= lang('register_me') ?></a>
-                            <form class="form-inline" method="POST" action="<?= LANG_URL . '/vendor/login' ?>">
+                <?php if (isset($_SESSION['logged_user'])) { ?>
+                    <a href="<?= LANG_URL . '/myaccount' ?>" class="my-acc">
+                        <?= lang('my_acc') ?>
+                    </a>
+                <?php } else { ?>
+                            <a href="<?= LANG_URL . '/register' ?>" class="btn btn-default"><?= lang('register') ?></a>
+                            <form class="form-inline" method="POST" action="<?= LANG_URL . '/login' ?>">
                                 <div class="form-group">
                                     <input type="email" name="u_email" class="form-control" placeholder="<?= lang('email') ?>">
                                 </div>
@@ -54,6 +59,7 @@
                         </div>
                     </div>
                 <?php } ?>
+                <?php } ?>                
                 <div id="languages-bar">
                     <div class="container">
                         <?php
