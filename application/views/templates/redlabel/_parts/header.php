@@ -35,31 +35,18 @@
         <a style="display:none !important;" id="kk-refer-gh" href="https://github.com/kirilkirkov">Kiril Kirkov</a>
         <div id="wrapper">
             <div id="content">
-                <?php if ($multiVendor == 1) { ?>
-                    <div id="top-user-panel">
+                <div id="top-user-panel">
                         <div class="container">
                 <?php if (isset($_SESSION['logged_user'])) { ?>
                     <a href="<?= LANG_URL . '/myaccount' ?>" class="my-acc">
                         <?= lang('my_acc') ?>
                     </a>
                 <?php } else { ?>
-                            <a href="<?= LANG_URL . '/register' ?>" class="btn btn-default"><?= lang('register') ?></a>
-                            <form class="form-inline" method="POST" action="<?= LANG_URL . '/login' ?>">
-                                <div class="form-group">
-                                    <input type="email" name="u_email" class="form-control" placeholder="<?= lang('email') ?>">
-                                </div>
-                                <div class="form-group">
-                                    <input type="password" name="u_password" class="form-control" placeholder="<?= lang('password') ?>">
-                                </div>
-                                <div class="checkbox">
-                                    <label><input type="checkbox" name="remember_me"><?= lang('remember_me') ?></label>
-                                </div>
-                                <button type="submit" name="login" class="btn btn-default"><?= lang('u_login') ?></button>
-                            </form> 
-                        </div>
-                    </div>
+			   <a href="<?= LANG_URL . '/register' ?>" class="btn btn-default"><?= lang('register') ?></a>
+			   <a href="<?= LANG_URL . '/login' ?>" class="btn btn-default"><?= lang('login') ?></a>
+			</div>
+                 </div>
                 <?php } ?>
-                <?php } ?>                
                 <div id="languages-bar">
                     <div class="container">
                         <?php
