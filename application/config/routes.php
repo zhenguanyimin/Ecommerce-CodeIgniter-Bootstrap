@@ -59,6 +59,7 @@ $route['^(\w{2})$'] = $route['default_controller'];
 $route['(\w{2})?/?checkout/successcash'] = 'checkout/successPaymentCashOnD';
 $route['(\w{2})?/?checkout/successbank'] = 'checkout/successPaymentBank';
 $route['(\w{2})?/?checkout/paypalpayment'] = 'checkout/paypalPayment';
+$route['(\w{2})?/?checkout/alipay'] = 'checkout/Alipay';
 $route['(\w{2})?/?checkout/order-error'] = 'checkout/orderError';
 
 // Ajax called. Functions for managing shopping cart

@@ -39,13 +39,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                     <div class="payment-type-box">
                         <select class="selectpicker payment-type" data-style="btn-blue" name="payment_type">
-                            <?php if ($cashondelivery_visibility == 1) { ?>
-                                <option value="cashOnDelivery"><?= lang('cash_on_delivery') ?> </option>
-                            <?php } if (filter_var($paypal_email, FILTER_VALIDATE_EMAIL)) { ?>
-                                <option value="PayPal"><?= lang('paypal') ?> </option>
-                            <?php } if ($bank_account['iban'] != null) { ?>
-                                <option value="Bank"><?= lang('bank_payment') ?> </option>
-                            <?php } ?>
+                            <?php if ($alipay_visibility == 1) { ?>
+                                <option value="alipay"><?= lang('alipay') ?> </option>
+                            <?php } ?>    
                         </select>
                         <span class="top-header text-center"><?= lang('choose_payment') ?></span>
                     </div>

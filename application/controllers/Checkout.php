@@ -49,6 +49,7 @@ class Checkout extends MY_Controller
         }
         $data['bank_account'] = $this->Orders_model->getBankAccountSettings();
         $data['cashondelivery_visibility'] = $this->Home_admin_model->getValueStore('cashondelivery_visibility');
+        $data['alipay_visibility'] = $this->Home_admin_model->getValueStore('alipay_visibility');        
         $data['paypal_email'] = $this->Home_admin_model->getValueStore('paypal_email');
         $data['shippingAmount'] = $this->Home_admin_model->getValueStore('shippingAmount');
         $data['bestSellers'] = $this->Public_model->getbestSellers();
@@ -108,6 +109,11 @@ class Checkout extends MY_Controller
             $_SESSION['discountAmount'] = $_POST['discountAmount'];
             redirect(LANG_URL . '/checkout/paypalpayment');
         }
+        if ($_POST['payment_type'] == 'alipay') {
+            @set_cookie('paypal', $this->orderId, 2678400);
+            $_SESSION['discountAmount'] = $_POST['discountAmount'];
+            redirect(LANG_URL . '/checkout/alipay');          
+        }        
     }
 
     private function userInfoValidate($post)
@@ -163,6 +169,19 @@ class Checkout extends MY_Controller
         $this->render('checkout_parts/paypal_payment', $head, $data);
     }
 
+    public function Alipay()
+    {
+        $data = array();
+        $head = array();
+        $arrSeo = $this->Public_model->getSeo('checkout');
+        $head['title'] = @$arrSeo['title'];
+        $head['description'] = @$arrSeo['description'];
+        $head['keywords'] = str_replace(" ", ",", $head['title']);
+//        $data['paypal_sandbox'] = $this->Home_admin_model->getValueStore('paypal_sandbox');
+//        $data['paypal_email'] = $this->Home_admin_model->getValueStore('paypal_email');
+        $this->render('checkout_parts/alipay', $head, $data);
+    }
+    
     public function successPaymentCashOnD()
     {
         if ($this->session->flashdata('success_order')) {

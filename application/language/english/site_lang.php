@@ -33,6 +33,7 @@ $lang['clear_all'] = 'Clear';
 $lang['home'] = 'Home';
 $lang['contacts'] = 'Contacts';
 $lang['cash_on_delivery'] = 'Cash on Delivery';
+$lang['alipay'] = 'Alipay';
 $lang['first_name'] = 'Name';
 $lang['last_name'] = 'Family';
 $lang['email_address'] = 'Email address';

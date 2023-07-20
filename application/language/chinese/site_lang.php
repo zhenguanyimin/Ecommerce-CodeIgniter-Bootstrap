@@ -32,6 +32,7 @@ $lang['clear_all'] = 'Clear';
 $lang['home'] = '主页';
 $lang['contacts'] = '联系方式';
 $lang['cash_on_delivery'] = '货到付款';
+$lang['alipay'] = '支付宝';
 $lang['first_name'] = '名字';
 $lang['last_name'] = '姓';
 $lang['email_address'] = '邮箱';

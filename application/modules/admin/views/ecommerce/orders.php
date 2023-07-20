@@ -220,6 +220,26 @@ if (isset($_GET['settings'])) {
             </div>
         </div>
     </div>
+    <h3>Alipay</h3>
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">Change visibility of this purchase option</div>
+                <div class="panel-body">
+                    <?php if ($this->session->flashdata('alipay_visibility')) { ?>
+                        <div class="alert alert-info"><?= $this->session->flashdata('alipay_visibility') ?></div>
+                    <?php } ?>
+                    <form method="POST" action="">
+                        <input type="hidden" name="alipay_visibility" value="<?= htmlspecialchars($alipay_visibility) ?>">
+                        <input <?= $alipay_visibility == 1 ? 'checked' : '' ?> data-toggle="toggle" data-for-field="alipay_visibility" class="toggle-changer" type="checkbox">
+                        <button class="btn btn-default" value="" type="submit">
+                            Save
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>    
     <hr>
     <h3>Paypal Account Settings</h3>
     <div class="row">
