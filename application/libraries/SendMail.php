@@ -12,14 +12,14 @@ class SendMail
     {
 		$this->mail = new PHPMailer; 
 		$this->mail->isSMTP(); 
-		// $this->mail->SMTPDebug = 2; 
+		$this->mail->SMTPDebug = 0; 
 		$this->mail->Debugoutput = 'html'; 
-		$this->mail->Host = 'smtp.gmail.com'; 
-		$this->mail->Port = 587; 
-		$this->mail->SMTPSecure = 'tls'; 
+		$this->mail->Host = 'smtp.qq.com'; 
+		$this->mail->Port = 465; 
+		$this->mail->SMTPSecure = 'ssl'; 
 		$this->mail->SMTPAuth = true; 
-		$this->mail->Username = "you@gmail.com"; 
-		$this->mail->Password = "secretpass";
+		$this->mail->Username = "670518913@qq.com"; 
+		$this->mail->Password = "grnlvspoiowsbegj";
 		$this->mail->CharSet = 'UTF-8';
     }
 
@@ -32,7 +32,7 @@ class SendMail
 
     public function sendTo($toEmail, $recipientName, $subject, $msg)
     {
-        $this->mail->setFrom('email@example.com', 'My Name');
+        $this->mail->setFrom('670518913@qq.com', 'BoomkMarket');
         $this->mail->addAddress($toEmail, $recipientName);
         //$this->mail->isHTML(true); 
         $this->mail->Subject = $subject;
