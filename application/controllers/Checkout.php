@@ -22,6 +22,10 @@ class Checkout extends MY_Controller
         $head['description'] = @$arrSeo['description'];
         $head['keywords'] = str_replace(" ", ",", $head['title']);
 
+	if(!isset($_SESSION['logged_user'])){
+	    $this->session->set_flashdata('userErorr', 'you must register user before purchase');
+	    redirect(LANG_URL . '/login');
+	}
         if (isset($_POST['payment_type'])) {
             $errors = $this->userInfoValidate($_POST);
             if (!empty($errors)) {
