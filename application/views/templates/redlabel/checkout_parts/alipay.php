@@ -22,8 +22,8 @@ $config = [
             'alipay_public_cert_path' => '/home/lighthouse/alipay_cert/alipayPublicCert.crt',
             // 必填-支付宝根证书 路径
             'alipay_root_cert_path' => '/home/lighthouse/alipay_cert/alipayRootCert.crt',
-            'return_url' => 'http://159.75.179.165/checkout/alipay_success',
-            'notify_url' => 'http://159.75.179.165/checkout/alipay_success',
+            'return_url' => 'http://159.75.179.165/checkout/alipay_return',
+            'notify_url' => 'http://159.75.179.165/checkout/successbank',
             // 选填-第三方应用授权token
             'app_auth_token' => '',
             // 选填-服务商模式下的服务商 id，当 mode 为 Pay::MODE_SERVICE 时使用该参数

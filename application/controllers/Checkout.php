@@ -114,7 +114,7 @@ class Checkout extends MY_Controller
             redirect(LANG_URL . '/checkout/paypalpayment');
         }
         if ($_POST['payment_type'] == 'alipay') {
-            @set_cookie('alipay', $this->orderId, time());
+            @set_cookie('alipay', $this->orderId, 2678400);
             $_SESSION['discountAmount'] = $_POST['discountAmount'];
             redirect(LANG_URL . '/checkout/alipay');          
         }        
@@ -250,21 +250,24 @@ class Checkout extends MY_Controller
         $this->render('checkout_parts/paypal_success', $head, $data);
     }
 
-    public function alipay_success()
-    {
+    public function alipay_return(){
         if (get_cookie('alipay') == null) {
             redirect(base_url());
         }
-        @delete_cookie('alipay');
-        $this->shoppingcart->clearShoppingCart();
+	@delete_cookie('alipay');
+	$this->shoppingcart->clearShoppingCart();
         $orderId = get_cookie('alipay');
         $this->Public_model->changePaypalOrderStatus($orderId, 'payed');
+	redirect(LANG_URL . '/checkout/alipay_success');
+    }
+    public function alipay_success()
+    {
         $data = array();
         $head = array();
         $head['title'] = '';
         $head['description'] = '';
-        $head['keywords'] = '';
-        $this->render('checkout_parts/alipay_success', $head, $data);
+	$head['keywords'] = '';
+	$this->render('checkout_parts/alipay_success', $head, $data);
     }    
 
 }
