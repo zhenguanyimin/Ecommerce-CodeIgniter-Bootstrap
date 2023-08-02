@@ -138,6 +138,12 @@ if (!isset($_GET['settings'])) {
                                                 </tr>
                                             <?php } ?>
                                             <tr>
+                                            <?php if ($tr['payment_type'] == 'Alipay') { ?>
+                                                <tr>
+                                                    <td><b>Alipay Status</b></td>
+                                                    <td><?= $tr['alipay_status'] ?></td>
+                                                </tr>
+                                            <?php } ?>
                                                 <td colspan="2"><b>Products</b></td>
                                             </tr>
                                             <tr>

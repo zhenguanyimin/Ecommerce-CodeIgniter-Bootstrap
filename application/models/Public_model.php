@@ -315,7 +315,8 @@ class Public_model extends CI_Model
                     'referrer' => $post['referrer'],
                     'clean_referrer' => $post['clean_referrer'],
                     'payment_type' => $post['payment_type'],
-                    'paypal_status' => @$post['paypal_status'],
+		    'paypal_status' => @$post['paypal_status'],
+		    'alipay_status' => @$post['alipay_status'],
                     'discount_code' => @$post['discountCode'],
                     'user_id' => $post['user_id']
                 ))) {
@@ -396,6 +397,7 @@ class Public_model extends CI_Model
                             'payment_type' => $post['payment_type'],
                             'paypal_status' => @$post['paypal_status'],
                             'discount_code' => @$post['discountCode'],
+		    	    'alipay_status' => @$post['alipay_status'],
                             'vendor_id' => $productInfo['vendor_id']
                         ))) {
                     log_message('error', print_r($this->db->error(), true));
@@ -569,6 +571,21 @@ class Public_model extends CI_Model
         $this->db->where('order_id', $order_id);
         if (!$this->db->update('orders', array(
                     'paypal_status' => $status,
+                    'processed' => $processed
+                ))) {
+            log_message('error', print_r($this->db->error(), true));
+        }
+    }
+
+    public function changeAlipayOrderStatus($order_id, $status)
+    {
+        $processed = 0;
+        if ($status == 'canceled') {
+            $processed = 2;
+        }
+        $this->db->where('order_id', $order_id);
+        if (!$this->db->update('orders', array(
+                    'alipay_status' => $status,
                     'processed' => $processed
                 ))) {
             log_message('error', print_r($this->db->error(), true));
