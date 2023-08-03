@@ -11,6 +11,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
 <div class="loginmodal-container">
 <h1><?= lang('user_register') ?></h1><br>
+<?php
+if ($this->session->flashdata('userError')) {
+	?>
+	<hr>
+	<div class="alert alert-danger"><h4><span class="glyphicon glyphicon-alert"></span> <?= lang('finded_errors') ?></h4><?php
+		foreach ($this->session->flashdata('userError') as $error)
+			echo $error . '<br>';
+		?>
+	</div>
+	<hr>
+	<?php
+}
+?>
 <form method="POST" action="">
 <input type="text" name="name" placeholder="Name">
 <input type="text" name="phone" placeholder="Phone">

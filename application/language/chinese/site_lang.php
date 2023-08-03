@@ -165,6 +165,7 @@ $lang['passwords_dont_match'] = '密码不匹配';
 $lang['vendor_invalid_email'] = '无效的电子邮件地址';
 $lang['please_enter_password'] = '请输入密码';
 $lang['please_repeat_password'] = '请再次输入密码';
+$lang['repeat_password'] = '请再次输入密码';
 $lang['vendor_email_is_taken'] = '该邮箱已注册，请更换邮箱再试';
 $lang['login_vendor_error'] = '电子邮件或密码错误';
 $lang['vendor_add_product'] = '添加产品';
