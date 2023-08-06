@@ -149,7 +149,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <tr>
                                     <td colspan="4" class="text-right"><?= lang('shipping') ?></td>
                                     <td>
-                                        <span class="final-amount"><?= (int)$shippingAmount ?></span><?= CURRENCY ?>
+                                        <span><?= (int)$shippingAmount ?></span><?= CURRENCY ?>
                                     </td>
                                 </tr>
                                 <?php } ?>
