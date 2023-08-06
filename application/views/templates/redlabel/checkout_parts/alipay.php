@@ -3,9 +3,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require 'vendor/autoload.php';
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Contract\HttpClientInterface;
-if (get_cookie('alipay') == null) {
-  redirect(base_url());
+if (get_cookie('alipay') == null ) {
+  redirect(LANG_URL . '/checkout');
 }
+
+if (!isset($_SESSION['final_amount'])) {
+  $this->session->set_flashdata('amountErorr', '总金额为空');
+  redirect(LANG_URL . '/checkout');
+}
+
+$total_amount = $_SESSION['final_amount']+$shippingAmount;
 $orderId = get_cookie('alipay');
 $config = [
     'alipay' => [
@@ -114,8 +121,9 @@ Pay::config($config);
 // 注意返回类型为 Response，具体见详细文档
 $response = Pay::alipay()->web([
     'out_trade_no' => $orderId,
-    'total_amount' => '0.01',
-    'subject' => '支付宝测试-1',
+//    'total_amount' => '0.01',
+    'total_amount' => $total_amount,
+    'subject' => '购买书籍',
 ]);
 $content = $response->getBody()->getContents();
 echo "$content";

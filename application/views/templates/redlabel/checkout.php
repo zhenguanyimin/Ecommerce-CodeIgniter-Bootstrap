@@ -37,6 +37,39 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <?php
                     }
                     ?>
+                    <?php
+                    if ($this->session->flashdata('userError')) {
+                        ?>
+                        <hr>
+                        <div class="alert alert-danger">
+                            <h4><span class="glyphicon glyphicon-alert"></span> <?= lang('finded_errors') ?></h4>
+                            <?php
+                            foreach ($this->session->flashdata('userError') as $error) {
+                                echo $error . '<br>';
+                            }
+                            ?>
+                        </div>
+                        <hr>
+                        <?php
+                    }
+                    ?>
+
+                    <?php
+                    if ($this->session->flashdata('amountError')) {
+                        ?>
+                        <hr>
+                        <div class="alert alert-danger">
+                            <h4><span class="glyphicon glyphicon-alert"></span> <?= lang('finded_errors') ?></h4>
+                            <?php
+                            foreach ($this->session->flashdata('amountError') as $error) {
+                                echo $error . '<br>';
+                            }
+                            ?>
+                        </div>
+                        <hr>
+                        <?php
+                    }
+                    ?>
                     <div class="payment-type-box">
                         <select class="selectpicker payment-type" data-style="btn-blue" name="payment_type">
                             <?php if ($alipay_visibility == 1) { ?>

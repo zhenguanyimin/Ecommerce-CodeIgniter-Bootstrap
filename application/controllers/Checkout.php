@@ -116,6 +116,7 @@ class Checkout extends MY_Controller
         if ($_POST['payment_type'] == 'alipay') {
             @set_cookie('alipay', $this->orderId, 2678400);
             $_SESSION['discountAmount'] = $_POST['discountAmount'];
+            $_SESSION['final_amount'] = $_POST['final_amount'];
             redirect(LANG_URL . '/checkout/alipay');          
         }        
     }
@@ -183,6 +184,7 @@ class Checkout extends MY_Controller
         $head['keywords'] = str_replace(" ", ",", $head['title']);
 //        $data['paypal_sandbox'] = $this->Home_admin_model->getValueStore('paypal_sandbox');
 //        $data['paypal_email'] = $this->Home_admin_model->getValueStore('paypal_email');
+        $data['shippingAmount'] = $this->Home_admin_model->getValueStore('shippingAmount');
         $this->render('checkout_parts/alipay', $head, $data);
     }
     
