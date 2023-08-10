@@ -6,7 +6,7 @@ class Checkout extends MY_Controller
 {
 
     private $orderId;
-    private $realShippingAmount = 0.0;
+    private $realShippingAmount;
     
     public function __construct()
     {
@@ -125,8 +125,10 @@ class Checkout extends MY_Controller
             $vendor_share = number_format( $vendor_share, 6);
             $commission = number_format( $commission, 6);
             $this->realShippingAmount = 0.0;
-            if($total_amount < $this->Home_admin_model->getValueStore('shippingOrder'))
+            if($total_amount < $this->Home_admin_model->getValueStore('shippingOrder')){    
                 $this->realShippingAmount = $this->Home_admin_model->getValueStore('shippingAmount');
+            }
+            $_SESSION['realShippingAmount'] = $this->realShippingAmount;
             $this->Public_model->updateOrderAmount($this->orderId, $total_amount, $vendor_share, $commission, $this->realShippingAmount);
             $this->Public_model->updateVendorOrderAmount($total_amount, $vendor_share, $commission, $this->realShippingAmount);            
             redirect(LANG_URL . '/checkout/alipay');          
@@ -196,7 +198,6 @@ class Checkout extends MY_Controller
         $head['keywords'] = str_replace(" ", ",", $head['title']);
 //        $data['paypal_sandbox'] = $this->Home_admin_model->getValueStore('paypal_sandbox');
 //        $data['paypal_email'] = $this->Home_admin_model->getValueStore('paypal_email');
-        $data['realShippingAmount'] = $this->realShippingAmount;
         $this->render('checkout_parts/alipay', $head, $data);
     }
     
