@@ -12,7 +12,7 @@ if (!isset($_SESSION['final_amount'])) {
   redirect(LANG_URL . '/checkout');
 }
 
-$total_amount = $_SESSION['final_amount']+$shippingAmount;
+$total_amount = $_SESSION['final_amount']+$realShippingAmount;
 $orderId = get_cookie('alipay');
 $config = [
     'alipay' => [

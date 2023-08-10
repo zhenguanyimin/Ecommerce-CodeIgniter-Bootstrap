@@ -3,12 +3,16 @@
     <table class="table">
         <thead class="blue-grey lighten-4">
             <tr>
-                <th>#</th>
+                <th>订单ID</th>
                 <th><?= lang('time_created') ?></th>
                 <th><?= lang('order_type') ?></th>
                 <th><?= lang('phone') ?></th>
                 <th><?= lang('status') ?></th>
-                <th class="text-right"><i class="fa fa-list" aria-hidden="true"></i></th>
+                <th>订单总金额</th>
+                <th>商户销售金额</th>
+                <th>佣金金额</th>
+                <th>运费</th>                  
+                <th class="text-right"><i class="fa fa-list" aria-hidden="true"></i>预览</th>
             </tr>
         </thead>
         <tbody>
@@ -28,12 +32,16 @@
                             <option <?= $order['processed'] == 2 ? 'selected="selected"' : '' ?> value="2"><?= lang('rejected') ?></option>
                         </select>
                     </td>
+                    <td><?= $order['total_amount'] . CURRENCY ?></td>
+                    <td><?= $order['vendor_share'] . CURRENCY ?></td>
+                    <td><?= $order['commission'] . CURRENCY ?></td>
+                    <td><?= $order['shipping_amount'] . CURRENCY ?></td>                     
                     <td class="text-right">
                         <a href="javascript:void(0);" class="btn btn-sm btn-green show-more" data-show-tr="<?= $i ?>">
                             <i class="fa fa-chevron-down" aria-hidden="true"></i>
                             <i class="fa fa-chevron-up" aria-hidden="true"></i>
                         </a>
-                    </td>
+                    </td>                     
                 </tr>
                 <tr class="tr-more" data-tr="<?= $i ?>">
                     <td colspan="6">

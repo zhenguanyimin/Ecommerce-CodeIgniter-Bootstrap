@@ -28,6 +28,10 @@ if (!isset($_GET['settings'])) {
                         <th>Name</th>
                         <th>Phone</th>
                         <th class="text-center">Status</th>
+                        <th>订单总金额</th>
+                        <th>商户销售金额</th>
+                        <th>佣金金额</th>
+                        <th>运费</th>                        
                         <th class="text-center">Preview</th>
                     </tr>
                 </thead>
@@ -77,6 +81,10 @@ if (!isset($_GET['settings'])) {
                                 <div style="margin-bottom:4px;"><a href="javascript:void(0);" onclick="changeOrdersOrderStatus(<?= $tr['id'] ?>, 0)" class="btn btn-danger btn-xs">No processed</a></div>
                                 <div style="margin-bottom:4px;"><a href="javascript:void(0);" onclick="changeOrdersOrderStatus(<?= $tr['id'] ?>, 2)" class="btn btn-warning btn-xs">Rejected</a></div>
                             </td>
+                            <td><?= $tr['total_amount'] . CURRENCY ?></td>
+                            <td><?= $tr['vendor_share'] . CURRENCY ?></td>
+                            <td><?= $tr['commission'] . CURRENCY ?></td>
+                            <td><?= $tr['shipping_amount'] . CURRENCY ?></td>                            
                             <td class="text-center">
                             <a href="javascript:void(0);" class="btn btn-default more-info" data-toggle="modal" data-target="#modalPreviewMoreInfo" style="margin-top:10%;" data-more-info="<?= $tr['order_id'] ?>">
                                     More Info 

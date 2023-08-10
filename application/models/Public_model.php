@@ -6,7 +6,8 @@ class Public_model extends CI_Model
     private $showOutOfStock;
     private $showInSliderProducts;
     private $multiVendor;
-
+    private $vendorOrderId = 1233;
+    
     public function __construct()
     {
         parent::__construct();
@@ -382,7 +383,7 @@ class Public_model extends CI_Model
                     $rr['order_id'] = 1233;
                 }
                 $post['order_id'] = $rr['order_id'] + 1;
-
+                $this->vendorOrderId = $post['order_id'];
 
                 unset($post['id'], $post['quantity']);
                 $post['date'] = time();
@@ -396,6 +397,7 @@ class Public_model extends CI_Model
                             'clean_referrer' => $post['clean_referrer'],
                             'payment_type' => $post['payment_type'],
                             'paypal_status' => @$post['paypal_status'],
+                            'alipay_status' => @$post['alipay_status'],                    
                             'discount_code' => @$post['discountCode'],
 		    	    'alipay_status' => @$post['alipay_status'],
                             'vendor_id' => $productInfo['vendor_id']
@@ -426,6 +428,19 @@ class Public_model extends CI_Model
         }
     }
 
+    public function updateVendorOrderAmount($totalAmount, $vendorShare, $commission, $shippingAmount)
+    {
+        $this->db->where('order_id', $this->vendorOrderId);
+        if (!$this->db->update('vendors_orders', array(
+                    'total_amount' => $totalAmount,
+                    'vendor_share' => $vendorShare,
+                    'commission' => $commission,
+                    'shipping_amount' => $shippingAmount
+                ))) {
+            log_message('error', print_r($this->db->error(), true));
+        }
+    }
+    
     public function setActivationLink($link, $orderId)
     {
         $result = $this->db->insert('confirm_links', array('link' => $link, 'for_order' => $orderId));
@@ -592,6 +607,19 @@ class Public_model extends CI_Model
         }
     }
 
+    public function updateOrderAmount($order_id, $totalAmount, $vendorShare, $commission, $shippingAmount)
+    {
+        $this->db->where('order_id', $order_id);
+        if (!$this->db->update('orders', array(
+                    'total_amount' => $totalAmount,
+                    'vendor_share' => $vendorShare,
+                    'commission' => $commission,
+                    'shipping_amount' => $shippingAmount
+                ))) {
+            log_message('error', print_r($this->db->error(), true));
+        }
+    }
+    
     public function getCookieLaw()
     {
         $this->db->join('cookie_law_translations', 'cookie_law_translations.for_id = cookie_law.id', 'inner');

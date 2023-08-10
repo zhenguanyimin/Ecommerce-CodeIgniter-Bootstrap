@@ -147,6 +147,12 @@ class Settings extends ADMIN_Controller
             $this->saveHistory('Change Shipping amount for orders ' . $_POST['shippingAmount']);
             redirect('admin/settings');
         }
+        if (isset($_POST['commissonRate'])) {
+            $this->Home_admin_model->setValueStore('commissonRate', $_POST['commissonRate']);
+            $this->session->set_flashdata('commissonRate', 'commisson rate chagned!');
+            $this->saveHistory('Change CommissonRate for orders ' . $_POST['commissonRate']);
+            redirect('admin/settings');
+        }        
         if (isset($_POST['addJs'])) {
             $this->Home_admin_model->setValueStore('addJs', $_POST['addJs']);
             $this->session->set_flashdata('addJs', 'JavaScript code is added');

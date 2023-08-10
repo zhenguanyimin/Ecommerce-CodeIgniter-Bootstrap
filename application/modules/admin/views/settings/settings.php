@@ -243,6 +243,26 @@
     </div>
     <div class="col-sm-6 col-md-4">
         <div class="panel panel-success col-h">
+            <div class="panel-heading">Commisson rate (leave 0 or empty for no commisson):</div>
+            <div class="panel-body">
+                <?php if ($this->session->flashdata('commissonRate')) { ?>
+                    <div class="alert alert-info"><?= $this->session->flashdata('commissonRate') ?></div>
+                <?php } ?>
+                <form method="POST" action="">
+                    <div class="input-group">
+                        <input class="form-control" name="commissonRate" value="<?= isset($commissonRate) ? $commissonRate: '' ?>" type="text">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" value="" type="submit">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>    
+    <div class="col-sm-6 col-md-4">
+        <div class="panel panel-success col-h">
             <div class="panel-heading">Add google or other JavaScript to site</div>
             <div class="panel-body">
                 <?php if ($this->session->flashdata('addJs')) { ?>

@@ -14,6 +14,32 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-lg-6 col-md-6">
+            <div class="panel panel-green">
+                <div class="panel-heading fast-view-panel">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-shopping-cart fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge"><?= $total_commission.CURRENCY ?></div>
+                            <div>平台总佣金</div>                            
+                            <div ><?= "平台销售总金额：".$total_amount.CURRENCY ?></div>
+                            <div ><?= "商户分成总金额：".$total_vendor_share.CURRENCY ?></div>
+                        </div>
+                    </div>
+                </div>
+                <a href="<?= base_url('admin/orders') ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">View Details</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>    
+    <div class="row">
         <div class="col-lg-3 col-md-6">
             <div class="panel panel-primary">
                 <div class="panel-heading fast-view-panel">

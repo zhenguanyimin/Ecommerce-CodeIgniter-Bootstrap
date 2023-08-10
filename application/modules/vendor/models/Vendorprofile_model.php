@@ -42,7 +42,46 @@ class Vendorprofile_model extends CI_Model
             return true;
         }
     }
+    public function ordersCount($onlyNew = false, $vendor_id)
+    {
+        if ($onlyNew == true) {
+            $this->db->where('viewed', 0);
+        }
+        $this->db->where('vendor_id', $vendor_id);         
+        return $this->db->count_all_results('vendors_orders');
+    }
+    
+    public function getTotalAmount($vendor_id)
+    {
+        $this->db->where('vendor_id', $vendor_id);   
+        $this->db->where('processed', 1);
+        $this->db->select_sum('total_amount', 'total');
+        $query = $this->db->get('vendors_orders');
+        $result = $query->row_array();
+        return $result['total'] > 0 ?$result['total']:0.0;
+    }
 
+    
+    public function getTotalVendorShare($vendor_id)
+    {
+        $this->db->where('vendor_id', $vendor_id);
+        $this->db->where('processed', 1);
+        $this->db->select_sum('vendor_share', 'total');
+        $query = $this->db->get('vendors_orders');
+        $result = $query->row_array();
+        return $result['total'] > 0 ?$result['total']:0.0;
+    }
+
+    public function getTotalCommission($vendor_id)
+    {
+        $this->db->where('vendor_id', $vendor_id);        
+        $this->db->where('processed', 1);
+        $this->db->select_sum('commission', 'total');
+        $query = $this->db->get('vendors_orders');
+        $result = $query->row_array();
+        return $result['total'] > 0 ?$result['total']:0.0;
+    }
+    
     public function getOrdersByMonth($vendor_id)
     {
         $vendor_id = (int)$vendor_id;

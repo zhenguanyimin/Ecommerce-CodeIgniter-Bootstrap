@@ -26,6 +26,9 @@ class Home extends ADMIN_Controller
         $head['description'] = '';
         $head['keywords'] = '';
         $data['newOrdersCount'] = $this->Orders_model->ordersCount(true);
+        $data['total_amount'] = $this->Orders_model->getTotalAmount();
+        $data['total_vendor_share'] = $this->Orders_model->getTotalVendorShare();
+        $data['total_commission'] = $this->Orders_model->getTotalCommission();        
         $data['lowQuantity'] = $this->Home_admin_model->countLowQuantityProducts();
         $data['lastSubscribed'] = $this->Home_admin_model->lastSubscribedEmailsCount();
         $data['activity'] = $this->History_model->getHistory(10, 0);

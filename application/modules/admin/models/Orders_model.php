@@ -17,6 +17,33 @@ class Orders_model extends CI_Model
         return $this->db->count_all_results('orders');
     }
 
+    public function getTotalAmount()
+    {
+        $this->db->where('processed', 1);
+        $this->db->select_sum('total_amount', 'total');
+        $query = $this->db->get('orders');
+        $result = $query->row_array();
+        return $result['total'] > 0 ?$result['total']:0.0;
+    }
+    
+    public function getTotalVendorShare()
+    {
+        $this->db->where('processed', 1);
+        $this->db->select_sum('vendor_share', 'total');
+        $query = $this->db->get('orders');
+        $result = $query->row_array();
+        return $result['total'] > 0 ?$result['total']:0.0;
+    }
+
+    public function getTotalCommission()
+    {
+        $this->db->where('processed', 1);
+        $this->db->select_sum('commission', 'total');
+        $query = $this->db->get('orders');
+        $result = $query->row_array();
+        return $result['total'] > 0 ?$result['total']:0.0;
+    }
+    
     public function orders($limit, $page, $order_by)
     {
         if ($order_by != null) {

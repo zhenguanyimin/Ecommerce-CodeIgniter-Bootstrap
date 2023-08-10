@@ -34,6 +34,15 @@ html, body { height: 100%; color:#131313; background-color: #eef5f9;}
 .right-side {padding-top: 80px;}
 
 .content {border:1px solid #d7dfe3; border-radius: 4px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05); padding: 15px; background-color: #ffffff; color:#67757c;}
+.home-page .fast-view-panel {height: 130px;}
+.home-page .panel-green {border-color: #5cb85c;}
+.home-page .panel-green .panel-heading { background-color: #5cb85c; border-color: #5cb85c; color: #fff;}
+.home-page .panel-yellow {  border-color: #f0ad4e;}
+.home-page .panel-yellow .panel-heading {  background-color: #f0ad4e;    border-color: #f0ad4e;    color: #fff;}
+.home-page .panel-red {  border-color: #d9534f;}
+.home-page .panel-red .panel-heading {   background-color: #d9534f;  border-color: #d9534f;  color: #fff;}
+.home-page .huge {font-size: 40px;}
+.home-page .panel {font-size:14px;}
 
 .form-box .form-control, .form-box .form-control:hover {border:0; border-bottom: 1px solid #ccc; box-shadow: none; border-radius: 0; padding-left: 0; padding-right: 20px;}
 .form-box .form-group {position: relative; margin-bottom: 30px; }

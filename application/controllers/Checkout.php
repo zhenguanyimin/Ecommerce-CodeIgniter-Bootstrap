@@ -6,7 +6,8 @@ class Checkout extends MY_Controller
 {
 
     private $orderId;
-
+    private $realShippingAmount = 0.0;
+    
     public function __construct()
     {
         parent::__construct();
@@ -117,6 +118,17 @@ class Checkout extends MY_Controller
             @set_cookie('alipay', $this->orderId, 2678400);
             $_SESSION['discountAmount'] = $_POST['discountAmount'];
             $_SESSION['final_amount'] = $_POST['final_amount'];
+            $total_amount = $_POST['final_amount']*1.0;
+            $commission = $_POST['final_amount']*($this->Home_admin_model->getValueStore('commissonRate')/100);
+            $vendor_share = $total_amount-$commission;
+            $total_amount = number_format( $total_amount, 6);
+            $vendor_share = number_format( $vendor_share, 6);
+            $commission = number_format( $commission, 6);
+            $this->realShippingAmount = 0.0;
+            if($total_amount < $this->Home_admin_model->getValueStore('shippingOrder'))
+                $this->realShippingAmount = $this->Home_admin_model->getValueStore('shippingAmount');
+            $this->Public_model->updateOrderAmount($this->orderId, $total_amount, $vendor_share, $commission, $this->realShippingAmount);
+            $this->Public_model->updateVendorOrderAmount($total_amount, $vendor_share, $commission, $this->realShippingAmount);            
             redirect(LANG_URL . '/checkout/alipay');          
         }        
     }
@@ -184,7 +196,7 @@ class Checkout extends MY_Controller
         $head['keywords'] = str_replace(" ", ",", $head['title']);
 //        $data['paypal_sandbox'] = $this->Home_admin_model->getValueStore('paypal_sandbox');
 //        $data['paypal_email'] = $this->Home_admin_model->getValueStore('paypal_email');
-        $data['shippingAmount'] = $this->Home_admin_model->getValueStore('shippingAmount');
+        $data['realShippingAmount'] = $this->realShippingAmount;
         $this->render('checkout_parts/alipay', $head, $data);
     }
     

@@ -25,7 +25,11 @@ class VendorProfile extends VENDOR_Controller
         $head['title'] = lang('vendor_dashboard');
         $head['description'] = lang('vendor_home_page');
         $head['keywords'] = '';
+        $data['newOrdersCount'] = $this->Vendorprofile_model->ordersCount(true, $this->vendor_id);        
         $data['ordersByMonth'] = $this->Vendorprofile_model->getOrdersByMonth($this->vendor_id);
+        $data['total_amount'] = $this->Vendorprofile_model->getTotalAmount($this->vendor_id);
+        $data['total_vendor_share'] = $this->Vendorprofile_model->getTotalVendorShare($this->vendor_id);
+        $data['total_commission'] = $this->Vendorprofile_model->getTotalCommission($this->vendor_id);          
         $this->load->view('_parts/header', $head);
         $this->load->view('home', $data);
         $this->load->view('_parts/footer');
