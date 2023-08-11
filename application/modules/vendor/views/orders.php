@@ -3,7 +3,7 @@
     <table class="table">
         <thead class="blue-grey lighten-4">
             <tr>
-                <th>订单ID</th>
+                <th>#</th>
                 <th><?= lang('time_created') ?></th>
                 <th><?= lang('order_type') ?></th>
                 <th><?= lang('phone') ?></th>
@@ -36,8 +36,9 @@
                     <td><?= $order['vendor_share'] . CURRENCY ?></td>
                     <td><?= $order['commission'] . CURRENCY ?></td>
                     <td><?= $order['shipping_amount'] . CURRENCY ?></td>                     
-                    <td class="text-right">
+                    <td class="text-right" >
                         <a href="javascript:void(0);" class="btn btn-sm btn-green show-more" data-show-tr="<?= $i ?>">
+                            详情
                             <i class="fa fa-chevron-down" aria-hidden="true"></i>
                             <i class="fa fa-chevron-up" aria-hidden="true"></i>
                         </a>
