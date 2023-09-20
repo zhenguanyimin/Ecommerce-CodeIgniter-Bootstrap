@@ -399,7 +399,6 @@ class Public_model extends CI_Model
                             'paypal_status' => @$post['paypal_status'],
                             'alipay_status' => @$post['alipay_status'],                    
                             'discount_code' => @$post['discountCode'],
-		    	    'alipay_status' => @$post['alipay_status'],
                             'vendor_id' => $productInfo['vendor_id']
                         ))) {
                     log_message('error', print_r($this->db->error(), true));
@@ -597,6 +596,9 @@ class Public_model extends CI_Model
         $processed = 0;
         if ($status == 'canceled') {
             $processed = 2;
+        }
+        else if($status == 'payed'){
+            $processed = 1;            
         }
         $this->db->where('order_id', $order_id);
         if (!$this->db->update('orders', array(

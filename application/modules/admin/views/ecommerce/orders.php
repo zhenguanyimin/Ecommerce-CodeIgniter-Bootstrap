@@ -40,15 +40,15 @@ if (!isset($_GET['settings'])) {
                     foreach ($orders as $tr) {
                         if ($tr['processed'] == 0) {
                             $class = 'bg-danger';
-                            $type = 'No processed';
+                            $type = '未付款';
                         }
                         if ($tr['processed'] == 1) {
                             $class = 'bg-success';
-                            $type = 'Processed';
+                            $type = '已付款';
                         }
                         if ($tr['processed'] == 2) {
                             $class = 'bg-warning';
-                            $type = 'Rejected';
+                            $type = '已退款';
                         }
                         ?>
                         <tr>
@@ -61,9 +61,9 @@ if (!isset($_GET['settings'])) {
                                 <?php } ?>
                                 <div class="confirm-result">
                                     <?php if ($tr['confirmed'] == '1') { ?>
-                                        <span class="label label-success">Confirmed by email</span>
+                                        <span class="label label-success">已确认收货</span>
                                     <?php } else { ?> 
-                                        <span class="label label-danger">Not Confirmed</span> 
+                                        <span class="label label-danger">未确认收货</span> 
                                     <?php } ?>
                                 </div>
                             </td>
@@ -77,9 +77,9 @@ if (!isset($_GET['settings'])) {
                                 <div class="status" style="padding:5px; font-size:16px;">
                                     -- <b><?= $type ?></b> --
                                 </div>
-                                <div style="margin-bottom:4px;"><a href="javascript:void(0);" onclick="changeOrdersOrderStatus(<?= $tr['id'] ?>, 1, '<?= htmlentities($tr['products']) ?>', '<?= $tr['email'] ?>')" class="btn btn-success btn-xs">Processed</a></div>
-                                <div style="margin-bottom:4px;"><a href="javascript:void(0);" onclick="changeOrdersOrderStatus(<?= $tr['id'] ?>, 0)" class="btn btn-danger btn-xs">No processed</a></div>
-                                <div style="margin-bottom:4px;"><a href="javascript:void(0);" onclick="changeOrdersOrderStatus(<?= $tr['id'] ?>, 2)" class="btn btn-warning btn-xs">Rejected</a></div>
+                                <div style="margin-bottom:4px;"><a href="javascript:void(0);" onclick="changeOrdersOrderStatus(<?= $tr['id'] ?>, 1, '<?= htmlentities($tr['products']) ?>', '<?= $tr['email'] ?>')" class="btn btn-success btn-xs">已付款</a></div>
+                                <div style="margin-bottom:4px;"><a href="javascript:void(0);" onclick="changeOrdersOrderStatus(<?= $tr['id'] ?>, 0)" class="btn btn-danger btn-xs">未付款</a></div>
+                                <div style="margin-bottom:4px;"><a href="javascript:void(0);" onclick="changeOrdersOrderStatus(<?= $tr['id'] ?>, 2)" class="btn btn-warning btn-xs">已退款</a></div>
                             </td>
                             <td><?= $tr['total_amount'] . CURRENCY ?></td>
                             <td><?= $tr['vendor_share'] . CURRENCY ?></td>

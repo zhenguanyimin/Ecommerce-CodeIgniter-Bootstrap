@@ -27,7 +27,7 @@
                     <td><?= $order['phone'] ?></td>
                     <td>
                         <select class="selectpicker change-ord-status" data-ord-id="<?= $order['id'] ?>" data-style="btn-green"> 
-                            <option <?= $order['processed'] == 0 ? 'selected="selected"' : '' ?> value="0"><?= lang('new') ?></option>
+                            <option <?= $order['processed'] == 0 ? 'selected="selected"' : '' ?> value="0"><?= lang('unprocessed') ?></option>
                             <option <?= $order['processed'] == 1 ? 'selected="selected"' : '' ?> value="1"><?= lang('processed') ?></option>
                             <option <?= $order['processed'] == 2 ? 'selected="selected"' : '' ?> value="2"><?= lang('rejected') ?></option>
                         </select>

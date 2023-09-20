@@ -272,7 +272,7 @@ class Checkout extends MY_Controller
 	@delete_cookie('alipay');
 	$this->shoppingcart->clearShoppingCart();
         $orderId = get_cookie('alipay');
-        $this->Public_model->changePaypalOrderStatus($orderId, 'payed');
+        $this->Public_model->changeAlipayOrderStatus($orderId, 'payed');
 	redirect(LANG_URL . '/checkout/alipay_success');
     }
     public function alipay_success()
