@@ -82,7 +82,13 @@ class Public_model extends CI_Model
         $query = $this->db->select('blog_posts.id, blog_translations.title, blog_translations.description, blog_posts.url, blog_posts.time, blog_posts.image')->get('blog_posts', $limit, $page);
         return $query->result_array();
     }
-
+    
+    public function getAllExpress()
+    {
+        $query = $this->db->select('*')->get('express_info');
+        return $query->result_array();
+    }
+  
     public function getProducts($limit = null, $start = null, $big_get = [], $vendor_id = false)
     {
         if ($limit !== null && $start !== null) {
@@ -399,7 +405,8 @@ class Public_model extends CI_Model
                             'paypal_status' => @$post['paypal_status'],
                             'alipay_status' => @$post['alipay_status'],                    
                             'discount_code' => @$post['discountCode'],
-                            'vendor_id' => $productInfo['vendor_id']
+                            'vendor_id' => $productInfo['vendor_id'],
+                            'customer_id' => @$post['user_id']
                         ))) {
                     log_message('error', print_r($this->db->error(), true));
                 }

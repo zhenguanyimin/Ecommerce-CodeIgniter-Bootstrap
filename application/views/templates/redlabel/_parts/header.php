@@ -19,7 +19,7 @@
         <link href="<?= base_url('templatecss/custom.css') ?>" rel="stylesheet" />
         <link href="<?= base_url('cssloader/theme.css') ?>" rel="stylesheet" />
         <script src="<?= base_url('assets/js/jquery.min.js') ?>"></script>
-        <script src="<?= base_url('loadlanguage/all.js') ?>"></script>
+        <script src="<?= base_url('loadlanguage/all.js') ?>"></script>       
         <?php if ($cookieLaw != false) { ?>
             <script type="text/javascript">
                 window.cookieconsent_options = {"message": "<?= $cookieLaw['message'] ?>", "dismiss": "<?= $cookieLaw['button_text'] ?>", "learnMore": "<?= $cookieLaw['learn_more'] ?>", "link": "<?= $cookieLaw['link'] ?>", "theme": "<?= $cookieLaw['theme'] ?>"};

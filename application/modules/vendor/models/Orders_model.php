@@ -15,18 +15,25 @@ class Orders_model extends CI_Model
         return $this->db->count_all_results('vendors_orders');
     }
 
-    public function orders($limit, $page, $vendor_id)
+    public function orders($limit, $page, $big_get = [], $vendor_id)
     {
+        // 设置订单类型条件
+//        $dataTypeFilter = $this->getFilterDataType($dataType);
+        
         $this->db->where('vendor_id', $vendor_id);
         $this->db->order_by('id', 'DESC');
         $this->db->select('vendors_orders.*, vendors_orders_clients.first_name,'
-                . ' vendors_orders_clients.last_name, vendors_orders_clients.email, vendors_orders_clients.phone, '
+                . ' vendors_orders_clients.last_name, vendors_orders_clients.receiptor_name, vendors_orders_clients.email, vendors_orders_clients.phone, '
                 . 'vendors_orders_clients.address, vendors_orders_clients.city, vendors_orders_clients.post_code,'
                 . ' vendors_orders_clients.notes, discount_codes.type as discount_type, discount_codes.amount as discount_amount');
         $this->db->join('vendors_orders_clients', 'vendors_orders_clients.for_id = vendors_orders.id', 'inner');
+        $this->db->join('users_public', 'users_public.id = vendors_orders.customer_id', 'inner');
         $this->db->join('discount_codes', 'discount_codes.code = vendors_orders.discount_code', 'left');
-        $result = $this->db->get('vendors_orders', $limit, $page);
-        $result = $result->result_array();
+        // 检索查询条件
+        $query = $big_get;        
+        $this->queryFilter($query);
+        $results = $this->db->get('vendors_orders', $limit, $page);
+        $result = $results->result_array();
         if(!count($result)) return $result;
         
         foreach($result as $k => $v) {
@@ -39,6 +46,86 @@ class Orders_model extends CI_Model
         return $result;
     }
 
+    /**
+     * 设置默认的检索数据
+     * @param array $query
+     * @param array $default
+     * @return array
+     */
+    protected function setQueryDefaultValue(array $query, array $default = []): array
+    {
+        $data = array_merge($default, $query);
+        foreach ($query as $field => $value) {
+            // 不存在默认值跳出循环
+            if (!isset($default[$field])) continue;
+            // 如果传参为空, 设置默认值
+            if (empty($value) && $value !== '0') {
+                $data[$field] = $default[$field];
+            }
+        }
+        return $data;
+    }
+    
+    /**
+     * 设置检索查询条件
+     * @param array $param
+     * @return 
+     */
+    private function queryFilter(array $param)
+    {
+        // 默认参数
+        $params = $this->setQueryDefaultValue($param, [
+            'searchType' => '',     // 关键词类型 (10订单号 20客户姓名 30客户手机号 40客户邮箱 50收货人姓名 60收货人手机号 70收货人邮箱)
+            'searchValue' => '',    // 关键词内容
+            'orderSource' => -1,    // 订单来源
+            'payType' => -1,        // 支付方式
+            'deliveryType' => -1,   // 配送方式
+            'start_time' => '',     // 起始时间
+            'end_time' => '',       // 截止时间
+        ]);
+        // 检索查询条件
+        $filter = [];
+        // 关键词
+        if (!empty($params['searchValue'])) {
+            $searchWhere = [
+                10 => ['vendors_orders.order_id like', "%{$params['searchValue']}%"],
+                20 => ['users_public.name like', "%{$params['searchValue']}%"],
+                30 => ['users_public.phone =', (int)$params['searchValue']],
+                40 => ['users_public.emaillike', "%{$params['searchValue']}%"],                        
+                50 => ['vendors_orders_clients.receiptor_namelike', "%{$params['searchValue']}%"],
+                60 => ['vendors_orders_clients.phone=', (int)$params['searchValue']],
+                70 => ['vendors_orders_clients.email like', "%{$params['searchValue']}%"],
+            ];
+            array_key_exists($params['searchType'], $searchWhere) && $filter[] = $searchWhere[$params['searchType']];
+        }
+        // 起止时间
+        if ($params['start_time'] != '') {
+            $start_time = \DateTime::createFromFormat('Y-m-d', $params['start_time']);
+            if($start_time) {
+                $time = $start_time->getTimestamp();
+                $filter[] = ['vendors_orders.date >=', $time];
+            }
+        }        
+        if ($params['end_time'] != '') {
+            $end_time = \DateTime::createFromFormat('Y-m-d', $params['end_time']);
+            if($end_time) {
+                $time = $end_time->getTimestamp();
+                $filter[] = ['vendors_orders.date <', $time];
+            }
+        }
+        
+        // 订单来源
+        $params['orderSource'] > -1 && $filter[] = ['order_source =', (int)$params['orderSource']];
+        // 支付方式
+        $params['payType'] > -1 && $filter[] = ['pay_type =', (int)$params['payType']];
+        // 配送方式
+        $params['deliveryType'] > -1 && $filter[] = ['delivery_type =', (int)$params['deliveryType']];
+        
+        foreach($filter as $v) {
+            $this->db->where($v[0], $v[1]);
+        }
+    }
+    
     public function changeOrderStatus($id, $to_status)
     {
         $this->db->where('id', $id);
@@ -52,5 +139,28 @@ class Orders_model extends CI_Model
             return $result;
         }
     }
-
+    
+    public function updateOrderDeliveryStatus($post)
+    {
+        $this->db->where('order_id', $post["order_id"]);
+        if (!$this->db->update('vendors_orders', array(
+                    'express_id' => $post['express_id'],
+                    'express_no' => trim($post['express_no']),
+                    'express_company'=> trim($post['express_name']),
+                    'delivery_status' => $post['delivery_status'],            
+                    'delivery_time' => $post['delivery_time']
+                ))) {
+            log_message('error', print_r($this->db->error(), true));
+            show_error(lang('database_error'));
+        }
+    }
+    
+    public function getOrderPayStatus($order_id)
+    {
+        $this->db->where('order_id', $order_id);
+        $this->db->select('pay_status');
+        $this->db->limit(1);
+        $result1 = $this->db->get('vendors_orders');
+        return $result1->row_array();
+    }    
 }

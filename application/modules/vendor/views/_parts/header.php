@@ -9,9 +9,14 @@
         <link href="<?= base_url('assets/css/bootstrap.min.css') ?>" rel="stylesheet">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="<?= base_url('assets/bootstrap-select-1.12.1/bootstrap-select.min.css') ?>">
+        <link href="<?= base_url('assets/css/bootstrap-datepicker.min.css') ?>" rel="stylesheet" />        
         <link rel="stylesheet" href="<?= base_url('assets/css/materialdesignicons.min.css') ?>">
-        <link rel="stylesheet" href="<?= base_url('assets/css/vendors.css') ?>">
+        <link href="<?= base_url('cssloader/theme.css') ?>" rel="stylesheet" />        
+        <link rel="stylesheet" href="<?= base_url('assets/css/vendors.css') ?>">             
         <script src="<?= base_url('assets/js/jquery.min.js') ?>"></script>
+<!--        <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+        <script src="https://cdn.staticfile.org/vue-router/3.1.3/vue-router.min.js"></script>
+        <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>        -->
         <!--[if lt IE 9]>
           <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
           <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -62,14 +67,24 @@
                                         <span class="hide-menu"><?= lang('vendor_products') ?></span>
                                     </a>
                                 </li>
+                                <li>                                
+                                    <span style="font-weight:bold;font-size:15px;"><?= lang('vendor_order_manage') ?></span>                               
+                                </li>
                                 <li>
                                     <a href="<?= LANG_URL . '/vendor/orders' ?>" aria-expanded="false">
-                                        <i class="mdi mdi-cart-plus"></i>
+                                        <i class="mdi mdi-cart-plus"></i>                                         
                                         <span class="hide-menu"><?= lang('vendor_orders') ?></span>
-                                    </a>
+                                    </a>                               
                                 </li>
+                                <li>
+                                    <a href="<?= LANG_URL . '/vendor/order/delivery' ?>" aria-expanded="false">
+                                        <i class="mdi mdi-cart-plus"></i>                                        
+                                        <span class="hide-menu"><?= lang('vendor_order_delivery') ?></span>
+                                    </a>                               
+                                </li>                                
                             </ul>
                         </div>
+                        
                         <div class="col-sm-9 col-md-9 col-lg-10 col-sm-offset-3 col-md-offset-3 col-lg-offset-2 right-side">
                             <div class="page-titles">
                                 <h2><?= $title ?></h2>

@@ -279,6 +279,20 @@ ALTER TABLE `bank_accounts`
 ALTER TABLE `bank_accounts`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
+DROP TABLE IF EXISTS `express_info`;
+CREATE TABLE `express_info` (
+  `express_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '物流公司ID',
+  `express_name` varchar(255) NOT NULL DEFAULT '' COMMENT '物流公司名称',
+  `kuaidi100_code` varchar(30) NOT NULL DEFAULT '' COMMENT '物流公司编码 (快递100)',
+  `sort` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '排序(数字越小越靠前)',
+  `store_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '商城ID',
+  `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`express_id`),
+  KEY `store_id` (`store_id`),
+  KEY `kuaidi100_code` (`kuaidi100_code`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=10001 DEFAULT CHARSET=utf8 COMMENT='物流公司记录表';
+
 CREATE TABLE IF NOT EXISTS `value_store` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `thekey` varchar(50) NOT NULL,
@@ -379,6 +393,20 @@ CREATE TABLE `vendors_orders` (
   `payment_type` varchar(255) NOT NULL,
   `paypal_status` varchar(10) DEFAULT NULL,
   `alipay_status` varchar(10) DEFAULT NULL,
+  `pay_type` tinyint(3) unsigned NOT NULL DEFAULT '20' COMMENT '支付方式(10余额支付 20支付宝支付)',
+  `pay_status` tinyint(3) unsigned NOT NULL DEFAULT '10' COMMENT '付款状态(10未付款 20已付款)',
+  `pay_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '付款时间',
+  `delivery_type` tinyint(3) unsigned NOT NULL DEFAULT '10' COMMENT '配送方式(10快递配送)',
+  `express_price` decimal(10,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '运费金额',
+  `express_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '物流公司ID',
+  `express_company` varchar(50) NOT NULL DEFAULT '' COMMENT '物流公司',
+  `express_no` varchar(50) NOT NULL DEFAULT '' COMMENT '物流单号',
+  `delivery_status` tinyint(3) unsigned NOT NULL DEFAULT '10' COMMENT '发货状态(10未发货 20已发货)',
+  `delivery_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '发货时间',
+  `receipt_status` tinyint(3) unsigned NOT NULL DEFAULT '10' COMMENT '收货状态(10未收货 20已收货)',
+  `receipt_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '收货时间',
+  `order_status` tinyint(3) unsigned NOT NULL DEFAULT '10' COMMENT '订单状态(10进行中 20取消 21待取消 30已完成)',
+  `order_source` tinyint(3) unsigned NOT NULL DEFAULT '10' COMMENT '订单来源(10普通订单)',
   `total_amount` DOUBLE(16,6) DEFAULT 0,
   `vendor_share` DOUBLE(16,6) DEFAULT 0,
   `commission` DOUBLE(16,6) DEFAULT 0,
@@ -387,7 +415,8 @@ CREATE TABLE `vendors_orders` (
   `viewed` tinyint(1) NOT NULL DEFAULT '0',
   `confirmed` tinyint(1) NOT NULL DEFAULT '0',
   `discount_code` varchar(20) NOT NULL,
-  `vendor_id` int(10) UNSIGNED NOT NULL
+  `vendor_id` int(10) UNSIGNED NOT NULL,
+  `customer_id` int(10) UNSIGNED NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 ALTER TABLE `vendors_orders`
@@ -400,6 +429,7 @@ CREATE TABLE `vendors_orders_clients` (
   `id` int(11) NOT NULL,
   `first_name` varchar(500) NOT NULL,
   `last_name` varchar(500) NOT NULL,
+  `receiptor_name` varchar(500) NOT NULL,
   `email` varchar(500) NOT NULL,
   `phone` varchar(500) NOT NULL,
   `address` text NOT NULL,
