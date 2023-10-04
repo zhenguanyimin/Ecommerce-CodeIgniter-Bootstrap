@@ -19,7 +19,7 @@ class Orders_model extends CI_Model
     {
         // 设置订单类型条件
 //        $dataTypeFilter = $this->getFilterDataType($dataType);
-        
+
         $this->db->where('vendor_id', $vendor_id);
         $this->db->order_by('id', 'DESC');
         $this->db->select('vendors_orders.*, vendors_orders_clients.first_name,'
@@ -91,8 +91,8 @@ class Orders_model extends CI_Model
                 10 => ['vendors_orders.order_id like', "%{$params['searchValue']}%"],
                 20 => ['users_public.name like', "%{$params['searchValue']}%"],
                 30 => ['users_public.phone =', (int)$params['searchValue']],
-                40 => ['users_public.emaillike', "%{$params['searchValue']}%"],                        
-                50 => ['vendors_orders_clients.receiptor_namelike', "%{$params['searchValue']}%"],
+                40 => ['users_public.email like', "%{$params['searchValue']}%"],                        
+                50 => ['vendors_orders_clients.receiptor_name like', "%{$params['searchValue']}%"],
                 60 => ['vendors_orders_clients.phone=', (int)$params['searchValue']],
                 70 => ['vendors_orders_clients.email like', "%{$params['searchValue']}%"],
             ];

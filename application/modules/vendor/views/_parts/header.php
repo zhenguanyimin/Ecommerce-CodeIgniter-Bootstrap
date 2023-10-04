@@ -14,9 +14,6 @@
         <link href="<?= base_url('cssloader/theme.css') ?>" rel="stylesheet" />        
         <link rel="stylesheet" href="<?= base_url('assets/css/vendors.css') ?>">             
         <script src="<?= base_url('assets/js/jquery.min.js') ?>"></script>
-<!--        <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
-        <script src="https://cdn.staticfile.org/vue-router/3.1.3/vue-router.min.js"></script>
-        <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>        -->
         <!--[if lt IE 9]>
           <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
           <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>

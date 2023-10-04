@@ -23,23 +23,23 @@
     );     
 ?>
 <div class="table-operator">
-<form class="form-horizontal" method="GET" action="<?= base_url('vendor/orders') ?>" id="bigger-search"/>
+<form class="form-horizontal" method="GET" action="<?= base_url('vendor/orders') ?>" id="vendors-orders-search"/>
     <div class="row">
         <div class="col-lg-4 col-md-6">
             <div class="form-group">
                 <label for="searchValue" title="关键词" class="">关键词</label>
-                <select class="selectpicker" name="searchType">
+                <select class="selectpicker" name="searchType" id="searchType">
                     <?php foreach ($searchTypes as $id => $name) { ?>
                         <option <?= isset($_GET['searchType']) && $_GET['searchType'] == $id ? 'selected' : '' ?> value="<?= $id ?>"><?= htmlspecialchars($name) ?></option>
                     <?php } ?>                                                
                 </select>        
-                <input value="<?= isset($_GET['searchValue']) ? htmlspecialchars($_GET['searchValue']) : '' ?>" placeholder="请输入关键词" type="text"  name="searchValue" id="searchValue" style="height: 34px;">                
+                <input value="<?= isset($_GET['searchValue']) ? htmlspecialchars($_GET['searchValue']) : '' ?>" placeholder="请输入关键词" type="text"  name="searchValue" id="searchValue" style="height: 34px;" class="clear-control">                
             </div>
         </div>
         <div class="col-lg-4 col-md-6">
             <div class="form-group">
                 <label for="orderSource" title="订单来源" class="">订单来源</label>
-                <select class="selectpicker" name="orderSource">
+                <select class="selectpicker" name="orderSource" id="orderSource">
                     <?php foreach ($orderSources as $id => $name) { ?>
                         <option <?= isset($_GET['orderSource']) && $_GET['orderSource'] == $id ? 'selected' : '' ?> value="<?= $id ?>"><?= htmlspecialchars($name) ?></option>
                     <?php } ?>                                                   
@@ -49,7 +49,7 @@
         <div class="col-lg-4 col-md-6">
             <div class="form-group">
                 <label for="payType" title="支付方式" class="">支付方式</label>
-                <select class="selectpicker" name="payType"> 
+                <select class="selectpicker" name="payType" id="payType"> 
                     <?php foreach ($payTypes as $id => $name) { ?>
                         <option <?= isset($_GET['payType']) && $_GET['payType'] == $id ? 'selected' : '' ?> value="<?= $id ?>"><?= htmlspecialchars($name) ?></option>
                     <?php } ?>                                
@@ -61,7 +61,7 @@
         <div class="col-sm-3">
             <div class="form-group">
                 <label for="deliveryType" title="配送方式" class="">配送方式</label>                
-                <select class="selectpicker" name="deliveryType"> 
+                <select class="selectpicker" name="deliveryType" id="deliveryType"> 
                     <?php foreach ($deliveryTypes as $id => $name) { ?>
                         <option <?= isset($_GET['deliveryType']) && $_GET['deliveryType'] == $id ? 'selected' : '' ?> value="<?= $id ?>"><?= htmlspecialchars($name) ?></option>
                     <?php } ?>                                
@@ -71,13 +71,13 @@
         <div class="col-sm-8">
             <div class="form-group">
                 <label for="start_time">订单时间:</label> 
-                <input type="date" value="<?= isset($_GET['start_time']) ? htmlspecialchars($_GET['start_time']) : '' ?>" name="start_time" id="start_time" style="width:20%; height: 34px;">
+                <input type="date" value="<?= isset($_GET['start_time']) ? htmlspecialchars($_GET['start_time']) : '' ?>" name="start_time" id="start_time" style="width:20%; height: 34px;" class="clear-control">
                 <label for="end_time"> — </label>                        
-                <input type="date" value="<?= isset($_GET['end_time']) ? htmlspecialchars($_GET['end_time']) : '' ?>" name="end_time" id="end_time" style="width: 20%; height: 34px;">
+                <input type="date" value="<?= isset($_GET['end_time']) ? htmlspecialchars($_GET['end_time']) : '' ?>" name="end_time" id="end_time" style="width: 20%; height: 34px;" class="clear-control">
                 <button type="submit" class="btn btn-inner-search">
                     <span class="glyphicon glyphicon-search" aria-hidden="true"> 搜索</span>
                 </button>
-                <a class="btn btn-default" id="clear-form" href="javascript:void(0);">重置</a>             
+                <a class="btn btn-default" id="clear-form-vendors" href="javascript:void(0);">重置</a>             
             </div>                    
         </div>        
     </div>

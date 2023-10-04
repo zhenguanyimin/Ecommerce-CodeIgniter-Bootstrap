@@ -81,4 +81,23 @@ function removeSecondaryProductImage(image, folder, container) {
     }).done(function (data) {
         $('#image-container-' + container).remove();
     });
-} 
+}
+
+/*
+ * Submit search form in home page
+ */
+function submitForm() {
+    document.getElementById("vendors-orders-search").submit();
+}
+
+$('#clear-form-vendors').click(function () {
+    $('#vendors-orders-search .clear-control').each(function () {
+        $(this).val('');
+    });
+
+    $("#searchType").val('10');
+    $("#orderSource").val('-1');
+    $("#payType").val('-1');
+    $("#deliveryType").val('-1');    
+    submitForm();
+});
