@@ -98,6 +98,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `payment_type` varchar(255) NOT NULL,
   `paypal_status` varchar(10) DEFAULT NULL,
   `alipay_status` varchar(10) DEFAULT NULL,
+  `order_status` tinyint(3) unsigned NOT NULL DEFAULT '10' COMMENT '订单状态(10进行中 20取消 21待取消 30已完成)',
   `total_amount` DOUBLE(16,6) DEFAULT 0,
   `vendor_share` DOUBLE(16,6) DEFAULT 0,
   `commission` DOUBLE(16,6) DEFAULT 0,
@@ -386,6 +387,7 @@ ALTER TABLE `vendors`
 CREATE TABLE `vendors_orders` (
   `id` int(10) UNSIGNED NOT NULL,
   `order_id` int(11) NOT NULL,
+  `parent_order_id` int(11) NOT NULL,
   `products` text NOT NULL,
   `date` int(10) UNSIGNED NOT NULL,
   `referrer` varchar(255) NOT NULL,

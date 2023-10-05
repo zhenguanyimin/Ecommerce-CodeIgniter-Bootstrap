@@ -36,10 +36,11 @@ class Checkout extends MY_Controller
                 $_POST['clean_referrer'] = cleanReferral($_POST['referrer']);
                 $_POST['user_id'] = isset($_SESSION['logged_user']) ? $_SESSION['logged_user'] : 0;
                 $orderId = $this->Public_model->setOrder($_POST);
-                if ($orderId != false) {
+                if (c != false) {
                     /*
                      * Save product orders in vendors profiles
                      */
+                    $_POST['parent_order_id '] =  $orderId;
                     $this->setVendorOrders();
                     $this->orderId = $orderId;
                     $this->setActivationLink();

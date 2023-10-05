@@ -22,6 +22,12 @@ class Orders extends VENDOR_Controller
     // 已发货
     const DELIVERED = 20;
     
+    // 未收货
+    const NOT_RECEIVED = 10;
+
+    // 已收货
+    const RECEIVED = 20;    
+    
     private $num_rows = 20;
 
     public function __construct()
@@ -71,7 +77,7 @@ class Orders extends VENDOR_Controller
     {
         $isValid = $this->validateExpress();
         if ($isValid === true) {
-            $_POST["delivery_status"] = DELIVERED;
+            $_POST["delivery_status"] = self::DELIVERED;
             $this->Orders_model->updateOrderDeliveryStatus($_POST);
             $this->session->set_flashdata('success', 'Changes are saved');
         } else {
@@ -79,6 +85,22 @@ class Orders extends VENDOR_Controller
             $this->session->set_flashdata('post', $_POST);
         }
         redirect('vendor/orders');        
+    }
+
+    public function orderReceipt()
+    {
+        echo 'orderReceipt\n';
+        $_POST["receipt_status"] = self::RECEIVED;
+        $_POST["order_id"] = $_GET["order_id"];
+        $pay_status_array =  $this->Orders_model->getOrderPayStatus($_POST["order_id"]);
+        $delivery_status_array = $this->Orders_model->getOrderDeliveryStatus($_POST["order_id"]);
+        if($pay_status_array['pay_status'] != self::PAYSTATUS_SUCCESS || $delivery_status_array['delivery_status'] != self::RECEIVED){
+            $this->session->set_flashdata('error', "订单未付款或未发货，确认收货有误");           
+        }
+        else{;
+            $this->Orders_model->updateOrderReceiptStatus($_POST);                
+        }
+        redirect('myaccount'); 
     }
     
     private function validateExpress()

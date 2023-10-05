@@ -1,5 +1,12 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+
+$orderStatus = array(
+    10 => "进行中",
+    20 => "取消",
+    21 => "待取消",
+    30 => "已完成",                        
+);
 ?>
 <div class="inner-nav">
     <div class="container">
@@ -7,6 +14,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     </div>
 </div>
 <div class="container user-page">
+    <?php if ($this->session->flashdata('error')) { ?>
+        <div class="alert alert-danger"><?= implode('<br>', $this->session->flashdata('error')) ?></div>
+    <?php } ?>      
     <div class="row">
         <div class="col-sm-4">
             <div class="loginmodal-container">
@@ -21,14 +31,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </form>
             </div>
         </div>
-        <div class="col-sm-8">
-            <?= lang('user_order_history') ?>
+    </div>  
+    <div class="row">
+        <div class="col-sm-12">
+            <div><b><?= lang('my_order') ?></b></div>
             <div class="table-responsive">
                 <table class="table table-condensed table-bordered table-striped">
                     <thead>
                         <tr>
                             <th><?= lang('usr_order_id') ?></th>
                             <th><?= lang('usr_order_date') ?></th>
+                            <th><?= lang('order_status') ?></th>                            
                             <th><?= lang('usr_order_address') ?></th>
                             <th><?= lang('usr_order_phone') ?></th>
                             <th><?= lang('user_order_products') ?></th>
@@ -41,7 +54,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 ?>
                                 <tr>
                                     <td><?= $order['order_id'] ?></td>
-                                    <td><?= date('d.m.Y', $order['date']) ?></td>
+                                    <td><?= date('Y-m-d H:i:s', $order['date']) ?></td>
+                                    <td><span class="<?= $order['pay_status'] == 30 ? "ant-tag":"ant-tag-green"?>"><?= array_key_exists($order['order_status'], $orderStatus)? $orderStatus[$order['order_status']]:"进行中"?></span></td>
                                     <td><?= $order['address'] ?></td>
                                     <td><?= $order['phone'] ?></td>
                                     <td>    
@@ -57,6 +71,42 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                     <?= base_url($product['product_info']['url']) ?> 
                                                 </a> 
                                                 <div style=" background-color: #f1f1f1; border-radius: 2px; padding: 2px 5px;"><b><?= lang('user_order_quantity') ?></b> <?= $product['product_quantity']; ?></div>
+                                                <div style=" background-color: #f1f1f1; border-radius: 2px; padding: 2px 5px;">
+                                                <table class="table table-condensed table-bordered table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th><b><?= lang('express_company') ?></b></th>
+                                                            <th><b><?= lang('express_no') ?></b></th>
+                                                            <th><b><?= lang('status') ?></b></th>
+                                                            <th class="text-right"><i class="fa fa-list" aria-hidden="true"></i>操作</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <td><?=$order['express_company'] ?></td>
+                                                    <td><?=$order['express_no'] ?></td>
+                                                    <td>                                                                                                        
+                                                        <p>
+                                                            <span>付款状态：</span>
+                                                            <span class="<?= $order['pay_status'] == 10 ? "ant-tag":"ant-tag-green"?>"><?= $order['pay_status'] == 10 ? "未付款":"已付款"?></span>
+                                                        </p>
+                                                        <p>
+                                                            <span>发货状态：</span>
+                                                            <span class="<?= $order['delivery_status'] == 10 ? "ant-tag":"ant-tag-green"?>"><?= $order['delivery_status'] == 10 ? "未发货":"已发货"?></span>
+                                                        </p>                        
+                                                        <p>
+                                                            <span>收货状态：</span>
+                                                            <span class="<?= $order['receipt_status'] == 10 ? "ant-tag":"ant-tag-green"?>"><?= $order['receipt_status'] == 10 ? "未收货":"已收货"?></span>
+                                                        </p> 
+                                                    </td>
+                                                    <td>
+                                                        <?php if($order['pay_status'] == 20 && $order['delivery_status'] == 20&& $order['receipt_status'] == 10){ ?>
+                                                            <a href="<?= base_url('/vendor/orders/receipt?order_id='. $order['child_order_id']) ?>" class="btn btn-sm btn-green show-more">确认收货</a>                                
+                                                        <?php }?>
+                                                    </td>
+                                                    </tbody>
+                                                </table>
+                                                </div>
+                                                <div style=" background-color: #f1f1f1; border-radius: 2px; padding: 2px 5px;"><b>商户:</b> <?= $order['vendor_name']; ?></div>
                                                 <div class="clearfix"></div>
                                             </div>
                                             <hr>
@@ -76,6 +126,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </table>
                 <?= $links_pagination ?>
             </div>
+        </div>
         </div>
     </div>
 </div>

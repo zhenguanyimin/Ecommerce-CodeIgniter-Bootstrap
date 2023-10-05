@@ -7,12 +7,13 @@ class Users extends MY_Controller
 
     private $registerErrors = array();
     private $user_id;
-    private $num_rows = 5;
+    private $num_rows = 20;
 
     public function __construct()
     {
         parent::__construct();
         $this->load->library('email');
+        $this->load->model(array('vendor/Orders_model'));
     }
 
     public function index()
@@ -26,7 +27,7 @@ class Users extends MY_Controller
             $result = $this->Public_model->checkPublicUserIsValid($_POST);
             if ($result !== false) {
                 $_SESSION['logged_user'] = $result; //id of user
-                redirect(LANG_URL . '/checkout');
+                redirect(LANG_URL . '/');
             } else {
                 $this->session->set_flashdata('userError', lang('wrong_user'));
             }
@@ -61,6 +62,10 @@ class Users extends MY_Controller
 
     public function myaccount($page = 0)
     {
+	if(!isset($_SESSION['logged_user'])){
+	    $this->session->set_flashdata('userErorr', 'you are login out,please login agian');
+	    redirect(LANG_URL . '/login');
+	}        
         if (isset($_POST['update'])) {
             $_POST['id'] = $_SESSION['logged_user'];
             $count_emails = $this->Public_model->countPublicUsersWithEmail($_POST['email'], $_POST['id']);
@@ -76,7 +81,7 @@ class Users extends MY_Controller
         $head['keywords'] = str_replace(" ", ",", $head['title']);
         $data['userInfo'] = $this->Public_model->getUserProfileInfo($_SESSION['logged_user']);
         $rowscount = $this->Public_model->getUserOrdersHistoryCount($_SESSION['logged_user']);
-        $data['orders_history'] = $this->Public_model->getUserOrdersHistory($_SESSION['logged_user'], $this->num_rows, $page);
+        $data['orders_history'] = $this->Public_model->getUserOrdersHistory($_SESSION['logged_user'], $this->num_rows, $page);      
         $data['links_pagination'] = pagination('myaccount', $rowscount, $this->num_rows, 2);
         $this->render('user', $head, $data);
     }

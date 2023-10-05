@@ -379,6 +379,7 @@ class Public_model extends CI_Model
         /*
          * Loop products and check if its from vendor - save order for him
          */
+        echo $parent_order_id.'\n';
         foreach ($post['products'] as $product_id => $product_quantity) {
             $productInfo = $this->getOneProduct($product_id);
             if ($productInfo['vendor_id'] > 0) {
@@ -406,7 +407,8 @@ class Public_model extends CI_Model
                             'alipay_status' => @$post['alipay_status'],                    
                             'discount_code' => @$post['discountCode'],
                             'vendor_id' => $productInfo['vendor_id'],
-                            'customer_id' => @$post['user_id']
+                            'customer_id' => @$post['user_id'],
+                            'parent_order_id' => $post['parent_order_id ']
                         ))) {
                     log_message('error', print_r($this->db->error(), true));
                 }
@@ -745,10 +747,14 @@ class Public_model extends CI_Model
         $this->db->where('user_id', $userId);
         $this->db->order_by('id', 'DESC');
         $this->db->select('orders.*, orders_clients.first_name,'
-                . ' orders_clients.last_name, orders_clients.email, orders_clients.phone, '
-                . 'orders_clients.address, orders_clients.city, orders_clients.post_code,'
-                . ' orders_clients.notes, discount_codes.type as discount_type, discount_codes.amount as discount_amount');
+                . ' orders_clients.last_name, orders_clients.email, orders_clients.phone,'
+                . ' orders_clients.address, orders_clients.city, orders_clients.post_code,'
+                . ' orders_clients.notes, discount_codes.type as discount_type, discount_codes.amount as discount_amount,'
+                . ' vendors_orders.pay_status, vendors_orders.delivery_status, vendors_orders.receipt_status,vendors_orders.order_status,'
+                . ' vendors_orders.order_id as child_order_id, vendors_orders.vendor_id, vendors_orders.express_company, vendors_orders.express_no, vendors.name as vendor_name');
         $this->db->join('orders_clients', 'orders_clients.for_id = orders.id', 'inner');
+        $this->db->join('vendors_orders', 'vendors_orders.parent_order_id = orders.order_id', 'inner'); 
+         $this->db->join('vendors', 'vendors_orders.vendor_id = vendors.id', 'inner');        
         $this->db->join('discount_codes', 'discount_codes.code = orders.discount_code', 'left');
         $result = $this->db->get('orders', $limit, $page);
         $result = $result->result_array();

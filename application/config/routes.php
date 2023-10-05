@@ -151,6 +151,7 @@ $route['vendor/orders'] = "vendor/Orders";
 $route['(\w{2})/vendor/orders'] = "vendor/Orders";
 $route['vendor/delivery'] = "vendor/Delivery";
 $route['(\w{2})/vendor/delivery'] = "vendor/Delivery";
+$route['vendor/orders/receipt'] = "vendor/Orders/orderReceipt";
 $route['vendor/uploadOthersImages'] = "vendor/AddProduct/do_upload_others_images";
 $route['vendor/loadOthersImages'] = "vendor/AddProduct/loadOthersImages";
 $route['vendor/removeSecondaryImage'] = "vendor/AddProduct/removeSecondaryImage";

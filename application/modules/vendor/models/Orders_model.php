@@ -2,7 +2,18 @@
 
 class Orders_model extends CI_Model
 {
+    // 进行中
+    const NORMAL = 10;
 
+    // 已取消
+    const CANCELLED = 20;
+
+    // 待取消
+    const APPLY_CANCEL = 21;
+
+    // 已完成
+    const COMPLETED = 30;
+    
     public function __construct()
     {
         parent::__construct();
@@ -155,6 +166,19 @@ class Orders_model extends CI_Model
         }
     }
     
+    public function updateOrderReceiptStatus($post)
+    {
+        $this->db->where('order_id', $post["order_id"]);
+        if (!$this->db->update('vendors_orders', array(
+                    'receipt_status' => $post['receipt_status'],
+                    'order_status' => self::COMPLETED,            
+                    'receipt_time' => time()
+                ))) {
+            log_message('error', print_r($this->db->error(), true));
+            show_error(lang('database_error'));
+        }
+    }    
+    
     public function getOrderPayStatus($order_id)
     {
         $this->db->where('order_id', $order_id);
@@ -162,5 +186,44 @@ class Orders_model extends CI_Model
         $this->db->limit(1);
         $result1 = $this->db->get('vendors_orders');
         return $result1->row_array();
+    }
+    
+    public function getOrderDeliveryStatus($order_id)
+    {
+        $this->db->where('order_id', $order_id);
+        $this->db->select('delivery_status');
+        $this->db->limit(1);
+        $result1 = $this->db->get('vendors_orders');
+        return $result1->row_array();
+    }
+    
+    public function getUserOrdersHistoryCount($userId)
+    {
+        $this->db->where('customer_id', $userId);
+        return $this->db->count_all_results('vendors_orders');
+    }
+
+    public function getUserOrdersHistory($userId, $limit, $page)
+    {
+        $this->db->where('customer_id', $userId);
+        $this->db->order_by('id', 'DESC');
+        $this->db->select('vendors_orders.*, vendors_orders_clients.first_name,'
+                . ' vendors_orders_clients.last_name, vendors_orders_clients.email, vendors_orders_clients.phone, '
+                . 'vendors_orders_clients.address, vendors_orders_clients.city, vendors_orders_clients.post_code,'
+                . ' vendors_orders_clients.notes, discount_codes.type as discount_type, discount_codes.amount as discount_amount');
+        $this->db->join('vendors_orders_clients', 'vendors_orders_clients.for_id = vendors_orders.id', 'inner');
+        $this->db->join('discount_codes', 'discount_codes.code = vendors_orders.discount_code', 'left');
+        $result = $this->db->get('vendors_orders', $limit, $page);
+        $result = $result->result_array();
+        if(!count($result)) return $result;
+        
+        foreach($result as $k => $v) {
+            $result[$k] = array_map(function($v) {
+                $d = $this->encryption->decrypt($v);
+                return $d !== false ? $d : $v;
+            }, $v);
+        }
+
+        return $result;
     }    
 }

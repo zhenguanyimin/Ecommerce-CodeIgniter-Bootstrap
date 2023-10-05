@@ -108,7 +108,7 @@
                 ?>
                 <tr>
                     <td><?= $order['order_id'] ?></td>
-                    <td><?= date('d.m.Y', $order['date']) ?></td>
+                    <td><?= date('Y-m-d H:i:s', $order['date']) ?></td>
                     <td><?= $order['payment_type'] ?></td>
                     <td><?= $order['phone'] ?></td>
                     <td>
