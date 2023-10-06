@@ -143,6 +143,7 @@ class Products_model extends CI_Model
                         'virtual_products' => $post['virtual_products'],
                         'folder' => $post['folder'],
                         'brand_id' => $post['brand_id'],
+                        'vendor_id' => 5,
                         'time' => time()
                     ))) {
                 log_message('error', print_r($this->db->error(), true));

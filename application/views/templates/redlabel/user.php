@@ -61,6 +61,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </thead>
                     <tbody>
                         <?php
+                        echo "orders_history".count($orders_history);
                         if (!empty($orders_history)) {
                             foreach ($orders_history as $order) {
                                 ?>

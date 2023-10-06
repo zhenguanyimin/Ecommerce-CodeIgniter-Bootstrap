@@ -2,7 +2,7 @@
 
 class Vendorprofile_model extends CI_Model
 {
-        // 进行中
+    // 进行中
     const NORMAL = 10;
 
     // 已取消
