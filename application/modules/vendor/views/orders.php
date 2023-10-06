@@ -20,6 +20,11 @@
     $deliveryTypes = array(
         -1 => "全部",
         10 => "快递配送",
+    );
+    
+    $payTypeEnum = array(
+        10 => "余额支付",
+        20 => "支付宝支付",
     );     
 ?>
 <div class="table-operator">
@@ -109,7 +114,7 @@
                 <tr>
                     <td><?= $order['order_id'] ?></td>
                     <td><?= date('Y-m-d H:i:s', $order['date']) ?></td>
-                    <td><?= $order['payment_type'] ?></td>
+                    <td><?= array_key_exists($order['pay_type'], $payTypeEnum)? $payTypeEnum[$order['pay_type']]:"未知"?></td>
                     <td><?= $order['phone'] ?></td>
                     <td>
                         <p>

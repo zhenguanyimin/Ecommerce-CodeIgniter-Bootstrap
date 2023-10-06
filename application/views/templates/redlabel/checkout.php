@@ -126,7 +126,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <th><?= lang('product') ?></th>
                                     <th><?= lang('title') ?></th>
                                     <th><?= lang('quantity') ?></th>
-                                    <th><?= lang('price') ?></th>
+                                    <th><?= lang('unit_price') ?></th>
                                     <th><?= lang('total') ?></th>
                                 </tr>
                             </thead>

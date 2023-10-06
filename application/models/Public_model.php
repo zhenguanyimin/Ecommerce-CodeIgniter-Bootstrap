@@ -7,6 +7,11 @@ class Public_model extends CI_Model
     private $showInSliderProducts;
     private $multiVendor;
     private $vendorOrderId = 1233;
+    // 待支付
+    const PAYSTATUS_PENDING = 10;
+
+    // 支付成功
+    const PAYSTATUS_SUCCESS = 20;   
     
     public function __construct()
     {
@@ -379,7 +384,6 @@ class Public_model extends CI_Model
         /*
          * Loop products and check if its from vendor - save order for him
          */
-        echo $parent_order_id.'\n';
         foreach ($post['products'] as $product_id => $product_quantity) {
             $productInfo = $this->getOneProduct($product_id);
             if ($productInfo['vendor_id'] > 0) {
@@ -392,6 +396,16 @@ class Public_model extends CI_Model
                 $post['order_id'] = $rr['order_id'] + 1;
                 $this->vendorOrderId = $post['order_id'];
 
+                /*calculate commission and save*/
+                echo $productInfo['price'].$product_quantity.$_POST['discountAmount'];
+                $total_amount = $productInfo['price']*$product_quantity*1.0;
+//                $total_amount = $total_amount - $_POST['discountAmount'];
+                $commission = $total_amount*($this->Home_admin_model->getValueStore('commissonRate')/100);
+                $vendor_share = $total_amount-$commission;
+                $total_amount = number_format( $total_amount, 6);
+                $vendor_share = number_format( $vendor_share, 6);
+                $commission = number_format( $commission, 6);                
+                
                 unset($post['id'], $post['quantity']);
                 $post['date'] = time();
                 $post['products'] = serialize(array($product_id => $product_quantity));
@@ -404,7 +418,10 @@ class Public_model extends CI_Model
                             'clean_referrer' => $post['clean_referrer'],
                             'payment_type' => $post['payment_type'],
                             'paypal_status' => @$post['paypal_status'],
-                            'alipay_status' => @$post['alipay_status'],                    
+                            'alipay_status' => @$post['alipay_status'],
+                            'total_amount' => $total_amount,
+                            'vendor_share' => $vendor_share,
+                            'commission' => $commission,                    
                             'discount_code' => @$post['discountCode'],
                             'vendor_id' => $productInfo['vendor_id'],
                             'customer_id' => @$post['user_id'],
@@ -603,15 +620,18 @@ class Public_model extends CI_Model
     public function changeAlipayOrderStatus($order_id, $status)
     {
         $processed = 0;
+        $pay_status = self::PAYSTATUS_PENDING;
         if ($status == 'canceled') {
             $processed = 2;
         }
         else if($status == 'payed'){
-            $processed = 1;            
+            $processed = 1;
+            $pay_status = self::PAYSTATUS_PENDING;            
         }
         $this->db->where('order_id', $order_id);
         if (!$this->db->update('orders', array(
                     'alipay_status' => $status,
+                    'pay_status' => $pay_status,
                     'processed' => $processed
                 ))) {
             log_message('error', print_r($this->db->error(), true));
@@ -742,7 +762,7 @@ class Public_model extends CI_Model
         return $this->db->count_all_results('orders');
     }
 
-    public function getUserOrdersHistory($userId, $limit, $page)
+    public function getUserOrdersHistory($userId, $page)
     {
         $this->db->where('user_id', $userId);
         $this->db->order_by('id', 'DESC');
@@ -751,12 +771,13 @@ class Public_model extends CI_Model
                 . ' orders_clients.address, orders_clients.city, orders_clients.post_code,'
                 . ' orders_clients.notes, discount_codes.type as discount_type, discount_codes.amount as discount_amount,'
                 . ' vendors_orders.pay_status, vendors_orders.delivery_status, vendors_orders.receipt_status,vendors_orders.order_status,'
-                . ' vendors_orders.order_id as child_order_id, vendors_orders.vendor_id, vendors_orders.express_company, vendors_orders.express_no, vendors.name as vendor_name');
+                . ' vendors_orders.order_id as child_order_id, vendors_orders.vendor_id, vendors_orders.express_company, vendors_orders.express_no,'
+                . ' vendors_orders.products as vendor_products, vendors_orders.pay_type,  vendors_orders.total_amount, vendors.name as vendor_name');
         $this->db->join('orders_clients', 'orders_clients.for_id = orders.id', 'inner');
         $this->db->join('vendors_orders', 'vendors_orders.parent_order_id = orders.order_id', 'inner'); 
          $this->db->join('vendors', 'vendors_orders.vendor_id = vendors.id', 'inner');        
         $this->db->join('discount_codes', 'discount_codes.code = orders.discount_code', 'left');
-        $result = $this->db->get('orders', $limit, $page);
+        $result = $this->db->get('orders', $page);
         $result = $result->result_array();
         if(!count($result)) return $result;
         

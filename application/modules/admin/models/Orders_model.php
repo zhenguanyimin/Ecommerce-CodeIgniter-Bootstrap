@@ -2,7 +2,18 @@
 
 class Orders_model extends CI_Model
 {
+    // 进行中
+    const NORMAL = 10;
 
+    // 已取消
+    const CANCELLED = 20;
+
+    // 待取消
+    const APPLY_CANCEL = 21;
+
+    // 已完成
+    const COMPLETED = 30;
+    
     public function __construct()
     {
         parent::__construct();
@@ -19,7 +30,7 @@ class Orders_model extends CI_Model
 
     public function getTotalAmount()
     {
-        $this->db->where('processed', 1);
+        $this->db->where('order_status', self::COMPLETED);
         $this->db->select_sum('total_amount', 'total');
         $query = $this->db->get('orders');
         $result = $query->row_array();
@@ -28,7 +39,7 @@ class Orders_model extends CI_Model
     
     public function getTotalVendorShare()
     {
-        $this->db->where('processed', 1);
+        $this->db->where('order_status', self::COMPLETED);
         $this->db->select_sum('vendor_share', 'total');
         $query = $this->db->get('orders');
         $result = $query->row_array();
@@ -37,7 +48,7 @@ class Orders_model extends CI_Model
 
     public function getTotalCommission()
     {
-        $this->db->where('processed', 1);
+        $this->db->where('order_status', self::COMPLETED);
         $this->db->select_sum('commission', 'total');
         $query = $this->db->get('orders');
         $result = $query->row_array();

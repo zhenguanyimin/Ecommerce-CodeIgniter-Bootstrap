@@ -89,7 +89,6 @@ class Orders extends VENDOR_Controller
 
     public function orderReceipt()
     {
-        echo 'orderReceipt\n';
         $_POST["receipt_status"] = self::RECEIVED;
         $_POST["order_id"] = $_GET["order_id"];
         $pay_status_array =  $this->Orders_model->getOrderPayStatus($_POST["order_id"]);

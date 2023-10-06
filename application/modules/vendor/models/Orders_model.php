@@ -30,7 +30,6 @@ class Orders_model extends CI_Model
     {
         // 设置订单类型条件
 //        $dataTypeFilter = $this->getFilterDataType($dataType);
-
         $this->db->where('vendor_id', $vendor_id);
         $this->db->order_by('id', 'DESC');
         $this->db->select('vendors_orders.*, vendors_orders_clients.first_name,'

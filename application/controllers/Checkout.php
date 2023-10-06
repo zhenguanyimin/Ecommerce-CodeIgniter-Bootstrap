@@ -36,7 +36,7 @@ class Checkout extends MY_Controller
                 $_POST['clean_referrer'] = cleanReferral($_POST['referrer']);
                 $_POST['user_id'] = isset($_SESSION['logged_user']) ? $_SESSION['logged_user'] : 0;
                 $orderId = $this->Public_model->setOrder($_POST);
-                if (c != false) {
+                if ($orderId != false) {
                     /*
                      * Save product orders in vendors profiles
                      */
@@ -131,11 +131,11 @@ class Checkout extends MY_Controller
             }
             $_SESSION['realShippingAmount'] = $this->realShippingAmount;
             $this->Public_model->updateOrderAmount($this->orderId, $total_amount, $vendor_share, $commission, $this->realShippingAmount);
-            $this->Public_model->updateVendorOrderAmount($total_amount, $vendor_share, $commission, $this->realShippingAmount);            
+//            $this->Public_model->updateVendorOrderAmount($total_amount, $vendor_share, $commission, $this->realShippingAmount);            
             redirect(LANG_URL . '/checkout/alipay');          
         }        
     }
-
+    
     private function userInfoValidate($post)
     {
         $errors = array();

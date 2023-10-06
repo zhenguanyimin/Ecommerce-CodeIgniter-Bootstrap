@@ -81,7 +81,7 @@ class Users extends MY_Controller
         $head['keywords'] = str_replace(" ", ",", $head['title']);
         $data['userInfo'] = $this->Public_model->getUserProfileInfo($_SESSION['logged_user']);
         $rowscount = $this->Public_model->getUserOrdersHistoryCount($_SESSION['logged_user']);
-        $data['orders_history'] = $this->Public_model->getUserOrdersHistory($_SESSION['logged_user'], $this->num_rows, $page);      
+        $data['orders_history'] = $this->Public_model->getUserOrdersHistory($_SESSION['logged_user'], $page);      
         $data['links_pagination'] = pagination('myaccount', $rowscount, $this->num_rows, 2);
         $this->render('user', $head, $data);
     }
