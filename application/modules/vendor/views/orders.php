@@ -28,11 +28,12 @@
     );     
 ?>
 <div class="table-operator">
-<form class="form-horizontal" method="GET" action="<?= base_url('vendor/orders') ?>" id="vendors-orders-search"/>
+<form class="form-horizontal" method="GET" action="<?= base_url('vendor/orders?queryOrderType='.$queryOrderType) ?>" id="vendors-orders-search"/>
     <div class="row">
         <div class="col-lg-4 col-md-6">
             <div class="form-group">
                 <label for="searchValue" title="关键词" class="">关键词</label>
+                <input type="hidden" name="queryOrderType" value="<?= $queryOrderType ?>">;
                 <select class="selectpicker" name="searchType" id="searchType">
                     <?php foreach ($searchTypes as $id => $name) { ?>
                         <option <?= isset($_GET['searchType']) && $_GET['searchType'] == $id ? 'selected' : '' ?> value="<?= $id ?>"><?= htmlspecialchars($name) ?></option>
@@ -235,7 +236,7 @@
                     <div class="form-group">请手动录入物流单号或快递单号</div>                        
                 </div>
                 <div class="modal-footer">
-                    <button type="button" onclick="location.href = '<?= base_url('vendor/orders') ?>';" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" onclick="location.href = '<?= base_url('vendor/orders?queryOrderType='.$queryOrderType) ?>';" class="btn btn-default" data-dismiss="modal">取消</button>
                     <button type="submit" name="submit" class="btn btn-primary">确定</button>
                 </div>
             </form>

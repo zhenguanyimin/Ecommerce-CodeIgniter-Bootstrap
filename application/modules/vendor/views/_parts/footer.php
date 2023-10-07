@@ -13,6 +13,24 @@
         removeSecondaryImage: '<?= base_url('vendor/removeSecondaryImage') ?>',
         changeVendorOrdersOrderStatus: '<?= base_url('vendor/changeOrderStatus') ?>'
     };
+    function show(parentid,childid) {
+        var parent = document.getElementById(parentid)
+        var child=document.getElementById(childid);
+        if (child.style.display === "none") {     
+            child.style.display = "";
+            if(parentid==="id_menu_realtime")
+            {
+                parent.innerHTML =  "<span style='font-weight:bold;font-size:15px;'>▼<?= lang('vendor_order_manage') ?></span>"
+            }
+        }
+        else{     
+            child.style.display = "none"; 
+            if(parentid==="id_menu_realtime")
+            {
+                parent.innerHTML = "<span style='font-weight:bold;font-size:15px;'>▶<?= lang('vendor_order_manage') ?></span>"
+            }		   
+        }
+    }    
 </script>
 <script src="<?= base_url('assets/js/vendors.js') ?>"></script>
 </body>

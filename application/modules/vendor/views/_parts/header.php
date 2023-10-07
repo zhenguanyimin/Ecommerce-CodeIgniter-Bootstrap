@@ -20,6 +20,17 @@
         <![endif]-->
     </head>
     <body>
+<?php       
+    $queryOrderTypes = array(
+        "所有订单" => -1,
+        "待发货" => 10,
+        "待收货" => 20,
+        "未支付" => 30,
+        "已完成" => 40,                        
+        "已取消" => 50,
+        "售后管理" => 60,
+    );
+?>        
         <div id="wrapper">
             <div id="content">
                 <nav class="navbar navbar-blue">
@@ -64,21 +75,62 @@
                                         <span class="hide-menu"><?= lang('vendor_products') ?></span>
                                     </a>
                                 </li>
-                                <li>                                
-                                    <span style="font-weight:bold;font-size:15px;"><?= lang('vendor_order_manage') ?></span>                               
-                                </li>
                                 <li>
-                                    <a href="<?= LANG_URL . '/vendor/orders' ?>" aria-expanded="false">
-                                        <i class="mdi mdi-cart-plus"></i>                                         
-                                        <span class="hide-menu"><?= lang('vendor_orders') ?></span>
-                                    </a>                               
-                                </li>
-                                <li>
-                                    <a href="<?= LANG_URL . '/vendor/order/delivery' ?>" aria-expanded="false">
-                                        <i class="mdi mdi-cart-plus"></i>                                        
-                                        <span class="hide-menu"><?= lang('vendor_order_delivery') ?></span>
-                                    </a>                               
-                                </li>                                
+                                    <ul  id="orderMngList">
+                                        <div id="realtime" onclick="javascript:show('id_menu_realtime','child_realtime')">
+                                            <li>
+                                                <a id="id_menu_realtime">
+                                                    <span style="font-weight:bold;font-size:15px;">▼<?= lang('vendor_order_manage') ?></span>
+                                                </a>
+                                            </li>
+                                        </div>                                    
+                                        <div id="child_realtime"> 
+                                            <li>
+                                                <a href="<?= LANG_URL . '/vendor/orders?queryOrderType='.$queryOrderTypes["所有订单"] ?>" aria-expanded="false">
+                                                    <i class="mdi"></i>
+                                                    <span class="hide-menu"><?= lang('vendor_orders') ?></span>
+                                                </a>                               
+                                            </li>
+                                            <li>
+                                                <a href="<?= LANG_URL . '/vendor/orders?queryOrderType='.$queryOrderTypes["待发货"] ?>" aria-expanded="false">
+                                                    <i class="mdi"></i>
+                                                    <span class="hide-menu"><?= lang('vendor_order_delivery') ?></span>
+                                                </a>                               
+                                            </li>
+                                            <li>
+                                                <a href="<?= LANG_URL . '/vendor/orders?queryOrderType='.$queryOrderTypes["待收货"] ?>" aria-expanded="false">
+                                                    <i class="mdi"></i>
+                                                    <span class="hide-menu"><?= lang('vendor_order_receipt') ?></span>
+                                                </a>                               
+                                            </li>
+                                            <li>
+                                                <a href="<?= LANG_URL . '/vendor/orders?queryOrderType='.$queryOrderTypes["未支付"] ?>" aria-expanded="false">
+                                                    <i class="mdi"></i>
+                                                    <span class="hide-menu"><?= lang('vendor_order_unpay') ?></span>
+                                                </a>                               
+                                            </li> 
+                                            <li>
+                                                <a href="<?= LANG_URL . '/vendor/orders?queryOrderType='.$queryOrderTypes["已完成"] ?>" aria-expanded="false">
+                                                    <i class="mdi"></i>
+                                                    <span class="hide-menu"><?= lang('vendor_order_completed') ?></span>
+                                                </a>                               
+                                            </li> 
+                                            <li>
+                                                <a href="<?= LANG_URL . '/vendor/orders?queryOrderType='.$queryOrderTypes["已取消"] ?>" aria-expanded="false">
+                                                    <i class="mdi"></i>
+                                                    <span class="hide-menu"><?= lang('vendor_order_canced') ?></span>
+                                                </a>                               
+                                            </li>
+                                            <li>
+                                                <a href="<?= LANG_URL . '/vendor/orders?queryOrderType='.$queryOrderTypes["售后管理"] ?>" aria-expanded="false">
+                                                    <i class="mdi"></i>
+                                                    <span class="hide-menu"><?= lang('vendor_order_aftersales') ?></span>
+                                                </a>                               
+                                            </li>                                            
+                                        </div>                                                                                                           
+                                        </li>                                         
+                                    </ul>                                     
+                                </li>                         
                             </ul>
                         </div>
                         

@@ -85,8 +85,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             <span class="<?= $order['receipt_status'] == 10 ? "ant-tag":"ant-tag-green"?>"><?= $order['receipt_status'] == 10 ? "未收货":"已收货"?></span>
                                         </p>        
                                     </td>                                    
-                                    <td><?= $order['express_company'] ?></td>
-                                    <td><?= $order['express_no'] ?></td>
+                                    <td><?= $order['express_company'] == ""? "无": $order['express_no'] ?></td>
+                                    <td><?= $order['express_no'] == ""? "无": $order['express_no']?></td>
                                     <td><?= $order['address'] ?></td>
                                     <td><?= $order['phone'] ?></td>
                                     <td><?= $order['vendor_name'] ?></td>
@@ -112,9 +112,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         ?>
                                     </td>
                                     <td>
+<!--                                    <?php if($order['pay_status'] == 10 && $order['delivery_status'] == 10&& $order['receipt_status'] == 10){ ?>
+                                        <a href="<?= base_url('/checkout') ?>" class="btn btn-sm btn-green show-more">支付</a>
+                                    <?php }?>                                          -->
                                     <?php if($order['pay_status'] == 20 && $order['delivery_status'] == 20&& $order['receipt_status'] == 10){ ?>
                                         <a href="<?= base_url('/vendor/orders/receipt?order_id='. $order['child_order_id']) ?>" class="btn btn-sm btn-green show-more">确认收货</a>
-                                    <?php }?>
+                                    <?php }?>                                      
                                      </td>                                    
                                 </tr>
                                 <?php

@@ -140,3 +140,12 @@ table.table td, table.table th {padding: 20px !important;}
 
 .locale-container {display: none;}
 footer {width:100%; position:absolute;bottom:0;left:0; }
+
+#orderMngList li
+  {
+    text-decoration: none;
+    list-style: none;
+    display:block;	
+    margin:1px;
+    text-align:left;
+  }

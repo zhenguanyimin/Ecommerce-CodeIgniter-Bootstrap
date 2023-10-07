@@ -26,7 +26,26 @@ class Orders extends VENDOR_Controller
     const NOT_RECEIVED = 10;
 
     // 已收货
-    const RECEIVED = 20;    
+    const RECEIVED = 20;
+    
+    //订单类型   
+    const QUERY_ORDER_TYPE_ALL = -1;
+    const QUERY_ORDER_TYPE_DELIVERY = 10;
+    const QUERY_ORDER_TYPE_RECEIPT = 20;
+    const QUERY_ORDER_TYPE_UNPAY = 30;
+    const QUERY_ORDER_TYPE_COMPLETED = 40;
+    const QUERY_ORDER_TYPE_CANCELED = 50;
+    const QUERY_ORDER_TYPE_AFTERSALES = 60;
+    
+    const QueryOrderTypeDesc = array(
+        self::QUERY_ORDER_TYPE_ALL => "所有订单" ,
+        self::QUERY_ORDER_TYPE_DELIVERY => "待发货" ,
+        self::QUERY_ORDER_TYPE_RECEIPT => "待收货" ,
+        self::QUERY_ORDER_TYPE_UNPAY => "未支付" ,
+        self::QUERY_ORDER_TYPE_COMPLETED => "已完成" ,                        
+        self::QUERY_ORDER_TYPE_CANCELED => "已取消" ,
+        self::QUERY_ORDER_TYPE_AFTERSALES => "售后管理",     
+    );
     
     private $num_rows = 20;
 
@@ -41,8 +60,9 @@ class Orders extends VENDOR_Controller
 
         $data = array();
         $head = array();
-        $head['title'] = lang('vendor_orders');
-        $head['description'] = lang('vendor_orders');
+        $queryOrderType = $_GET["queryOrderType"];
+        $head['title'] = self::QueryOrderTypeDesc[$queryOrderType];
+        $head['description'] = self::QueryOrderTypeDesc[$queryOrderType];
         $head['keywords'] = '';
         if (isset($_POST['express_no'])) {
             $this->orderDelivery();
@@ -53,6 +73,7 @@ class Orders extends VENDOR_Controller
         $rowscount = $this->Orders_model->ordersCount($this->vendor_id);
         $data['orders'] = $this->Orders_model->orders($this->num_rows, $page, $_GET, $this->vendor_id);
         $data['expresses'] = $this->Public_model->getAllExpress();
+        $data['queryOrderType'] = $queryOrderType;
         $this->load->view('_parts/header', $head);
         $this->load->view('orders', $data);
         $this->load->view('_parts/footer');
