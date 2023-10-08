@@ -116,6 +116,11 @@ $route['myaccount/(:num)'] = "Users/myaccount/$1";
 $route['(\w{2})/myaccount'] = "Users/myaccount";
 $route['(\w{2})/myaccount/(:num)'] = "Users/myaccount/$2";
 
+$route['userorders'] = "Users/userOrders";
+$route['userorders/(:num)'] = "Users/userOrders/$1";
+$route['(\w{2})/userorders'] = "Users/userOrders";
+$route['(\w{2})/userorders/(:num)'] = "Users/userOrders/$2";
+
 // Logout Profiles Public Users Page
 $route['logout'] = "Users/logout";
 $route['(\w{2})/logout'] = "Users/logout";

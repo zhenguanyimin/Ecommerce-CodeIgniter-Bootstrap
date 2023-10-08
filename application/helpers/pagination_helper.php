@@ -6,6 +6,7 @@ if (!defined('BASEPATH')) {
 
 function pagination($url, $rowscount, $per_page, $segment = 2)
 {
+//    echo $per_page;
     $ci = & get_instance();
     $ci->load->library('pagination');
 

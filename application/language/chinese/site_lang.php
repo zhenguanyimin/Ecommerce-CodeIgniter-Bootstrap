@@ -259,5 +259,5 @@ $lang['usr_order_phone'] = '电话';
 $lang['product_detail'] = '产品详情';
 $lang['user_order_products'] = '所有产品';
 $lang['user_order_quantity'] = '数量:';
-$lang['usr_no_orders'] = '你还没有购买任何商品';
+$lang['usr_no_orders'] = '无记录';
 $lang['social_share'] = '分享';

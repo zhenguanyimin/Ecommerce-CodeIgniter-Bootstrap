@@ -7,8 +7,18 @@ class Users extends MY_Controller
 
     private $registerErrors = array();
     private $user_id;
-    private $num_rows = 20;
+    private $num_rows = 5;
 
+    const QueryOrderTypeDesc = array(
+        -1 => "所有订单" ,
+        10 => "待发货" ,
+        20 => "待收货" ,
+        30 => "未支付" ,
+        40 => "已完成" ,                        
+        50 => "已取消" ,
+        60 => "售后管理",     
+    );
+        
     public function __construct()
     {
         parent::__construct();
@@ -79,13 +89,32 @@ class Users extends MY_Controller
         $head['title'] = lang('my_acc');
         $head['description'] = lang('my_acc');
         $head['keywords'] = str_replace(" ", ",", $head['title']);
-        $data['userInfo'] = $this->Public_model->getUserProfileInfo($_SESSION['logged_user']);
-        $rowscount = $this->Public_model->getUserOrdersHistoryCount($_SESSION['logged_user']);
-        $data['orders_history'] = $this->Public_model->getUserOrdersHistory($_SESSION['logged_user'], $page);      
-        $data['links_pagination'] = pagination('myaccount', $rowscount, $this->num_rows, 2);
+        $data['userInfo'] = $this->Public_model->getUserProfileInfo($_SESSION['logged_user']);    
+        $data['links_pagination'] = pagination('myaccount', 5, 5, 2);
         $this->render('user', $head, $data);
     }
 
+    public function userOrders($page = 0)
+    {
+	if(!isset($_SESSION['logged_user'])){
+	    $this->session->set_flashdata('userErorr', 'you are login out,please login agian');
+	    redirect(LANG_URL . '/login');
+	}        
+
+        $head = array();
+        $data = array();
+        $queryOrderType = $_GET["queryOrderType"];
+        $head['title'] = self::QueryOrderTypeDesc[$queryOrderType];
+        $head['description'] = self::QueryOrderTypeDesc[$queryOrderType];
+        $head['keywords'] = str_replace(" ", ",", $head['title']);
+        $data['userInfo'] = $this->Public_model->getUserProfileInfo($_SESSION['logged_user']);
+        $rowscount = $this->Public_model->getUserOrdersHistoryCount($_SESSION['logged_user']);
+        $data['orders_history'] = $this->Public_model->getUserOrdersHistory($_SESSION['logged_user'], $_GET, $page);
+        $url = 'userorders?queryOrderType='.$queryOrderType;
+        $data['links_pagination'] = pagination($url, $rowscount, $this->num_rows, 2);
+        $this->render('user_orders', $head, $data);
+    }
+    
     public function logout()
     {
         unset($_SESSION['logged_user']);

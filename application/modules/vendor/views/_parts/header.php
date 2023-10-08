@@ -76,7 +76,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <ul  id="orderMngList">
+                                    <ul id="orderMngList">
                                         <div id="realtime" onclick="javascript:show('id_menu_realtime','child_realtime')">
                                             <li>
                                                 <a id="id_menu_realtime">
@@ -85,43 +85,43 @@
                                             </li>
                                         </div>                                    
                                         <div id="child_realtime"> 
-                                            <li>
+                                            <li class=<?= isset($_GET["queryOrderType"])&&($_GET["queryOrderType"] == $queryOrderTypes["所有订单"])? "active":"" ?>>
                                                 <a href="<?= LANG_URL . '/vendor/orders?queryOrderType='.$queryOrderTypes["所有订单"] ?>" aria-expanded="false">
                                                     <i class="mdi"></i>
                                                     <span class="hide-menu"><?= lang('vendor_orders') ?></span>
                                                 </a>                               
                                             </li>
-                                            <li>
+                                            <li class=<?= isset($_GET["queryOrderType"])&&($_GET["queryOrderType"] == $queryOrderTypes["待发货"])? "active":"" ?>>
                                                 <a href="<?= LANG_URL . '/vendor/orders?queryOrderType='.$queryOrderTypes["待发货"] ?>" aria-expanded="false">
                                                     <i class="mdi"></i>
                                                     <span class="hide-menu"><?= lang('vendor_order_delivery') ?></span>
                                                 </a>                               
                                             </li>
-                                            <li>
+                                            <li class=<?= isset($_GET["queryOrderType"])&&($_GET["queryOrderType"] == $queryOrderTypes["待收货"])? "active":"" ?>>
                                                 <a href="<?= LANG_URL . '/vendor/orders?queryOrderType='.$queryOrderTypes["待收货"] ?>" aria-expanded="false">
                                                     <i class="mdi"></i>
                                                     <span class="hide-menu"><?= lang('vendor_order_receipt') ?></span>
                                                 </a>                               
                                             </li>
-                                            <li>
+                                            <li class=<?= isset($_GET["queryOrderType"])&&($_GET["queryOrderType"] == $queryOrderTypes["未支付"])? "active":"" ?>>
                                                 <a href="<?= LANG_URL . '/vendor/orders?queryOrderType='.$queryOrderTypes["未支付"] ?>" aria-expanded="false">
                                                     <i class="mdi"></i>
                                                     <span class="hide-menu"><?= lang('vendor_order_unpay') ?></span>
                                                 </a>                               
                                             </li> 
-                                            <li>
+                                            <li class=<?= isset($_GET["queryOrderType"])&&($_GET["queryOrderType"] == $queryOrderTypes["已完成"])? "active":"" ?>>
                                                 <a href="<?= LANG_URL . '/vendor/orders?queryOrderType='.$queryOrderTypes["已完成"] ?>" aria-expanded="false">
                                                     <i class="mdi"></i>
                                                     <span class="hide-menu"><?= lang('vendor_order_completed') ?></span>
                                                 </a>                               
                                             </li> 
-                                            <li>
+                                            <li class=<?= isset($_GET["queryOrderType"])&&($_GET["queryOrderType"] == $queryOrderTypes["已取消"])? "active":"" ?>>
                                                 <a href="<?= LANG_URL . '/vendor/orders?queryOrderType='.$queryOrderTypes["已取消"] ?>" aria-expanded="false">
                                                     <i class="mdi"></i>
                                                     <span class="hide-menu"><?= lang('vendor_order_canced') ?></span>
                                                 </a>                               
                                             </li>
-                                            <li>
+                                            <li class=<?= isset($_GET["queryOrderType"])&&($_GET["queryOrderType"] == $queryOrderTypes["售后管理"])? "active":"" ?>>
                                                 <a href="<?= LANG_URL . '/vendor/orders?queryOrderType='.$queryOrderTypes["售后管理"] ?>" aria-expanded="false">
                                                     <i class="mdi"></i>
                                                     <span class="hide-menu"><?= lang('vendor_order_aftersales') ?></span>
