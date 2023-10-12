@@ -417,75 +417,88 @@ class Public_model extends CI_Model
         /*
          * Loop products and check if its from vendor - save order for him
          */
-        foreach ($post['products'] as $product_id => $product_quantity) {
-            $productInfo = $this->getOneProduct($product_id);
-            if ($productInfo['vendor_id'] > 0) {
+        if($post["order_source"] == 20){
+            $post['products'] = serialize([]);
+            return $this->insertVendorOrder($post); 
+        }
+        else{
+            $post["order_source"] = 10;
+            foreach ($post['products'] as $product_id => $product_quantity) {
+                $productInfo = $this->getOneProduct($product_id);
+                if ($productInfo['vendor_id'] > 0) {
+                    /*calculate commission and save*/
+                    echo $productInfo['price'].$product_quantity.$_POST['discountAmount'];
+                    $total_amount = $productInfo['price']*$product_quantity*1.0;
+    //                $total_amount = $total_amount - $_POST['discountAmount'];
+                    $commission = $total_amount*($this->Home_admin_model->getValueStore('commissonRate')/100);
+                    $vendor_share = $total_amount-$commission;
+                    $post["total_amount"] = number_format( $total_amount, 6);
+                    $post["vendor_share"] = number_format( $vendor_share, 6);
+                    $post["commission"] = number_format( $commission, 6);                
 
-                $q = $this->db->query('SELECT MAX(order_id) as order_id FROM vendors_orders');
-                $rr = $q->row_array();
-                if ($rr['order_id'] == 0) {
-                    $rr['order_id'] = 1233;
+                    unset($post['id'], $post['quantity']);
+                    $post['date'] = time();
+                    $post['products'] = serialize(array($product_id => $product_quantity));
+                    $post["productInfo"] = $productInfo;
+                    return $this->insertVendorOrder($post);
                 }
-                $post['order_id'] = $rr['order_id'] + 1;
-                $this->vendorOrderId = $post['order_id'];
-
-                /*calculate commission and save*/
-                echo $productInfo['price'].$product_quantity.$_POST['discountAmount'];
-                $total_amount = $productInfo['price']*$product_quantity*1.0;
-//                $total_amount = $total_amount - $_POST['discountAmount'];
-                $commission = $total_amount*($this->Home_admin_model->getValueStore('commissonRate')/100);
-                $vendor_share = $total_amount-$commission;
-                $total_amount = number_format( $total_amount, 6);
-                $vendor_share = number_format( $vendor_share, 6);
-                $commission = number_format( $commission, 6);                
-                
-                unset($post['id'], $post['quantity']);
-                $post['date'] = time();
-                $post['products'] = serialize(array($product_id => $product_quantity));
-                $this->db->trans_begin();
-                if (!$this->db->insert('vendors_orders', array(
-                            'order_id' => $post['order_id'],
-                            'products' => $post['products'],
-                            'date' => $post['date'],
-                            'referrer' => $post['referrer'],
-                            'clean_referrer' => $post['clean_referrer'],
-                            'payment_type' => $post['payment_type'],
-                            'paypal_status' => @$post['paypal_status'],
-                            'alipay_status' => @$post['alipay_status'],
-                            'total_amount' => $total_amount,
-                            'vendor_share' => $vendor_share,
-                            'commission' => $commission,                    
-                            'discount_code' => @$post['discountCode'],
-                            'vendor_id' => $productInfo['vendor_id'],
-                            'customer_id' => @$post['user_id'],
-                            'parent_order_id' => $post['parent_order_id ']
-                        ))) {
-                    log_message('error', print_r($this->db->error(), true));
-                }
-                $lastId = $this->db->insert_id();
-                if (!$this->db->insert('vendors_orders_clients', array(
-                            'for_id' => $lastId,
-                            'first_name' => $this->encryption->encrypt($post['first_name']),
-                            'last_name' => $this->encryption->encrypt($post['last_name']),
-                            'email' => $this->encryption->encrypt($post['email']),
-                            'phone' => $this->encryption->encrypt($post['phone']),
-                            'address' => $this->encryption->encrypt($post['address']),
-                            'city' => $this->encryption->encrypt($post['city']),
-                            'post_code' => $this->encryption->encrypt($post['post_code']),
-                            'notes' => $this->encryption->encrypt($post['notes'])
-                        ))) {
-                    log_message('error', print_r($this->db->error(), true));
-                }
-                if ($this->db->trans_status() === FALSE) {
-                    $this->db->trans_rollback();
-                    return false;
-                } else {
-                    $this->db->trans_commit();
-                }
-            }
+            }            
         }
     }
 
+    public function insertVendorOrder($post)
+    {
+        $q = $this->db->query('SELECT MAX(order_id) as order_id FROM vendors_orders');
+        $rr = $q->row_array();
+        if ($rr['order_id'] == 0) {
+            $rr['order_id'] = 1233;
+        }
+        $post['order_id'] = $rr['order_id'] + 1;
+        $this->vendorOrderId = $post['order_id'];
+        
+        $this->db->trans_begin();
+        if (!$this->db->insert('vendors_orders', array(
+                    'order_id' => $post['order_id'],
+                    'products' => $post['products'],
+                    'date' => $post['date'],
+                    'referrer' => $post['referrer'],
+                    'clean_referrer' => $post['clean_referrer'],
+                    'payment_type' => $post['payment_type'],
+                    'paypal_status' => @$post['paypal_status'],
+                    'alipay_status' => @$post['alipay_status'],
+                    'total_amount' => $post["total_amount"],
+                    'vendor_share' => $post["vendor_share"],
+                    'commission' => $post["commission"],
+                    'order_source' => $post["order_source"],
+                    'discount_code' => @$post['discountCode'],
+                    'vendor_id' => $post["productInfo"]['vendor_id'],
+                    'customer_id' => @$post['user_id'],
+                    'parent_order_id' => $post['parent_order_id']
+                ))) {
+            log_message('error', print_r($this->db->error(), true));
+        }
+        $lastId = $this->db->insert_id();
+        if (!$this->db->insert('vendors_orders_clients', array(
+                    'for_id' => $lastId,
+                    'first_name' => $this->encryption->encrypt($post['first_name']),
+                    'last_name' => $this->encryption->encrypt($post['last_name']),
+                    'email' => $this->encryption->encrypt($post['email']),
+                    'phone' => $this->encryption->encrypt($post['phone']),
+                    'address' => $this->encryption->encrypt($post['address']),
+                    'city' => $this->encryption->encrypt($post['city']),
+                    'post_code' => $this->encryption->encrypt($post['post_code']),
+                    'notes' => $this->encryption->encrypt($post['notes'])
+                ))) {
+            log_message('error', print_r($this->db->error(), true));
+        }
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            return false;
+        } else {
+            $this->db->trans_commit();
+        }
+    }
+    
     public function updateVendorOrderAmount($totalAmount, $vendorShare, $commission, $shippingAmount)
     {
         $this->db->where('order_id', $this->vendorOrderId);
@@ -498,7 +511,18 @@ class Public_model extends CI_Model
             log_message('error', print_r($this->db->error(), true));
         }
     }
-    
+
+    public function updateBondPayStatus($vendor_id, $status)
+    {
+        $this->db->where('id', $vendor_id);
+        if (!$this->db->update('vendors', array(
+                    'bond_status' => $status)
+                )) {
+            log_message('error', print_r($this->db->error(), true));
+            show_error(lang('database_error'));
+        }
+    }
+
     public function setActivationLink($link, $orderId)
     {
         $result = $this->db->insert('confirm_links', array('link' => $link, 'for_order' => $orderId));
@@ -650,7 +674,7 @@ class Public_model extends CI_Model
         }
     }
 
-    public function changeAlipayOrderStatus($order_id, $status)
+    public function changeAlipayPayStatus($order_id, $status)
     {
         $processed = 0;
         $pay_status = self::PAYSTATUS_PENDING;
@@ -659,8 +683,9 @@ class Public_model extends CI_Model
         }
         else if($status == 'payed'){
             $processed = 1;
-            $pay_status = self::PAYSTATUS_PENDING;            
+            $pay_status = self::PAYSTATUS_SUCCESS;            
         }
+        $this->db->trans_begin();
         $this->db->where('order_id', $order_id);
         if (!$this->db->update('orders', array(
                     'alipay_status' => $status,
@@ -669,8 +694,61 @@ class Public_model extends CI_Model
                 ))) {
             log_message('error', print_r($this->db->error(), true));
         }
+        
+        $orderIds = $this->queryChildOrders($order_id);
+        foreach($orderIds as $orderId){
+             $this->db->where('order_id', $orderId["order_id"]);
+            if (!$this->db->update('vendors_orders', array(
+                        'pay_status' => $pay_status
+                    ))) {
+                log_message('error', print_r($this->db->error(), true));
+            }            
+        }
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            return false;
+        } else {
+            $this->db->trans_commit();
+            return true;
+        }               
     }
 
+    public function queryChildOrders($order_id)
+    {
+        $this->db->where('parent_order_id', $order_id);
+        $this->db->select('order_id');
+        $result1 = $this->db->get('vendors_orders');
+        return $result1->result_array();        
+    }   
+    
+    public function changeAlipayOrderStatus($order_id, $status)
+    {
+        $this->db->trans_begin();        
+        $this->db->where('order_id', $order_id);
+        if (!$this->db->update('orders', array(
+                    'order_status' => $status
+                ))) {
+            log_message('error', print_r($this->db->error(), true));
+        }
+        
+        $orderIds = $this->queryChildOrders($order_id);
+        foreach($orderIds as $orderId){
+            $this->db->where('order_id', $orderId["order_id"]);
+            if (!$this->db->update('vendors_orders', array(
+                        'order_status' => $status
+                    ))) {
+                log_message('error', print_r($this->db->error(), true));
+            }            
+        }
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            return false;
+        } else {
+            $this->db->trans_commit();
+            return true;
+        }                
+    }
+    
     public function updateOrderAmount($order_id, $totalAmount, $vendorShare, $commission, $shippingAmount)
     {
         $this->db->where('order_id', $order_id);

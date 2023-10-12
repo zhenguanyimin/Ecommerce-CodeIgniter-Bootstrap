@@ -69,7 +69,7 @@ class Orders extends VENDOR_Controller
         }
         if ($this->session->flashdata('post')) {
             $_POST = $this->session->flashdata('post');
-        }        
+        }      
         $rowscount = $this->Orders_model->ordersCount($this->vendor_id);
         $data['orders'] = $this->Orders_model->orders($this->num_rows, $page, $_GET, $this->vendor_id);
         $data['expresses'] = $this->Public_model->getAllExpress();

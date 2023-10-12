@@ -64,7 +64,13 @@ class Orders extends ADMIN_Controller
             $this->session->set_flashdata('alipay_visibility', 'Alipay Visibility Changed');
             $this->saveHistory('Change Alipay Visibility - ' . $_POST['alipay_visibility']);
             redirect('admin/orders?settings');
-        }        
+        }
+        if (isset($_POST['alipay_sandbox'])) {
+            $this->Home_admin_model->setValueStore('alipay_sandbox', $_POST['alipay_sandbox']);
+            $this->session->set_flashdata('alipay_sandbox', 'Alipay Sandbox Changed');
+            $this->saveHistory('Change Alipay Sandbox - ' . $_POST['alipay_sandbox']);
+            redirect('admin/orders?settings');
+        }         
         if (isset($_POST['iban'])) {
             $this->Orders_model->setBankAccountSettings($_POST);
             $this->session->set_flashdata('bank_account', 'Bank account settings saved');
@@ -76,7 +82,8 @@ class Orders extends ADMIN_Controller
         $data['shippingAmount'] = $this->Home_admin_model->getValueStore('shippingAmount');
         $data['shippingOrder'] = $this->Home_admin_model->getValueStore('shippingOrder');
         $data['cashondelivery_visibility'] = $this->Home_admin_model->getValueStore('cashondelivery_visibility');
-        $data['alipay_visibility'] = $this->Home_admin_model->getValueStore('alipay_visibility');        
+        $data['alipay_visibility'] = $this->Home_admin_model->getValueStore('alipay_visibility');
+        $data['alipay_sandbox'] = $this->Home_admin_model->getValueStore('alipay_sandbox');
         $data['bank_account'] = $this->Orders_model->getBankAccountSettings();
         $this->load->view('_parts/header', $head);
         $this->load->view('ecommerce/orders', $data);

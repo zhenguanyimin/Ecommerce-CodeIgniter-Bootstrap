@@ -66,6 +66,7 @@ class Vendorprofile_model extends CI_Model
     {
         $this->db->where('vendor_id', $vendor_id);   
         $this->db->where('order_status', self::COMPLETED);
+        $this->db->where('order_source !=', 20);
         $this->db->select_sum('total_amount', 'total');
         $query = $this->db->get('vendors_orders');
         $result = $query->row_array();
@@ -91,6 +92,18 @@ class Vendorprofile_model extends CI_Model
         $query = $this->db->get('vendors_orders');
         $result = $query->row_array();
         return $result['total'] > 0 ?$result['total']:0.0;
+    }
+
+    public function updateVendorStatus($vendor_id, $status)
+    {
+        echo $vendor_id;
+        $this->db->where('id', $vendor_id);
+        if (!$this->db->update('vendors', array(
+                    'vendor_status' => $status)
+                )) {
+            log_message('error', print_r($this->db->error(), true));
+            show_error(lang('database_error'));
+        }
     }
     
     public function getOrdersByMonth($vendor_id)

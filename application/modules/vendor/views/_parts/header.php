@@ -50,6 +50,7 @@
                         </form>
                         <ul class="nav navbar-nav navbar-right">
                             <li><a href="<?= LANG_URL . '/vendor/logout' ?>"><?= lang('vendor_logout') ?></a></li>
+                            <li><a href="<?= LANG_URL . '/vendor/logoff' ?>"><?= lang('vendor_logoff') ?></a></li>
                         </ul>
                     </div>
                 </nav>

@@ -4,7 +4,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Checkout extends MY_Controller
 {
+    // 商户未支付保证金
+    const VENDOR_BOND_UNPAY = 0;
 
+    // 商户已支付保证金
+    const VENDOR_BOND_PAYED = 1; 
+    
     private $orderId;
     private $realShippingAmount;
     
@@ -119,6 +124,7 @@ class Checkout extends MY_Controller
             @set_cookie('alipay', $this->orderId, 2678400);
             $_SESSION['discountAmount'] = $_POST['discountAmount'];
             $_SESSION['final_amount'] = $_POST['final_amount'];
+            $_SESSION['alipay_sandbox'] = $this->Home_admin_model->getValueStore('alipay_sandbox');
             $total_amount = $_POST['final_amount']*1.0;
             $commission = $_POST['final_amount']*($this->Home_admin_model->getValueStore('commissonRate')/100);
             $vendor_share = $total_amount-$commission;
@@ -130,6 +136,7 @@ class Checkout extends MY_Controller
                 $this->realShippingAmount = $this->Home_admin_model->getValueStore('shippingAmount');
             }
             $_SESSION['realShippingAmount'] = $this->realShippingAmount;
+            $_SESSION['order_desc'] = "购买商品";
             $this->Public_model->updateOrderAmount($this->orderId, $total_amount, $vendor_share, $commission, $this->realShippingAmount);
 //            $this->Public_model->updateVendorOrderAmount($total_amount, $vendor_share, $commission, $this->realShippingAmount);            
             redirect(LANG_URL . '/checkout/alipay');          
@@ -271,10 +278,18 @@ class Checkout extends MY_Controller
             redirect(base_url());
         }
 	@delete_cookie('alipay');
+        @delete_cookie('ordertype');
 	$this->shoppingcart->clearShoppingCart();
         $orderId = get_cookie('alipay');
-        $this->Public_model->changeAlipayOrderStatus($orderId, 'payed');
-	redirect(LANG_URL . '/checkout/alipay_success');
+        $this->Public_model->changeAlipayPayStatus($orderId, 'payed');
+        if (get_cookie('vendorBond') != null) {
+            $this->Public_model->changeAlipayOrderStatus($orderId, 30);
+            $this->Public_model->updateBondPayStatus(get_cookie('vendorBond'), self::VENDOR_BOND_PAYED);
+            redirect(LANG_URL . '/vendor/me');
+        }
+        else{            
+            redirect(LANG_URL . '/checkout/alipay_success');
+        }
     }
     public function alipay_success()
     {

@@ -12,10 +12,11 @@
     $orderSources = array(
         -1 => "全部",
         10 => "普通订单",
+        20 => "商户诚信保证金",        
     ); 
     $payTypes = array(
         -1 => "全部",
-        20 => "支付宝支付",
+        20 => "支付宝支付",        
     ); 
     $deliveryTypes = array(
         -1 => "全部",
@@ -122,6 +123,7 @@
                             <span>付款状态：</span>
                             <span class="<?= $order['pay_status'] == 10 ? "ant-tag":"ant-tag-green"?>"><?= $order['pay_status'] == 10 ? "未付款":"已付款"?></span>
                         </p>
+                        <?php if($order['order_source'] != 20){?>
                         <p>
                             <span>发货状态：</span>
                             <span class="<?= $order['delivery_status'] == 10 ? "ant-tag":"ant-tag-green"?>"><?= $order['delivery_status'] == 10 ? "未发货":"已发货"?></span>
@@ -129,7 +131,8 @@
                         <p>
                             <span>收货状态：</span>
                             <span class="<?= $order['receipt_status'] == 10 ? "ant-tag":"ant-tag-green"?>"><?= $order['receipt_status'] == 10 ? "未收货":"已收货"?></span>
-                        </p>        
+                        </p>
+                        <?php }?>
                     </td>
                     <td><?= $order['total_amount'] . CURRENCY ?></td>
                     <td><?= $order['vendor_share'] . CURRENCY ?></td>
@@ -141,7 +144,7 @@
                             <i class="fa fa-chevron-down" aria-hidden="true"></i>
                             <i class="fa fa-chevron-up" aria-hidden="true"></i>
                         </a>
-                        <?php if($order['pay_status'] == 20 && $order['delivery_status'] == 10){ ?>
+                        <?php if($order['pay_status'] == 20 && $order['delivery_status'] == 10 && $order['order_source'] != 20){ ?>
                             <a href="javascript:void(0);" data-toggle="modal" data-target="#addExpressNo"  class="btn btn-sm btn-green show-more">发货</a>                                
                         <?php }?>                     
                     </td>                     

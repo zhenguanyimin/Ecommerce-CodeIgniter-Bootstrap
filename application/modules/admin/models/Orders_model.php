@@ -31,6 +31,7 @@ class Orders_model extends CI_Model
     public function getTotalAmount()
     {
         $this->db->where('order_status', self::COMPLETED);
+        $this->db->where('order_source !=', 20);
         $this->db->select_sum('total_amount', 'total');
         $query = $this->db->get('orders');
         $result = $query->row_array();

@@ -186,7 +186,7 @@ if (!isset($_GET['settings'])) {
                                                 </td>
 
                                                 <?php 
-                                                $total_parsed = str_replace(' ', '', str_replace(',', '', $total_amount));
+                                                $total_parsed = str_replace(' ', '', str_replace(',', '', $tr['total_amount']));
                                                 if((int)$shippingAmount > 0 && ((int)$shippingOrder > $total_parsed)) { ?>
                                                     <tr>
                                                         <td><b>Shipping amount is</b></td>
@@ -236,23 +236,40 @@ if (isset($_GET['settings'])) {
     </div>
     <h3>Alipay</h3>
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-6">
             <div class="panel panel-default">
                 <div class="panel-heading">Change visibility of this purchase option</div>
                 <div class="panel-body">
                     <?php if ($this->session->flashdata('alipay_visibility')) { ?>
                         <div class="alert alert-info"><?= $this->session->flashdata('alipay_visibility') ?></div>
-                    <?php } ?>
+                    <?php } ?>                      
                     <form method="POST" action="">
                         <input type="hidden" name="alipay_visibility" value="<?= htmlspecialchars($alipay_visibility) ?>">
                         <input <?= $alipay_visibility == 1 ? 'checked' : '' ?> data-toggle="toggle" data-for-field="alipay_visibility" class="toggle-changer" type="checkbox">
                         <button class="btn btn-default" value="" type="submit">
                             Save
-                        </button>
+                        </button>                      
                     </form>
                 </div>
             </div>
         </div>
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">Alipay sandbox mode (use for alipay account tests)</div>
+                <div class="panel-body">
+                    <?php if ($this->session->flashdata('alipay_sandbox')) { ?>
+                        <div class="alert alert-info"><?= $this->session->flashdata('alipay_sandbox') ?></div>
+                    <?php } ?>                        
+                    <form method="POST" action="">
+                        <input type="hidden" name="alipay_sandbox" value="<?= htmlspecialchars($alipay_sandbox) ?>">
+                        <input <?= $alipay_sandbox == 1 ? 'checked' : '' ?> data-toggle="toggle" data-for-field="alipay_sandbox" class="toggle-changer" type="checkbox">
+                        <button class="btn btn-default" value="" type="submit">
+                            Save
+                        </button>                        
+                    </form>
+                </div>
+            </div>
+        </div>         
     </div>    
     <hr>
     <h3>Paypal Account Settings</h3>

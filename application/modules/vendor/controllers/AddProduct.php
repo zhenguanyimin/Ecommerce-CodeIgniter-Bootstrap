@@ -10,7 +10,8 @@ if (!defined('BASEPATH')) {
 
 class AddProduct extends VENDOR_Controller
 {
-
+    private $orderId;
+    
     public function __construct()
     {
         parent::__construct();
@@ -31,6 +32,36 @@ class AddProduct extends VENDOR_Controller
             $trans_load = $this->Products_model->getTranslations($id);
         }
         if (isset($_POST['setProduct'])) {
+            
+            //是否已缴纳商户保证金判断
+            echo "vendor bond:".$this->Home_admin_model->getValueStore('vendorBond');
+            if($this->Home_admin_model->getValueStore('vendorBond') > 0 ){ //需缴纳商户保证金
+                $order_info = [
+                    "first_name" => $this->vendor_name,
+                    "last_name" => $this->vendor_name,
+                    "email" => $_SESSION['logged_vendor'],
+                    "phone" => "13988889999",
+                    "address" => "商户诚信保证金",
+                    "city" => "商户诚信保证金",
+                    "post_code" => "123456",
+                    "notes" => "商户诚信保证金",
+                    "user_id" => $this->vendor_id,
+                    "id" => [],
+                    'referrer' => "",
+                    'clean_referrer' => "",
+                    'payment_type' => "20",
+		    'paypal_status' => "",
+		    'alipay_status' => "",
+                    'discountCode' => "",
+                    'date' => time(),
+                    "total_amount" => number_format( $this->Home_admin_model->getValueStore('vendorBond'), 6),
+                    "vendor_share" => number_format( 0.0, 6),
+                    "commission" => number_format( 0.0, 6),                       
+                    'order_source' => "20",
+                ];
+                $order_info["productInfo"]["vendor_id"] = $this->vendor_id;                    
+                $this->payVendorBond($order_info);
+            }
             $_POST['image'] = $this->uploadImage();
             $_POST['vendor_id'] = $this->vendor_id;
             $result = $this->Products_model->setProduct($_POST, $id);
@@ -51,6 +82,8 @@ class AddProduct extends VENDOR_Controller
         $data['shop_categories'] = $this->Categories_model->getShopCategories();
         $data['otherImgs'] = $this->loadOthersImages();
         $data['showBrands'] = $this->Home_admin_model->getValueStore('showBrands');
+        $data["vendor_id"] = $this->vendor_id;
+        $data["vendor_name"] = $this->vendor_name;
         if($data['showBrands'] == 1) {
             $data['brands'] = $this->Brands_model->getBrands();
         }
@@ -59,7 +92,66 @@ class AddProduct extends VENDOR_Controller
         $this->load->view('add_product', $data);
         $this->load->view('_parts/footer');
     }
+    
+    private function setVendorOrders($order_info)
+    {
+        $this->Public_model->setVendorOrder($order_info);
+    }
+    
+    /*
+     * Send notifications to users that have nofify=1 in /admin/adminusers
+     */
 
+    private function sendNotifications()
+    {
+        $users = $this->Public_model->getNotifyUsers();
+        $myDomain = $this->config->item('base_url');
+        if (!empty($users)) {
+            $this->sendmail->clearAddresses();
+            foreach ($users as $user) {
+                $this->sendmail->sendTo($user, 'Admin', 'New order in ' . $myDomain, 'Hello, you have new order. Can check it in /admin/orders');
+            }
+        }
+    }
+
+    private function goToDestination()
+    {
+        @set_cookie('alipay', $this->orderId, 2678400);
+        @set_cookie('vendorBond', $this->vendor_id, 2678400);
+        $_SESSION['discountAmount'] = 0.0;
+        $_SESSION['final_amount'] = $this->Home_admin_model->getValueStore('vendorBond');
+        $_SESSION['order_desc'] = "商户诚信保证金";
+        $_SESSION['alipay_sandbox'] = $this->Home_admin_model->getValueStore('alipay_sandbox');        
+        $total_amount = $_SESSION['final_amount']*1.0;
+        $commission = 0.0;
+        $vendor_share = 0.0;
+        $total_amount = number_format( $total_amount, 6);
+        $vendor_share = number_format( $vendor_share, 6);
+        $commission = number_format( $commission, 6);
+        $this->realShippingAmount = 0.0;
+        $_SESSION['realShippingAmount'] = $this->realShippingAmount;
+        $this->Public_model->updateOrderAmount($this->orderId, $total_amount, $vendor_share, $commission, $this->realShippingAmount);          
+        redirect(LANG_URL . '/checkout/alipay');              
+    }
+    
+    private function payVendorBond($order_info){
+        $orderId = $this->Public_model->setOrder($order_info);
+        if ($orderId != false) {
+            /*
+             * Save product orders in vendors profiles
+             */
+            $order_info['parent_order_id'] = $orderId;
+            $this->orderId = $orderId;
+            $this->setVendorOrders($order_info);
+            $this->sendNotifications();
+            $this->goToDestination();
+        } else {
+            log_message('error', 'Cant save order!! ' . implode('::', $order_info));
+            $this->session->set_flashdata('order_error', true);
+            redirect(LANG_URL . '/checkout/order-error');
+        }
+    } 
+    
     private function uploadImage()
     {
         $config['upload_path'] = './attachments/shop_images/';

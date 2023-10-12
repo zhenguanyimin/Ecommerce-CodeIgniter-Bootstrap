@@ -41,5 +41,12 @@ class VendorProfile extends VENDOR_Controller
         delete_cookie('logged_vendor');
         redirect(LANG_URL . '/vendor/login');
     }
-
+    
+    public function logoff()
+    {
+        $this->Vendorprofile_model->updateVendorStatus($this->vendor_id, 2);
+        unset($_SESSION['logged_vendor']);
+        delete_cookie('logged_vendor');
+        redirect(LANG_URL . '/vendor/login');
+    }
 }

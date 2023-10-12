@@ -99,6 +99,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `paypal_status` varchar(10) DEFAULT NULL,
   `alipay_status` varchar(10) DEFAULT NULL,
   `order_status` tinyint(3) unsigned NOT NULL DEFAULT '10' COMMENT '订单状态(10进行中 20取消 21待取消 30已完成)',
+  `order_source` tinyint(3) unsigned NOT NULL DEFAULT '10' COMMENT '订单来源(10普通订单 20商户诚信保证金)',
   `total_amount` DOUBLE(16,6) DEFAULT 0,
   `vendor_share` DOUBLE(16,6) DEFAULT 0,
   `commission` DOUBLE(16,6) DEFAULT 0,
@@ -372,6 +373,8 @@ CREATE TABLE `vendors` (
   `url` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,
   `password` varchar(100) NOT NULL,
+  `bond_status` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '商户保证金缴纳状态(0未缴纳 1已缴纳 2已退还)',
+  `vendor_status` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '商户状态(1正常 2已销户)',  
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -408,7 +411,7 @@ CREATE TABLE `vendors_orders` (
   `receipt_status` tinyint(3) unsigned NOT NULL DEFAULT '10' COMMENT '收货状态(10未收货 20已收货)',
   `receipt_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '收货时间',
   `order_status` tinyint(3) unsigned NOT NULL DEFAULT '10' COMMENT '订单状态(10进行中 20取消 21待取消 30已完成)',
-  `order_source` tinyint(3) unsigned NOT NULL DEFAULT '10' COMMENT '订单来源(10普通订单)',
+  `order_source` tinyint(3) unsigned NOT NULL DEFAULT '10' COMMENT '订单来源(10普通订单 20商户诚信保证金)',
   `total_amount` DOUBLE(16,6) DEFAULT 0,
   `vendor_share` DOUBLE(16,6) DEFAULT 0,
   `commission` DOUBLE(16,6) DEFAULT 0,

@@ -7,7 +7,7 @@ class Orders_model extends CI_Model
 
     // 支付成功
     const PAYSTATUS_SUCCESS = 20;   
-
+    
     // 未发货
     const NOT_DELIVERED = 10;
 
@@ -64,7 +64,7 @@ class Orders_model extends CI_Model
                 . 'vendors_orders_clients.address, vendors_orders_clients.city, vendors_orders_clients.post_code,'
                 . ' vendors_orders_clients.notes, discount_codes.type as discount_type, discount_codes.amount as discount_amount');
         $this->db->join('vendors_orders_clients', 'vendors_orders_clients.for_id = vendors_orders.id', 'inner');
-        $this->db->join('users_public', 'users_public.id = vendors_orders.customer_id', 'inner');
+//        $this->db->join('users_public', 'users_public.id = vendors_orders.customer_id', 'inner');
         $this->db->join('discount_codes', 'discount_codes.code = vendors_orders.discount_code', 'left');
         // 检索查询条件
         $query = $big_get;        
@@ -207,7 +207,7 @@ class Orders_model extends CI_Model
             return $result;
         }
     }
-    
+
     public function updateOrderDeliveryStatus($post)
     {
         $this->db->where('order_id', $post["order_id"]);

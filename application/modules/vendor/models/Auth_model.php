@@ -25,13 +25,13 @@ class Auth_model extends CI_Model
         $this->db->where('email', $email);
         return $this->db->count_all_results('vendors');
     }
-
+    
     public function checkVendorExsists($post)
     {
         $this->db->where('email', $post['u_email']);
         $query = $this->db->get('vendors');
         $row = $query->row_array();
-        if (empty($row) || !password_verify($post['u_password'], $row['password'])) {
+        if (empty($row) || !password_verify($post['u_password'], $row['password']) || $row['vendor_status'] == 2) {
             return false;
         }
         return true;
