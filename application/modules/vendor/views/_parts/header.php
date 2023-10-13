@@ -77,6 +77,12 @@
                                     </a>
                                 </li>
                                 <li>
+                                    <a href="<?= LANG_URL . '/vendor/profile' ?>" aria-expanded="false">
+                                        <i class="mdi mdi-account"></i>
+                                        <span class="hide-menu"><?= lang('vendor_profile') ?></span>
+                                    </a>
+                                </li>                                     
+                                <li>
                                     <ul id="orderMngList">
                                         <div id="realtime" onclick="javascript:show('id_menu_realtime','child_realtime')">
                                             <li>
@@ -131,7 +137,7 @@
                                         </div>                                                                                                           
                                         </li>                                         
                                     </ul>                                     
-                                </li>                         
+                                </li>                           
                             </ul>
                         </div>
                         

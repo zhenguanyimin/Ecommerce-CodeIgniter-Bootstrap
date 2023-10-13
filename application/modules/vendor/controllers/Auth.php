@@ -43,7 +43,15 @@ class Auth extends VENDOR_Controller
                     $remember_me = true;
                 }
                 $this->setLoginSession($_POST['u_email'], $remember_me);
-                redirect(LANG_URL . '/vendor/me');
+                $result = $this->checkVendorInfoComplete();
+                var_dump($result);
+                if(!$result){
+                    $this->session->set_flashdata('vendor_info_warning', lang('vendor_info_warning'));
+                    redirect(LANG_URL . '/vendor/profile');
+                }
+                else{
+                    redirect(LANG_URL . '/vendor/me');
+                }                
             }
         }
         $this->load->view('_parts/header_auth', $head);
@@ -56,6 +64,44 @@ class Auth extends VENDOR_Controller
         return $this->Auth_model->checkVendorExsists($_POST);
     }
 
+    private function checkVendorInfoComplete()
+    {
+        $vendor = $this->Vendorprofile_model->getVendorInfoFromEmail($_POST['u_email']);
+        if ($vendor != null) {
+            if(time() - strtotime($vendor['created_at']) > 2*3600 && !$this->vendorInfoValidate($vendor)){
+                return false;
+            }
+            return true;
+        }
+    }
+
+    private function vendorInfoValidate($post)
+    {
+        $errors = array();
+        if (mb_strlen(trim($post['vendor_alipay_account'])) == 0) {
+            $errors[] = lang('vendor_alipay_account_empty');
+        }
+        if (mb_strlen(trim($post['vendor_real_name'])) == 0) {
+            $errors[] = lang('vendor_real_name_empty');
+        }
+        if (mb_strlen(trim($post['email'])) == 0) {
+            $errors[] = lang('invalid_email');
+        }
+        if (mb_strlen(trim($post['vendor_phone'])) == 0) {
+            $errors[] = lang('invalid_phone');
+        }
+        if (mb_strlen(trim($post['vendor_IDCard'])) == 0) {
+            $errors[] = lang('vendor_IDCard_empty');
+        }
+        if (mb_strlen(trim($post['vendor_weixin'])) == 0) {
+            $errors[] = lang('vendor_weixin_empty');
+        }
+        if(!empty($errors)){
+            return false;
+        }
+        return true;
+    }
+    
     public function register()
     {
         $data = array();

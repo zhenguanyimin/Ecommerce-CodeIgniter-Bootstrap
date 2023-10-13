@@ -7,7 +7,7 @@
                 <div class="alert alert-danger"><?= $this->session->flashdata('login_error') ?></div>
                 <?php
             }
-            ?>
+            ?>             
             <div class="vendor-login">
                 <h1><?= lang('login_to_your_acc') ?></h1><br>
                 <form method="POST" action="">

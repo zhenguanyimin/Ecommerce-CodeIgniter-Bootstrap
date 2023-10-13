@@ -25,7 +25,14 @@ class Vendorprofile_model extends CI_Model
         $result = $this->db->get('vendors');
         return $result->row_array();
     }
-
+    
+    public function getVendorInfoFromId($vendor_id)
+    {
+        $this->db->where('id', $vendor_id);
+        $result = $this->db->get('vendors');
+        return $result->row_array();
+    }
+    
     public function getVendorByUrlAddress($urlAddr)
     {
         $this->db->where('url', $urlAddr);
@@ -96,7 +103,6 @@ class Vendorprofile_model extends CI_Model
 
     public function updateVendorStatus($vendor_id, $status)
     {
-        echo $vendor_id;
         $this->db->where('id', $vendor_id);
         if (!$this->db->update('vendors', array(
                     'vendor_status' => $status)
@@ -104,6 +110,24 @@ class Vendorprofile_model extends CI_Model
             log_message('error', print_r($this->db->error(), true));
             show_error(lang('database_error'));
         }
+    }
+    
+    public function updateVendorInfo($post)
+    {
+        $this->db->where('id', $post['vendor_id']);
+        if (!$this->db->update('vendors', array(
+                    'vendor_alipay_account' => $_POST['vendor_alipay_account'],
+                    'vendor_real_name' => $_POST['vendor_real_name'],
+                    'vendor_phone' => $_POST['vendor_phone'],
+                    'vendor_IDCard' => $_POST['vendor_IDCard'],
+                    'email' => $_POST['email'], 
+                    'vendor_weixin' => $_POST['vendor_weixin']            
+        ))) {
+            log_message('error', print_r($this->db->error(), true));
+            show_error(lang('database_error')); 
+            return false;
+        }
+        return true;
     }
     
     public function getOrdersByMonth($vendor_id)
