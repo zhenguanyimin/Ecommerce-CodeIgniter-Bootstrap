@@ -79,6 +79,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <span class="top-header text-center"><?= lang('choose_payment') ?></span>
                     </div>
                     <div class="row">
+                        <input type="hidden" name="order_source" value="10">
                         <div class="form-group col-sm-6">
                             <label for="firstNameInput"><?= lang('first_name') ?> (<sup><?= lang('requires') ?></sup>)</label>
                             <input id="firstNameInput" class="form-control" name="first_name" value="<?= @$_POST['first_name'] ?>" type="text" placeholder="<?= lang('first_name') ?>">

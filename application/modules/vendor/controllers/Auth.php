@@ -44,7 +44,6 @@ class Auth extends VENDOR_Controller
                 }
                 $this->setLoginSession($_POST['u_email'], $remember_me);
                 $result = $this->checkVendorInfoComplete();
-                var_dump($result);
                 if(!$result){
                     $this->session->set_flashdata('vendor_info_warning', lang('vendor_info_warning'));
                     redirect(LANG_URL . '/vendor/profile');

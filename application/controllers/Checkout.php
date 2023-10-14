@@ -45,7 +45,7 @@ class Checkout extends MY_Controller
                     /*
                      * Save product orders in vendors profiles
                      */
-                    $_POST['parent_order_id '] =  $orderId;
+                    $_POST['parent_order_id'] =  $orderId;
                     $this->setVendorOrders();
                     $this->orderId = $orderId;
                     $this->setActivationLink();
@@ -279,6 +279,7 @@ class Checkout extends MY_Controller
         }
 	@delete_cookie('alipay');
         @delete_cookie('ordertype');
+        @delete_cookie('vendorBond');
 	$this->shoppingcart->clearShoppingCart();
         $orderId = get_cookie('alipay');
         $this->Public_model->changeAlipayPayStatus($orderId, 'payed');

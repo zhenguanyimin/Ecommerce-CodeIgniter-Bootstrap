@@ -219,11 +219,12 @@ $sandbox_config = [
         // 更多配置项请参考 [Guzzle](https://guzzle-cn.readthedocs.io/zh_CN/latest/request-options.html)
     ],
 ];
-if($alipay_sandbox == 1){
+if($alipay_sandbox == 0){
     Pay::config($proudct_config);
 }
 else{
     Pay::config($sandbox_config);
+    $total_amount = '0.01';
 }
 
 
