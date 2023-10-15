@@ -101,6 +101,15 @@ class Vendorprofile_model extends CI_Model
         return $result['total'] > 0 ?$result['total']:0.0;
     }
 
+    public function getVendorStatus($vendor_id)
+    {
+        $this->db->where('id', $vendor_id);
+        $this->db->select('vendor_status');
+        $this->db->limit(1);
+        $result1 = $this->db->get('vendors');
+        return $result1->row_array();        
+    }
+    
     public function updateVendorStatus($vendor_id, $status)
     {
         $this->db->where('id', $vendor_id);

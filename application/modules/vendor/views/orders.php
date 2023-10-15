@@ -97,6 +97,7 @@
                 <th>订单号</th>
                 <th><?= lang('time_created') ?></th>
                 <th><?= lang('order_type') ?></th>
+                <th><?= lang('pay_type') ?></th>
                 <th><?= lang('phone') ?></th>
                 <th><?= lang('status') ?></th>
                 <th>订单总金额</th>
@@ -116,6 +117,7 @@
                 <tr>
                     <td><?= $order['order_id'] ?></td>
                     <td><?= date('Y-m-d H:i:s', $order['date']) ?></td>
+                    <td><?= array_key_exists($order['order_source'], $orderSources)? $orderSources[$order['order_source']]:"未知"?></td>
                     <td><?= array_key_exists($order['pay_type'], $payTypeEnum)? $payTypeEnum[$order['pay_type']]:"未知"?></td>
                     <td><?= $order['phone'] ?></td>
                     <td>

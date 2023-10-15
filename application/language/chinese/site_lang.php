@@ -231,6 +231,7 @@ $lang['vendor_IDCard_empty'] = '您没有输入身份证号码';
 $lang['vendor_weixin_empty'] = '您没有输入微信账号';
 $lang['time_created'] = '创建时间';
 $lang['order_type'] = '订单类型';
+$lang['pay_type'] = '支付方式';
 $lang['status'] = '交易状态';
 $lang['unprocessed'] = '未付款';
 $lang['processed'] = '已付款';

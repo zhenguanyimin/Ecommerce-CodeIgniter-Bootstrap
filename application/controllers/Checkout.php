@@ -282,14 +282,20 @@ class Checkout extends MY_Controller
         @delete_cookie('vendorBond');
 	$this->shoppingcart->clearShoppingCart();
         $orderId = get_cookie('alipay');
-        $this->Public_model->changeAlipayPayStatus($orderId, 'payed');
-        if (get_cookie('vendorBond') != null) {
-            $this->Public_model->changeAlipayOrderStatus($orderId, 30);
-            $this->Public_model->updateBondPayStatus(get_cookie('vendorBond'), self::VENDOR_BOND_PAYED);
-            redirect(LANG_URL . '/vendor/me');
+        $result = $this->Public_model->changeAlipayPayStatus($orderId, 'payed');
+        if ($result == true) {            
+            if (get_cookie('vendorBond') != null) {
+                $this->Public_model->changeAlipayOrderStatus($orderId, 30);
+                $this->Public_model->updateBondPayStatus(get_cookie('vendorBond'), self::VENDOR_BOND_PAYED);
+                redirect(LANG_URL . '/vendor/me');
+            }
+            else{
+                $this->Public_model->manageQuantitiesAndProcurement($orderId);
+                redirect(LANG_URL . '/checkout/alipay_success');
+            }
         }
-        else{            
-            redirect(LANG_URL . '/checkout/alipay_success');
+        else{
+            redirect(LANG_URL . '/checkout/order-error');
         }
     }
     public function alipay_success()

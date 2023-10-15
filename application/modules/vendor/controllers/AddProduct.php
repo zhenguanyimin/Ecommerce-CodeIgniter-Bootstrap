@@ -34,7 +34,7 @@ class AddProduct extends VENDOR_Controller
         if (isset($_POST['setProduct'])) {
             
             //是否已缴纳商户保证金判断
-            if($this->Home_admin_model->getValueStore('vendorBond') > 0 ){ //需缴纳商户保证金
+            if($this->Home_admin_model->getValueStore('vendorBond') > 0 && $this->Vendorprofile_model-> getVendorStatus($this->vendor_id) == 1){ //需缴纳商户保证金
                 $order_info = [
                     "first_name" => $this->vendor_name,
                     "last_name" => $this->vendor_name,
