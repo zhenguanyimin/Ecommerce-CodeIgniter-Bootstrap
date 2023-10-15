@@ -78,20 +78,20 @@
     </div>
     <div class="footer-bottom">
         <div class="container">
-            <p class="pull-left">
+            <p align="center">
+                <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=1" target="_blank" rel="noopener noreferrer">
+                  粤公网安备号
+                </a>
+                <span>|</span>
+                <a href="http://beian.miit.gov.cn" target="_blank" rel="noopener noreferrer">
+                  粤ICP备号
+                </a>
+            </p>            
+            <p align="center">
                 <?= $footercopyright ?>
                 <br>
-                <!-- Please do not remove this referention -->
-                Powered by <a href="https://github.com/">清衣商务有限公司</a>
+                <span>Copyright&nbsp;©&nbsp;2022&nbsp;-&nbsp;2023&nbsp;&nbsp;<a href="">清衣商务有限公司</a>&nbsp;版权所有</span>
             </p>
-            <div class="pull-right">
-                <ul class="nav nav-pills payments">
-                    <li><i class="fa fa-cc-visa"></i></li>
-                    <li><i class="fa fa-cc-mastercard"></i></li>
-                    <li><i class="fa fa-cc-amex"></i></li>
-                    <li><i class="fa fa-cc-paypal"></i></li>
-                </ul> 
-            </div>
         </div>
     </div>
 </footer>

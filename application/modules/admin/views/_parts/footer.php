@@ -3,7 +3,16 @@
 </div>
 </div>
 <?php if ($this->session->userdata('logged_in')) { ?>
-<footer>Powered by <a href="https://github.com/">清衣商务有限公司</a></footer>
+<p align="center">
+    <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=1" target="_blank" rel="noopener noreferrer">
+      粤公网安备号
+    </a>
+    <span>|</span>
+    <a href="http://beian.miit.gov.cn" target="_blank" rel="noopener noreferrer">
+      粤ICP备号
+    </a>
+</p>  
+<p align="center"><span>Copyright&nbsp;©&nbsp;2022&nbsp;-&nbsp;2023&nbsp;&nbsp;<a href="">清衣商务有限公司</a>&nbsp;版权所有</span></p>
 <?php } ?>
 </div>
 <!-- Modal Calculator -->
