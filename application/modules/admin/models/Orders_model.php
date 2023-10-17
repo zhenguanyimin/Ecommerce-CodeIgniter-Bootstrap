@@ -63,8 +63,8 @@ class Orders_model extends CI_Model
         } else {
             $this->db->order_by('id', 'DESC');
         }
-        $this->db->select('orders.*, orders_clients.first_name,'
-                . ' orders_clients.last_name, orders_clients.email, orders_clients.phone, '
+        $this->db->select('orders.*, orders_clients.name,'
+                . 'orders_clients.email, orders_clients.phone, '
                 . 'orders_clients.address, orders_clients.city, orders_clients.post_code,'
                 . ' orders_clients.notes, discount_codes.type as discount_type, discount_codes.amount as discount_amount');
         $this->db->join('orders_clients', 'orders_clients.for_id = orders.id', 'inner');

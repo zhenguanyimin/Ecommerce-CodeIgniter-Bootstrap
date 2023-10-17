@@ -69,7 +69,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <td><?= date('Y-m-d H:i:s', $order['date']) ?></td>
                                     <td><?= array_key_exists($order['pay_type'], $payTypeEnum)? $payTypeEnum[$order['pay_type']]:"未知"?></td>
                                     <td><?= $order['total_amount'] ?></td>
-                                    <td><span class="<?= $order['vendor_order_status'] == 30 ? "ant-tag":"ant-tag-green"?>"><?= array_key_exists($order['vendor_order_status'], $orderStatus)? $orderStatus[$order['vendor_order_status']]:"进行中"?></span></td>
+                                    <td><span class="<?= $order['vendor_order_status'] == 30 ? "ant-tag-green":"ant-tag"?>"><?= array_key_exists($order['vendor_order_status'], $orderStatus)? $orderStatus[$order['vendor_order_status']]:"进行中"?></span></td>
                                     <td>
                                         <p>
                                             <span>付款状态：</span>
@@ -84,7 +84,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             <span class="<?= $order['receipt_status'] == 10 ? "ant-tag":"ant-tag-green"?>"><?= $order['receipt_status'] == 10 ? "未收货":"已收货"?></span>
                                         </p>        
                                     </td>                                    
-                                    <td><?= $order['express_company'] == ""? "无": $order['express_no'] ?></td>
+                                    <td><?= $order['express_company'] == ""? "无": $order['express_company'] ?></td>
                                     <td><?= $order['express_no'] == ""? "无": $order['express_no']?></td>
                                     <td><?= $order['address'] ?></td>
                                     <td><?= $order['phone'] ?></td>
@@ -115,7 +115,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         <a href="<?= base_url('/checkout') ?>" class="btn btn-sm btn-green show-more">支付</a>
                                     <?php }?>                                          -->
                                     <?php if($order['pay_status'] == 20 && $order['delivery_status'] == 20&& $order['receipt_status'] == 10){ ?>
-                                        <a href="<?= base_url('/vendor/orders/receipt?order_id='. $order['child_order_id']) ?>" class="btn btn-sm btn-green show-more">确认收货</a>
+                                        <a href="<?= base_url('/vendor/orders/receipt?order_id='. $order['child_order_id'] ."&queryOrderType=".$_GET["queryOrderType"]) ?>" class="btn btn-sm btn-green show-more">确认收货</a>
                                     <?php }?>                                      
                                      </td>                                    
                                 </tr>

@@ -113,8 +113,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
 
 CREATE TABLE `orders_clients` (
   `id` int(11) NOT NULL,
-  `first_name` varchar(500) NOT NULL,
-  `last_name` varchar(500) NOT NULL,
+  `name` varchar(500) NOT NULL,
   `email` varchar(500) NOT NULL,
   `phone` varchar(500) NOT NULL,
   `address` text NOT NULL,
@@ -437,8 +436,7 @@ ALTER TABLE `vendors_orders`
 
 CREATE TABLE `vendors_orders_clients` (
   `id` int(11) NOT NULL,
-  `first_name` varchar(500) NOT NULL,
-  `last_name` varchar(500) NOT NULL,
+  `name` varchar(500) NOT NULL,
   `receiptor_name` varchar(500) NOT NULL,
   `email` varchar(500) NOT NULL,
   `phone` varchar(500) NOT NULL,
@@ -463,3 +461,30 @@ CREATE TABLE `keys` (
 	`date_created` INT(11) NOT NULL,
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE area (
+  id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  pid int(11) NOT NULL DEFAULT 0 COMMENT '父级',
+  name varchar(50) NOT NULL DEFAULT '' COMMENT '名称',
+  shortname varchar(30) NOT NULL DEFAULT '' COMMENT '简称',
+  longitude varchar(30) NOT NULL DEFAULT '' COMMENT '经度',
+  latitude varchar(30) NOT NULL DEFAULT '' COMMENT '纬度',
+  level smallint(6) NOT NULL DEFAULT 0 COMMENT '级别',
+  sort mediumint(9) NOT NULL DEFAULT 0 COMMENT '排序',
+  status tinyint(4) NOT NULL DEFAULT 1 COMMENT '状态1有效',
+  PRIMARY KEY (id)
+)
+ENGINE = INNODB,
+AUTO_INCREMENT = 460400501,
+AVG_ROW_LENGTH = 84,
+CHARACTER SET utf8,
+COLLATE utf8_general_ci,
+COMMENT = '地址表';
+
+ALTER TABLE area ADD INDEX IDX_nc_area (name, shortname);
+
+ALTER TABLE area ADD INDEX level (level, sort, status);
+
+ALTER TABLE area ADD INDEX longitude (longitude, latitude);
+
+ALTER TABLE area ADD INDEX pid (pid);

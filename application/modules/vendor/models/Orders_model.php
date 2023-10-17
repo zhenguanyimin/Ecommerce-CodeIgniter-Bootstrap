@@ -59,8 +59,8 @@ class Orders_model extends CI_Model
 //        $dataTypeFilter = $this->getFilterDataType($dataType);
         $this->db->where('vendor_id', $vendor_id);
         $this->db->order_by('id', 'DESC');
-        $this->db->select('vendors_orders.*, vendors_orders_clients.first_name,'
-                . ' vendors_orders_clients.last_name, vendors_orders_clients.receiptor_name, vendors_orders_clients.email, vendors_orders_clients.phone, '
+        $this->db->select('vendors_orders.*, vendors_orders_clients.name,'
+                . 'vendors_orders_clients.receiptor_name, vendors_orders_clients.email, vendors_orders_clients.phone, '
                 . 'vendors_orders_clients.address, vendors_orders_clients.city, vendors_orders_clients.post_code,'
                 . ' vendors_orders_clients.notes, discount_codes.type as discount_type, discount_codes.amount as discount_amount');
         $this->db->join('vendors_orders_clients', 'vendors_orders_clients.for_id = vendors_orders.id', 'inner');
@@ -169,12 +169,18 @@ class Orders_model extends CI_Model
             $filter[] = ['delivery_status =', self::DELIVERED];
             $filter[] = ['receipt_status =', self::NOT_RECEIVED];
         }
+        else if($params['queryOrderType'] == self::QUERY_ORDER_TYPE_UNPAY){
+            $filter[] = ['pay_status =', self::PAYSTATUS_PENDING];
+            $filter[] = ['delivery_status =', self::NOT_DELIVERED];
+            $filter[] = ['receipt_status =', self::NOT_RECEIVED];
+            $filter[] = ['order_status =', self::NORMAL];
+        }        
         else if($params['queryOrderType'] == self::QUERY_ORDER_TYPE_COMPLETED){
             $filter[] = ['pay_status =', self::PAYSTATUS_SUCCESS];
             $filter[] = ['delivery_status =', self::DELIVERED];
             $filter[] = ['receipt_status =', self::RECEIVED];
             $filter[] = ['order_status =', self::COMPLETED];
-        }
+        }        
         else if($params['queryOrderType'] == self::QUERY_ORDER_TYPE_CANCELED){
             $filter[] = ['pay_status =', self::PAYSTATUS_SUCCESS];
             $filter[] = ['delivery_status =', self::DELIVERED];
@@ -264,8 +270,8 @@ class Orders_model extends CI_Model
     {
         $this->db->where('customer_id', $userId);
         $this->db->order_by('id', 'DESC');
-        $this->db->select('vendors_orders.*, vendors_orders_clients.first_name,'
-                . ' vendors_orders_clients.last_name, vendors_orders_clients.email, vendors_orders_clients.phone, '
+        $this->db->select('vendors_orders.*, vendors_orders_clients.name,'
+                . 'vendors_orders_clients.email, vendors_orders_clients.phone, '
                 . 'vendors_orders_clients.address, vendors_orders_clients.city, vendors_orders_clients.post_code,'
                 . ' vendors_orders_clients.notes, discount_codes.type as discount_type, discount_codes.amount as discount_amount');
         $this->db->join('vendors_orders_clients', 'vendors_orders_clients.for_id = vendors_orders.id', 'inner');

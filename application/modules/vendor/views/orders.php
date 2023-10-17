@@ -26,7 +26,14 @@
     $payTypeEnum = array(
         10 => "余额支付",
         20 => "支付宝支付",
-    );     
+    );
+
+    $orderStatus = array(
+        10 => "进行中",
+        20 => "取消",
+        21 => "待取消",
+        30 => "已完成",                        
+    );    
 ?>
 <div class="table-operator">
 <form class="form-horizontal" method="GET" action="<?= base_url('vendor/orders?queryOrderType='.$queryOrderType) ?>" id="vendors-orders-search"/>
@@ -99,6 +106,7 @@
                 <th><?= lang('order_type') ?></th>
                 <th><?= lang('pay_type') ?></th>
                 <th><?= lang('phone') ?></th>
+                <th><?= lang('usr_order_status') ?></th>
                 <th><?= lang('status') ?></th>
                 <th>订单总金额</th>
                 <th>商户销售金额</th>
@@ -120,6 +128,7 @@
                     <td><?= array_key_exists($order['order_source'], $orderSources)? $orderSources[$order['order_source']]:"未知"?></td>
                     <td><?= array_key_exists($order['pay_type'], $payTypeEnum)? $payTypeEnum[$order['pay_type']]:"未知"?></td>
                     <td><?= $order['phone'] ?></td>
+                    <td><span class="<?= $order['order_status'] == 30 ? "ant-tag-green":"ant-tag"?>"><?= array_key_exists($order['order_status'], $orderStatus)? $orderStatus[$order['order_status']]:"进行中"?></span></td>                    
                     <td>
                         <p>
                             <span>付款状态：</span>
@@ -157,10 +166,7 @@
                             <div class="col-sm-6">
                                 <ul>
                                     <li>
-                                        <b><?= lang('first_name') ?></b> <span><?= $order['first_name'] ?></span>
-                                    </li>
-                                    <li>
-                                        <b><?= lang('last_name') ?></b> <span><?= $order['last_name'] ?></span>
+                                        <b><?= lang('name') ?></b> <span><?= $order['name'] ?></span>
                                     </li>
                                     <li>
                                         <b><?= lang('email') ?></b> <span><?= $order['email'] ?></span>
@@ -214,7 +220,7 @@
 <div class="modal fade" id="addExpressNo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="" method="POST">
+            <form action="" method="POST" action="<?= base_url('vendor/orders?queryOrderType='.$queryOrderType) ?>">
                 <input type="hidden" name="order_id" value="<?= $order_id ?>">;
                 <input type="hidden" name="delivery_time" value="<?= time() ?>">;      
                 <div class="modal-header">

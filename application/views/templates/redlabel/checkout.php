@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
+<?php
+$province_list = [];
+?>
 <div class="container" id="checkout-page">
     <?php
     if (isset($cartItems['array']) && $cartItems['array'] != null) {
@@ -81,36 +84,32 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <div class="row">
                         <input type="hidden" name="order_source" value="10">
                         <div class="form-group col-sm-6">
-                            <label for="firstNameInput"><?= lang('first_name') ?> (<sup><?= lang('requires') ?></sup>)</label>
-                            <input id="firstNameInput" class="form-control" name="first_name" value="<?= @$_POST['first_name'] ?>" type="text" placeholder="<?= lang('first_name') ?>">
-                        </div>
-                        <div class="form-group col-sm-6">
-                            <label for="lastNameInput"><?= lang('last_name') ?> (<sup><?= lang('requires') ?></sup>)</label>
-                            <input id="lastNameInput" class="form-control" name="last_name" value="<?= @$_POST['last_name'] ?>" type="text" placeholder="<?= lang('last_name') ?>">
-                        </div>
-                        <div class="form-group col-sm-6">
-                            <label for="emailAddressInput"><?= lang('email_address') ?> (<sup><?= lang('requires') ?></sup>)</label>
-                            <input id="emailAddressInput" class="form-control" name="email" value="<?= @$_POST['email'] ?>" type="text" placeholder="<?= lang('email_address') ?>">
+                            <label for="nameInput"><?= lang('name') ?> (<sup><?= lang('requires') ?></sup>)</label>
+                            <input id="nameInput" class="form-control" style="max-width: 300px;" name="name" value="<?= @$_POST['name'] ?>" type="text" placeholder="<?= lang('name') ?>">
                         </div>
                         <div class="form-group col-sm-6">
                             <label for="phoneInput"><?= lang('phone') ?> (<sup><?= lang('requires') ?></sup>)</label>
-                            <input id="phoneInput" class="form-control" name="phone" value="<?= @$_POST['phone'] ?>" type="text" placeholder="<?= lang('phone') ?>">
-                        </div>
-                        <div class="form-group col-sm-12">
-                            <label for="addressInput"><?= lang('address') ?> (<sup><?= lang('requires') ?></sup>)</label>
-                            <textarea id="addressInput" name="address" class="form-control" rows="3"><?= @$_POST['address'] ?></textarea>
-                        </div>
+                            <input id="phoneInput" class="form-control" style="max-width: 300px;" name="phone" value="<?= @$_POST['phone'] ?>" type="text" placeholder="<?= lang('phone') ?>">
+                        </div>                                                
                         <div class="form-group col-sm-6">
-                            <label for="cityInput"><?= lang('city') ?> (<sup><?= lang('requires') ?></sup>)</label>
-                            <input id="cityInput" class="form-control" name="city" value="<?= @$_POST['city'] ?>" type="text" placeholder="<?= lang('city') ?>">
-                        </div>
+                            <label for="emailAddressInput"><?= lang('email_address') ?> (<sup><?= lang('requires') ?></sup>)</label>
+                            <input id="emailAddressInput" class="form-control" style="max-width: 300px;" name="email" value="<?= @$_POST['email'] ?>" type="text" placeholder="<?= lang('email_address') ?>">
+                        </div> 
                         <div class="form-group col-sm-6">
                             <label for="postInput"><?= lang('post_code') ?></label>
-                            <input id="postInput" class="form-control" name="post_code" value="<?= @$_POST['post_code'] ?>" type="text" placeholder="<?= lang('post_code') ?>">
+                            <input id="postInput" class="form-control" style="max-width: 300px;" name="post_code" value="<?= @$_POST['post_code'] ?>" type="text" placeholder="<?= lang('post_code') ?>">
                         </div>
+                         <div class="form-group col-sm-6">
+                            <label for="cityInput"><?= lang('city') ?> (<sup><?= lang('requires') ?></sup>)</label>
+                            <input id="cityInput" class="form-control" style="max-width: 300px;" name="city" value="<?= @$_POST['city'] ?>" type="text" placeholder="省/市/区（县）例如广东省深圳市龙华区">
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label for="addressInput"><?= lang('address') ?> (<sup><?= lang('requires') ?></sup>)</label>
+                            <textarea id="addressInput" name="address" class="form-control" style="height: 64px; max-width: 300px;" rows="5" placeholder="景龙社区龙华大道3639号环智中心C座"><?= @$_POST['address'] ?></textarea>
+                        </div>                         
                         <div class="form-group col-sm-12">
                             <label for="notesInput"><?= lang('notes') ?></label>
-                            <textarea id="notesInput" class="form-control" name="notes" rows="3"><?= @$_POST['notes'] ?></textarea>
+                            <textarea id="notesInput" class="form-control" name="notes" style="height: 64px; max-width: 300px;" rows="3" placeholder="备注"><?= @$_POST['notes'] ?></textarea>
                         </div>
                     </div>
                     <?php if ($codeDiscounts == 1) { ?>

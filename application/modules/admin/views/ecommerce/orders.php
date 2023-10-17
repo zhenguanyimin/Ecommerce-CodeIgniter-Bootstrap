@@ -70,7 +70,7 @@ if (!isset($_GET['settings'])) {
                             <td><?= date('d.M.Y / H:i:s', $tr['date']); ?></td>
                             <td>
                                 <i class="fa fa-user" aria-hidden="true"></i> 
-                                <?= $tr['first_name'] . ' ' . $tr['last_name'] ?>
+                                <?= $tr['name'] ?>
                             </td>
                             <td><i class="fa fa-phone" aria-hidden="true"></i> <?= $tr['phone'] ?></td>
                             <td class="<?= $class ?> text-center" data-action-id="<?= $tr['id'] ?>">

@@ -60,7 +60,7 @@ class Orders extends VENDOR_Controller
 
         $data = array();
         $head = array();
-        $queryOrderType = $_GET["queryOrderType"];
+        $queryOrderType = isset($_GET["queryOrderType"])? $_GET["queryOrderType"]:"-1";
         $head['title'] = self::QueryOrderTypeDesc[$queryOrderType];
         $head['description'] = self::QueryOrderTypeDesc[$queryOrderType];
         $head['keywords'] = '';
@@ -117,10 +117,10 @@ class Orders extends VENDOR_Controller
         if($pay_status_array['pay_status'] != self::PAYSTATUS_SUCCESS || $delivery_status_array['delivery_status'] != self::RECEIVED){
             $this->session->set_flashdata('error', "订单未付款或未发货，确认收货有误");           
         }
-        else{;
+        else{
             $this->Orders_model->updateOrderReceiptStatus($_POST);                
         }
-        redirect('myaccount'); 
+        redirect('userorders?queryOrderType='.$_GET["queryOrderType"]); 
     }
     
     private function validateExpress()

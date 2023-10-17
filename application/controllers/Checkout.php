@@ -96,7 +96,7 @@ class Checkout extends MY_Controller
             if ($result == true) {
                 $url = parse_url(base_url());
                 $msg = lang('please_confirm') . base_url('confirm/' . $link);
-                $this->sendmail->sendTo($_POST['email'], $_POST['first_name'] . ' ' . $_POST['last_name'], lang('confirm_order_subj') . $url['host'], $msg);
+                $this->sendmail->sendTo($_POST['email'], $_POST['name'], lang('confirm_order_subj') . $url['host'], $msg);
             }
         }
     }
@@ -146,11 +146,8 @@ class Checkout extends MY_Controller
     private function userInfoValidate($post)
     {
         $errors = array();
-        if (mb_strlen(trim($post['first_name'])) == 0) {
-            $errors[] = lang('first_name_empty');
-        }
-        if (mb_strlen(trim($post['last_name'])) == 0) {
-            $errors[] = lang('last_name_empty');
+        if (mb_strlen(trim($post['name'])) == 0) {
+            $errors[] = lang('name_empty');
         }
         if (!filter_var($post['email'], FILTER_VALIDATE_EMAIL)) {
             $errors[] = lang('invalid_email');

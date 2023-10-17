@@ -103,7 +103,7 @@ class Users extends MY_Controller
 
         $head = array();
         $data = array();
-        $queryOrderType = $_GET["queryOrderType"];
+        $queryOrderType = isset($_GET["queryOrderType"])? $_GET["queryOrderType"]:"-1";
         $head['title'] = self::QueryOrderTypeDesc[$queryOrderType];
         $head['description'] = self::QueryOrderTypeDesc[$queryOrderType];
         $head['keywords'] = str_replace(" ", ",", $head['title']);

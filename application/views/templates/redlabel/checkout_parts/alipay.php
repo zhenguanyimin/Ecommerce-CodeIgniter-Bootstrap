@@ -225,6 +225,7 @@ if($alipay_sandbox == 0){
 else{
     Pay::config($sandbox_config);
     $total_amount = '0.01';
+    $orderId = $orderId+10000;
 }
 
 
