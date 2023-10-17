@@ -370,8 +370,7 @@ class Public_model extends CI_Model
         $lastId = $this->db->insert_id();
         if (!$this->db->insert('orders_clients', array(
                     'for_id' => $lastId,
-                    'first_name' => $this->encryption->encrypt($post['first_name']),
-                    'last_name' => $this->encryption->encrypt($post['last_name']),
+                    'name' => $this->encryption->encrypt($post['name']),
                     'email' => $this->encryption->encrypt($post['email']),
                     'phone' => $this->encryption->encrypt($post['phone']),
                     'address' => $this->encryption->encrypt($post['address']),
@@ -422,7 +421,6 @@ class Public_model extends CI_Model
             return $this->insertVendorOrder($post); 
         }
         else{
-            $post["order_source"] = 10;
             foreach ($post['products'] as $product_id => $product_quantity) {
                 $productInfo = $this->getOneProduct($product_id);
                 if ($productInfo['vendor_id'] > 0) {
@@ -480,8 +478,7 @@ class Public_model extends CI_Model
         $lastId = $this->db->insert_id();
         if (!$this->db->insert('vendors_orders_clients', array(
                     'for_id' => $lastId,
-                    'first_name' => $this->encryption->encrypt($post['first_name']),
-                    'last_name' => $this->encryption->encrypt($post['last_name']),
+                    'name' => $this->encryption->encrypt($post['name']),
                     'email' => $this->encryption->encrypt($post['email']),
                     'phone' => $this->encryption->encrypt($post['phone']),
                     'address' => $this->encryption->encrypt($post['address']),
@@ -902,8 +899,8 @@ class Public_model extends CI_Model
     {
         $this->db->where('user_id', $userId);
         $this->db->order_by('id', 'DESC');
-        $this->db->select('orders.*, orders_clients.first_name,'
-                . ' orders_clients.last_name, orders_clients.email, orders_clients.phone,'
+        $this->db->select('orders.*, orders_clients.name,'
+                . ' orders_clients.email, orders_clients.phone,'
                 . ' orders_clients.address, orders_clients.city, orders_clients.post_code,'
                 . ' orders_clients.notes, discount_codes.type as discount_type, discount_codes.amount as discount_amount,'
                 . ' vendors_orders.pay_status, vendors_orders.delivery_status, vendors_orders.receipt_status,vendors_orders.order_status as vendor_order_status,'
