@@ -15,16 +15,32 @@ class VENDOR_Controller extends MX_Controller
     public $vendor_id;
     public $vendor_name;
     public $vendor_url;
-
+    
+    //订单类型   
+    const QUERY_ORDER_TYPE_ALL = -1;
+    const QUERY_ORDER_TYPE_DELIVERY = 10;
+    const QUERY_ORDER_TYPE_RECEIPT = 20;
+    const QUERY_ORDER_TYPE_UNPAY = 30;
+    const QUERY_ORDER_TYPE_COMPLETED = 40;
+    const QUERY_ORDER_TYPE_CANCELED = 50;
+    const QUERY_ORDER_TYPE_AFTERSALES = 60;
+    
     public function __construct()
     {
         parent::__construct();
         $this->loginCheck();
         $this->setVendorInfo();
+        $this->load->model(array('Orders_model', 'Products_model'));
         $this->allowed_img_types = $this->config->item('allowed_img_types');
+        $numNotHandleDeliveryOrders = $this->Orders_model->newOrdersCheck($this->vendor_id, self::QUERY_ORDER_TYPE_DELIVERY);
+        $numNotHandleUnPayOrders = $this->Orders_model->newOrdersCheck($this->vendor_id, self::QUERY_ORDER_TYPE_UNPAY);
+        $numNotHandleAfterSalesOrders = $this->Orders_model->newOrdersCheck($this->vendor_id, self::QUERY_ORDER_TYPE_AFTERSALES);
         $vars = array();
         $vars['vendor_name'] = $this->vendor_name;
-        $vars['vendor_url'] = $this->vendor_url;
+        $vars['vendor_url'] = $this->vendor_url;        
+        $vars['numNotHandleDeliveryOrders'] = $numNotHandleDeliveryOrders; 
+        $vars['numNotHandleUnPayOrders'] = $numNotHandleUnPayOrders; 
+        $vars['numNotHandleAfterSalesOrders'] = $numNotHandleAfterSalesOrders;         
         $this->load->vars($vars);
         if (isset($_POST['saveVendorDetails'])) {
             $this->saveNewVendorDetails();

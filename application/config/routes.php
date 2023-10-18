@@ -230,7 +230,8 @@ $route['admin/uploadOthersImages'] = "admin/ecommerce/publish/do_upload_others_i
 $route['admin/loadOthersImages'] = "admin/ecommerce/publish/loadOthersImages";
 // VENDORS
 $route['admin/listvendors'] = "admin/vendors/listvendors";
-
+// USERS
+$route['admin/listusers'] = "admin/users/listusers";
 /*
   | -------------------------------------------------------------------------
   | Sample REST API Routes

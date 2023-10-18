@@ -101,6 +101,7 @@
     <table class="table">
         <thead class="blue-grey lighten-4">
             <tr>
+                <th>#</th>
                 <th>订单号</th>
                 <th><?= lang('time_created') ?></th>
                 <th><?= lang('order_type') ?></th>
@@ -123,7 +124,15 @@
                 $order_id = $order['order_id'];
                 ?>
                 <tr>
-                    <td><?= $order['order_id'] ?></td>
+                    <td><?= $i+1 ?></td>
+                    <td class="relative" id="order_id-id-<?= $order['order_id'] ?>">
+                        # <?= $order['order_id'] ?>
+                        <?php if ($order['order_source'] != 20 && $order['delivery_status'] == 10) { ?>
+                            <div id="new-order-alert-<?= $order['id'] ?>">
+                                <img src="<?= base_url('assets/imgs/new-blinking.gif') ?>" style="width:100px;" alt="blinking">
+                            </div>
+                        <?php } ?>
+                    </td>                    
                     <td><?= date('Y-m-d H:i:s', $order['date']) ?></td>
                     <td><?= array_key_exists($order['order_source'], $orderSources)? $orderSources[$order['order_source']]:"未知"?></td>
                     <td><?= array_key_exists($order['pay_type'], $payTypeEnum)? $payTypeEnum[$order['pay_type']]:"未知"?></td>

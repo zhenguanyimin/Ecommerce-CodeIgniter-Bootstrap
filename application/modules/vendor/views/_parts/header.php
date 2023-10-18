@@ -102,6 +102,9 @@
                                                 <a href="<?= LANG_URL . '/vendor/orders?queryOrderType='.$queryOrderTypes["待发货"] ?>" aria-expanded="false">
                                                     <i class="mdi"></i>
                                                     <span class="hide-menu"><?= lang('vendor_order_delivery') ?></span>
+                                                    <?php if ($numNotHandleDeliveryOrders > 0) { ?>
+                                                        <img src="<?= base_url('assets/imgs/exlamation-hi.png') ?>" style="position: absolute; padding: 0px 0px 0px 6px; width: 10px;height: 23px" alt="">
+                                                    <?php } ?>                                                    
                                                 </a>                               
                                             </li>
                                             <li class=<?= isset($_GET["queryOrderType"])&&($_GET["queryOrderType"] == $queryOrderTypes["待收货"])? "active":"" ?>>
@@ -114,6 +117,9 @@
                                                 <a href="<?= LANG_URL . '/vendor/orders?queryOrderType='.$queryOrderTypes["未支付"] ?>" aria-expanded="false">
                                                     <i class="mdi"></i>
                                                     <span class="hide-menu"><?= lang('vendor_order_unpay') ?></span>
+                                                    <?php if ($numNotHandleUnPayOrders > 0) { ?>
+                                                        <img src="<?= base_url('assets/imgs/exlamation-hi.png') ?>" style="position: absolute;padding: 0px 0px 0px 6px; width: 10px;height: 23px" alt="">
+                                                    <?php } ?>                                                    
                                                 </a>                               
                                             </li> 
                                             <li class=<?= isset($_GET["queryOrderType"])&&($_GET["queryOrderType"] == $queryOrderTypes["已完成"])? "active":"" ?>>
@@ -132,6 +138,9 @@
                                                 <a href="<?= LANG_URL . '/vendor/orders?queryOrderType='.$queryOrderTypes["售后管理"] ?>" aria-expanded="false">
                                                     <i class="mdi"></i>
                                                     <span class="hide-menu"><?= lang('vendor_order_aftersales') ?></span>
+                                                    <?php if ($numNotHandleAfterSalesOrders > 0) { ?>
+                                                        <img src="<?= base_url('assets/imgs/exlamation-hi.png') ?>" style="position: absolute; padding: 0px 0px 0px 6px; width: 10px;height: 23px" alt="">
+                                                    <?php } ?>
                                                 </a>                               
                                             </li>                                            
                                         </div>                                                                                                           

@@ -26,16 +26,7 @@ class Orders extends VENDOR_Controller
     const NOT_RECEIVED = 10;
 
     // 已收货
-    const RECEIVED = 20;
-    
-    //订单类型   
-    const QUERY_ORDER_TYPE_ALL = -1;
-    const QUERY_ORDER_TYPE_DELIVERY = 10;
-    const QUERY_ORDER_TYPE_RECEIPT = 20;
-    const QUERY_ORDER_TYPE_UNPAY = 30;
-    const QUERY_ORDER_TYPE_COMPLETED = 40;
-    const QUERY_ORDER_TYPE_CANCELED = 50;
-    const QUERY_ORDER_TYPE_AFTERSALES = 60;
+    const RECEIVED = 20;    
     
     const QueryOrderTypeDesc = array(
         self::QUERY_ORDER_TYPE_ALL => "所有订单" ,
@@ -52,7 +43,6 @@ class Orders extends VENDOR_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model(array('Orders_model', 'Products_model'));
     }
 
     public function index($page = 0)

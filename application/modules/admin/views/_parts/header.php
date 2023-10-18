@@ -148,8 +148,9 @@
                                     <li><a href="<?= base_url('admin/languages') ?>" <?= urldecode(uri_string()) == 'admin/languages' ? 'class="active"' : '' ?>><i class="fa fa-globe" aria-hidden="true"></i> <?= lang('languages') ?></a></li>
                                     <li><a href="<?= base_url('admin/filemanager') ?>" <?= urldecode(uri_string()) == 'admin/filemanager' ? 'class="active"' : '' ?>><i class="fa fa-file-code-o" aria-hidden="true"></i> <?= lang('file_manager') ?></a></li>
                                     <li><a href="<?= base_url('admin/adminusers') ?>" <?= urldecode(uri_string()) == 'admin/adminusers' ? 'class="active"' : '' ?>><i class="fa fa-user" aria-hidden="true"></i> <?= lang('admin_users') ?></a></li>
-                                    <li class="header"><?= lang('VENDORS') ?></li>
-                                    <li><a href="<?= base_url('admin/listvendors') ?>" <?= urldecode(uri_string()) == 'admin/listvendors' ? 'class="active"' : '' ?>><i class="fa fa-user" aria-hidden="true"></i> <?= lang('list_vendors') ?></a></li>
+                                    <li class="header"><?= lang('user_mananger') ?></li>
+                                    <li><a href="<?= base_url('admin/listvendors') ?>" <?= urldecode(uri_string()) == 'admin/listvendors' ? 'class="active"' : '' ?>><i class="fa fa-user" aria-hidden="true"></i> <?= lang('vendor_manage') ?></a></li>
+                                    <li><a href="<?= base_url('admin/listusers') ?>" <?= urldecode(uri_string()) == 'admin/listusers' ? 'class="active"' : '' ?>><i class="fa fa-user" aria-hidden="true"></i> <?= lang('buyer_manage') ?></a></li>
                                 </ul>
                             </div>
                             <div class="col-sm-9 col-md-9 col-lg-10 col-sm-offset-3 col-md-offset-3 col-lg-offset-2">

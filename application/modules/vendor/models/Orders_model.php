@@ -52,7 +52,57 @@ class Orders_model extends CI_Model
         $this->db->where('vendor_id', $vendor_id);
         return $this->db->count_all_results('vendors_orders');
     }
-
+    
+    public function newOrdersCheck($vendor_id, $order_type)
+    {
+        // 检索查询条件
+        $filter = [];
+        
+        //订单查询类型
+        if($order_type == self::QUERY_ORDER_TYPE_DELIVERY){
+            $filter[] = ['pay_status =', self::PAYSTATUS_SUCCESS];
+            $filter[] = ['delivery_status =', self::NOT_DELIVERED];
+        }
+        else if($order_type == self::QUERY_ORDER_TYPE_RECEIPT){
+            $filter[] = ['pay_status =', self::PAYSTATUS_SUCCESS];
+            $filter[] = ['delivery_status =', self::DELIVERED];
+            $filter[] = ['receipt_status =', self::NOT_RECEIVED];
+        }
+        else if($order_type == self::QUERY_ORDER_TYPE_UNPAY){
+            $filter[] = ['pay_status =', self::PAYSTATUS_PENDING];
+            $filter[] = ['delivery_status =', self::NOT_DELIVERED];
+            $filter[] = ['receipt_status =', self::NOT_RECEIVED];
+            $filter[] = ['order_status =', self::NORMAL];
+        }        
+        else if($order_type == self::QUERY_ORDER_TYPE_COMPLETED){
+            $filter[] = ['pay_status =', self::PAYSTATUS_SUCCESS];
+            $filter[] = ['delivery_status =', self::DELIVERED];
+            $filter[] = ['receipt_status =', self::RECEIVED];
+            $filter[] = ['order_status =', self::COMPLETED];
+        }        
+        else if($order_type == self::QUERY_ORDER_TYPE_CANCELED){
+            $filter[] = ['pay_status =', self::PAYSTATUS_SUCCESS];
+            $filter[] = ['delivery_status =', self::DELIVERED];
+            $filter[] = ['receipt_status =', self::RECEIVED];
+            $filter[] = ['order_status =', self::CANCELLED];
+        }
+        
+        else if($order_type == self::QUERY_ORDER_TYPE_AFTERSALES){
+            $filter[] = ['pay_status =', self::PAYSTATUS_SUCCESS];
+            $filter[] = ['delivery_status =', self::DELIVERED];
+            $filter[] = ['receipt_status =', self::RECEIVED];
+            $filter[] = ['order_status =', self::APPLY_CANCEL];
+        }
+        foreach($filter as $v) {
+            $this->db->where($v[0], $v[1]);
+        }
+        $this->db->where('vendor_id', $vendor_id);
+        $this->db->select('count(id) as num');
+        $result = $this->db->get('vendors_orders');
+        $row = $result->row_array();
+        return $row['num'];
+    }
+    
     public function orders($limit, $page, $big_get = [], $vendor_id)
     {
         // 设置订单类型条件
