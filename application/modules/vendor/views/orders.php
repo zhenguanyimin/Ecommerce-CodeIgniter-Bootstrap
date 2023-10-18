@@ -101,7 +101,7 @@
     <table class="table">
         <thead class="blue-grey lighten-4">
             <tr>
-                <th>#</th>
+                <th>序号</th>
                 <th>订单号</th>
                 <th><?= lang('time_created') ?></th>
                 <th><?= lang('order_type') ?></th>

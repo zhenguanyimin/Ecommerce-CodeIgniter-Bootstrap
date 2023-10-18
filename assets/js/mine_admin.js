@@ -516,3 +516,19 @@ function changePass() {
         alert('Too short pass!');
     }
 }
+
+function submitForm() {
+    document.getElementById("admin-orders-search").submit();
+}
+
+$('#clear-form-admin-orders').click(function () {
+    $('#admin-orders-search .clear-control').each(function () {
+        $(this).val('');
+    });
+
+    $('#searchType').val('10');
+    $('#orderSource').val('-1');
+    $('#payType').val('-1');
+    $('#deliveryType').val('-1');    
+    submitForm();
+});

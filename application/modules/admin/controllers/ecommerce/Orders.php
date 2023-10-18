@@ -34,8 +34,13 @@ class Orders extends ADMIN_Controller
             $order_by = $_GET['order_by'];
         }
         $rowscount = $this->Orders_model->ordersCount();
-        $data['orders'] = $this->Orders_model->orders($this->num_rows, $page, $order_by);
+        $data['orders'] = $this->Orders_model->orders($this->num_rows, $page, $_GET, $order_by);
         $data['links_pagination'] = pagination('admin/orders', $rowscount, $this->num_rows, 3);
+        
+        if (isset($_POST['express_no'])) {
+            $this->orderDelivery();
+        }
+        
         if (isset($_POST['paypal_sandbox'])) {
             $this->Home_admin_model->setValueStore('paypal_sandbox', $_POST['paypal_sandbox']);
             if ($_POST['paypal_sandbox'] == 1) {
@@ -85,6 +90,7 @@ class Orders extends ADMIN_Controller
         $data['alipay_visibility'] = $this->Home_admin_model->getValueStore('alipay_visibility');
         $data['alipay_sandbox'] = $this->Home_admin_model->getValueStore('alipay_sandbox');
         $data['bank_account'] = $this->Orders_model->getBankAccountSettings();
+        $data['expresses'] = $this->Public_model->getAllExpress();        
         $this->load->view('_parts/header', $head);
         $this->load->view('ecommerce/orders', $data);
         $this->load->view('_parts/footer');
@@ -134,6 +140,45 @@ class Orders extends ADMIN_Controller
         $this->saveHistory('Change status of Order Id ' . $_POST['the_id'] . ' to status ' . $_POST['to_status']);
     }
 
+    public function orderDelivery()
+    {
+        $isValid = $this->validateExpress();
+        if ($isValid === true) {
+            $_POST["delivery_status"] = self::DELIVERED;
+            $this->Orders_model->updateOrderDeliveryStatus($_POST);
+            $this->session->set_flashdata('success', 'Changes are saved');
+        } else {
+            $this->session->set_flashdata('error', $isValid);
+            $this->session->set_flashdata('post', $_POST);
+        }
+        redirect('admin/orders');        
+    }
+    
+    private function validateExpress()
+    {
+        $errors = array();
+        if (empty($_POST['express_id'])) {
+            $errors[] = '物流公司为空';
+        }
+        if (empty($_POST['express_no'])) {
+            $errors[] = '物流单号为空';
+        }
+        if (empty($_POST['order_id'])) {
+            $errors[] = '订单号为空';
+        }
+        else{
+            $result = $this->Orders_model->getOrderPayStatus($_POST['order_id']);
+            if($result["pay_status"] == self::PAYSTATUS_PENDING){
+                $errors[] = '订单未付款，不能发货';                            
+            }
+        }
+
+        if (empty($errors)) {
+            return true;
+        }
+        return $errors;
+    }    
+    
     private function sendVirtualProducts()
     {
         if(isset($_POST['products']) && $_POST['products'] != '') {

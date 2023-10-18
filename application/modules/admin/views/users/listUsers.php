@@ -6,7 +6,7 @@
     if ($users->result()) {
         ?>
         <div class="table-responsive">
-            <table class="table table-striped custab">
+            <table class="table table-striped custab table-condensed table-bordered">
                 <thead>
                     <tr>
                         <th>用户ID</th>

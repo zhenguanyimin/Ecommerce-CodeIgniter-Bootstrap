@@ -4,6 +4,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Checkout extends MY_Controller
 {
+    // 待支付
+    const PAYSTATUS_PENDING = 10;
+
+    // 支付成功
+    const PAYSTATUS_SUCCESS = 20;
+    
     // 商户未支付保证金
     const VENDOR_BOND_UNPAY = 0;
 
@@ -279,7 +285,7 @@ class Checkout extends MY_Controller
         @delete_cookie('vendorBond');
 	$this->shoppingcart->clearShoppingCart();
         $orderId = get_cookie('alipay');
-        $result = $this->Public_model->changeAlipayPayStatus($orderId, 'payed');
+        $result = $this->Public_model->changeAlipayPayStatus($orderId, self::PAYSTATUS_SUCCESS);
         if ($result == true) {            
             if (get_cookie('vendorBond') != null) {
                 $this->Public_model->changeAlipayOrderStatus($orderId, 30);

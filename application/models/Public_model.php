@@ -671,23 +671,12 @@ class Public_model extends CI_Model
         }
     }
 
-    public function changeAlipayPayStatus($order_id, $status)
+    public function changeAlipayPayStatus($order_id, $pay_status)
     {
-        $processed = 0;
-        $pay_status = self::PAYSTATUS_PENDING;
-        if ($status == 'canceled') {
-            $processed = 2;
-        }
-        else if($status == 'payed'){
-            $processed = 1;
-            $pay_status = self::PAYSTATUS_SUCCESS;            
-        }
         $this->db->trans_begin();
         $this->db->where('order_id', $order_id);
         if (!$this->db->update('orders', array(
-                    'alipay_status' => $status,
-                    'pay_status' => $pay_status,
-                    'processed' => $processed
+                    'pay_status' => $pay_status
                 ))) {
             log_message('error', print_r($this->db->error(), true));
         }

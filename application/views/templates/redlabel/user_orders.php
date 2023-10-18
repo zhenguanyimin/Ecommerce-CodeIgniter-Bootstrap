@@ -44,6 +44,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <table class="table table-condensed table-bordered table-striped">
                     <thead>
                         <tr>
+                            <th>序号</th>
                             <th><?= lang('usr_order_id') ?></th>
                             <th><?= lang('usr_order_date') ?></th>
                             <th><?= lang('usr_order_pay_type') ?></th>
@@ -61,10 +62,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </thead>
                     <tbody>
                         <?php
+                        $i = 0;
                         if (!empty($orders_history)) {
                             foreach ($orders_history as $order) {
                                 ?>
                                 <tr>
+                                    <td><?= $i+1 ?></td>
                                     <td><?= $order['child_order_id'] ?></td>
                                     <td><?= date('Y-m-d H:i:s', $order['date']) ?></td>
                                     <td><?= array_key_exists($order['pay_type'], $payTypeEnum)? $payTypeEnum[$order['pay_type']]:"未知"?></td>
@@ -120,6 +123,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                      </td>                                    
                                 </tr>
                                 <?php
+                                $i++;
                             }
                         } else {
                             ?>
