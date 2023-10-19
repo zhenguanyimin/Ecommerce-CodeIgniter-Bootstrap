@@ -12,7 +12,9 @@ class Auth extends VENDOR_Controller
 {
 
     private $registerErrors = array();
-
+    CONST VENDOR_STATUS_OFFLINE = 0;    
+    CONST VENDOR_STATUS_ONLINE = 1;
+    
     public function __construct()
     {
         parent::__construct();
@@ -43,6 +45,11 @@ class Auth extends VENDOR_Controller
                     $remember_me = true;
                 }
                 $this->setLoginSession($_POST['u_email'], $remember_me);
+                $_POST['email'] = $_POST['u_email'];
+                $_POST['online_status'] = self::VENDOR_STATUS_ONLINE;
+                $_POST['login_at'] = time();
+                $this->Vendorprofile_model->updateVendorLoginStatus($_POST);
+                
                 $result = $this->checkVendorInfoComplete();
                 if(!$result){
                     $this->session->set_flashdata('vendor_info_warning', lang('vendor_info_warning'));

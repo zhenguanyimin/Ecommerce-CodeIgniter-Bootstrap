@@ -2,6 +2,12 @@
 
 class Vendorprofile_model extends CI_Model
 {
+    // 待支付
+    const PAYSTATUS_PENDING = 10;
+
+    // 支付成功
+    const PAYSTATUS_SUCCESS = 20;   
+    
     // 进行中
     const NORMAL = 10;
 
@@ -14,6 +20,12 @@ class Vendorprofile_model extends CI_Model
     // 已完成
     const COMPLETED = 30;
 
+    CONST USER_STATUS_OFFLINE = 0;    
+    CONST USER_STATUS_ONLINE = 1;
+
+    CONST USER_STATUS_NORMAL = 1;
+    CONST USER_STATUS_INVALID = 2;
+    
     public function __construct()
     {
         parent::__construct();
@@ -68,6 +80,26 @@ class Vendorprofile_model extends CI_Model
         $this->db->where('vendor_id', $vendor_id);         
         return $this->db->count_all_results('vendors_orders');
     }
+
+    public function getOrdersCount($vendor_id)
+    {
+        $this->db->where('vendor_id', $vendor_id);         
+        return $this->db->count_all_results('vendors_orders');
+    }
+
+    public function getPayedOrdersCount($vendor_id)
+    {       
+        $this->db->where('pay_status', self::PAYSTATUS_SUCCESS);        
+        $this->db->where('vendor_id', $vendor_id);         
+        return $this->db->count_all_results('vendors_orders');
+    }
+
+    public function getUnPayOrdersCount($vendor_id)
+    {
+        $this->db->where('pay_status', self::PAYSTATUS_PENDING);    
+        $this->db->where('vendor_id', $vendor_id);         
+        return $this->db->count_all_results('vendors_orders');
+    }
     
     public function getTotalAmount($vendor_id)
     {
@@ -101,6 +133,60 @@ class Vendorprofile_model extends CI_Model
         return $result['total'] > 0 ?$result['total']:0.0;
     }
 
+    public function getAllUsers()
+    {
+        $this->db->select('count(id) as num');
+        $result = $this->db->get('users_public');
+        $row = $result->row_array();
+        return $row['num'];
+    }
+
+    public function getAllVendors()
+    {
+        $this->db->select('count(id) as num');
+        $result = $this->db->get('vendors');
+        $row = $result->row_array();
+        return $row['num'];
+    }
+    
+    public function getTotalUsers($status)
+    {
+        $this->db->where('status', $status);
+        $this->db->select('count(id) as num');
+        $result = $this->db->get('users_public');
+        $row = $result->row_array();
+        return $row['num'];
+    }
+
+    public function getTotalVendors($status)
+    {
+        $this->db->where('vendor_status', $status);
+        $this->db->select('count(id) as num');
+        $result = $this->db->get('vendors');
+        $row = $result->row_array();
+        return $row['num'];
+    }
+    
+    public function getLoginUsers()
+    {
+        $this->db->where('online_status', self::USER_STATUS_ONLINE);
+        $this->db->where('status', self::USER_STATUS_NORMAL);
+        $this->db->select('count(id) as num');
+        $result = $this->db->get('users_public');
+        $row = $result->row_array();
+        return $row['num'];         
+    }
+
+    public function getLoginVendors()
+    {
+        $this->db->where('online_status', self::USER_STATUS_ONLINE);
+        $this->db->where('vendor_status', self::USER_STATUS_NORMAL);
+        $this->db->select('count(id) as num');
+        $result = $this->db->get('vendors');
+        $row = $result->row_array();
+        return $row['num'];         
+    }
+    
     public function getVendorStatus($vendor_id)
     {
         $this->db->where('id', $vendor_id);
@@ -119,6 +205,25 @@ class Vendorprofile_model extends CI_Model
             log_message('error', print_r($this->db->error(), true));
             show_error(lang('database_error'));
         }
+    }
+    public function updateVendorLoginStatus($post)
+    {
+        $array = array(
+            'online_status' => $post['online_status'],
+            'login_at' => $post['login_at']
+        );
+        $this->db->where('email', $post['email']);
+        $this->db->update('vendors', $array);
+    }
+
+    public function updateVendorLogoutStatus($post)
+    {
+        $array = array(
+            'online_status' => $post['online_status'],
+            'logout_at' => $post['logout_at']
+        );
+        $this->db->where('id', $post['id']);
+        $this->db->update('vendors', $array);
     }
     
     public function updateVendorInfo($post)

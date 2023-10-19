@@ -2,6 +2,12 @@
 
 class Orders_model extends CI_Model
 {
+    // 待支付
+    const PAYSTATUS_PENDING = 10;
+
+    // 支付成功
+    const PAYSTATUS_SUCCESS = 20;   
+    
     // 进行中
     const NORMAL = 10;
 
@@ -96,6 +102,23 @@ class Orders_model extends CI_Model
         return $result;
     }
 
+    public function getOrdersCount()
+    {       
+        return $this->db->count_all_results('orders');
+    }
+
+    public function getPayedOrdersCount()
+    {       
+        $this->db->where('pay_status', self::PAYSTATUS_SUCCESS);                
+        return $this->db->count_all_results('orders');
+    }
+
+    public function getUnPayOrdersCount()
+    {
+        $this->db->where('pay_status', self::PAYSTATUS_PENDING);           
+        return $this->db->count_all_results('vendors_orders');
+    }
+    
     /**
      * 设置默认的检索数据
      * @param array $query
@@ -171,42 +194,6 @@ class Orders_model extends CI_Model
         $params['payType'] > -1 && $filter[] = ['pay_type =', (int)$params['payType']];
         // 配送方式
         $params['deliveryType'] > -1 && $filter[] = ['delivery_type =', (int)$params['deliveryType']];
-        
-        //订单查询类型
-        if($params['queryOrderType'] == self::QUERY_ORDER_TYPE_DELIVERY){
-            $filter[] = ['pay_status =', self::PAYSTATUS_SUCCESS];
-            $filter[] = ['delivery_status =', self::NOT_DELIVERED];
-        }
-        else if($params['queryOrderType'] == self::QUERY_ORDER_TYPE_RECEIPT){
-            $filter[] = ['pay_status =', self::PAYSTATUS_SUCCESS];
-            $filter[] = ['delivery_status =', self::DELIVERED];
-            $filter[] = ['receipt_status =', self::NOT_RECEIVED];
-        }
-        else if($params['queryOrderType'] == self::QUERY_ORDER_TYPE_UNPAY){
-            $filter[] = ['pay_status =', self::PAYSTATUS_PENDING];
-            $filter[] = ['delivery_status =', self::NOT_DELIVERED];
-            $filter[] = ['receipt_status =', self::NOT_RECEIVED];
-            $filter[] = ['order_status =', self::NORMAL];
-        }        
-        else if($params['queryOrderType'] == self::QUERY_ORDER_TYPE_COMPLETED){
-            $filter[] = ['pay_status =', self::PAYSTATUS_SUCCESS];
-            $filter[] = ['delivery_status =', self::DELIVERED];
-            $filter[] = ['receipt_status =', self::RECEIVED];
-            $filter[] = ['order_status =', self::COMPLETED];
-        }        
-        else if($params['queryOrderType'] == self::QUERY_ORDER_TYPE_CANCELED){
-            $filter[] = ['pay_status =', self::PAYSTATUS_SUCCESS];
-            $filter[] = ['delivery_status =', self::DELIVERED];
-            $filter[] = ['receipt_status =', self::RECEIVED];
-            $filter[] = ['order_status =', self::CANCELLED];
-        }
-        
-        else if($params['queryOrderType'] == self::QUERY_ORDER_TYPE_AFTERSALES){
-            $filter[] = ['pay_status =', self::PAYSTATUS_SUCCESS];
-            $filter[] = ['delivery_status =', self::DELIVERED];
-            $filter[] = ['receipt_status =', self::RECEIVED];
-            $filter[] = ['order_status =', self::APPLY_CANCEL];
-        }
         
         foreach($filter as $v) {
             $this->db->where($v[0], $v[1]);

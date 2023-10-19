@@ -8,7 +8,10 @@ class Users extends MY_Controller
     private $registerErrors = array();
     private $user_id;
     private $num_rows = 5;
-
+    
+    CONST USER_STATUS_OFFLINE = 0;    
+    CONST USER_STATUS_ONLINE = 1;
+    
     const QueryOrderTypeDesc = array(
         -1 => "所有订单" ,
         10 => "待发货" ,
@@ -32,11 +35,15 @@ class Users extends MY_Controller
     }
 
     public function login()
-    {
-        if (isset($_POST['login'])) {
+    {        
+        if (isset($_POST['login'])) {                        
             $result = $this->Public_model->checkPublicUserIsValid($_POST);
             if ($result !== false) {
                 $_SESSION['logged_user'] = $result; //id of user
+                $_POST['id'] = $result;
+                $_POST['online_status'] = self::USER_STATUS_ONLINE;
+                $_POST['login_at'] = time();
+                $this->Public_model->updateUserLoginStatus($_POST);
                 redirect(LANG_URL . '/');
             } else {
                 $this->session->set_flashdata('userError', lang('wrong_user'));
@@ -59,7 +66,11 @@ class Users extends MY_Controller
                 redirect(LANG_URL . '/register');
             } else {
                 $_SESSION['logged_user'] = $this->user_id; //id of user
-                redirect(LANG_URL . '/checkout');
+                $_POST['id'] = $this->user_id;
+                $_POST['online_status'] = self::USER_STATUS_ONLINE;
+                $_POST['login_at'] = time();
+                $this->Public_model->updateUserLoginStatus($_POST);                
+                redirect(LANG_URL . '/');
             }
         }
         $head = array();
@@ -74,6 +85,10 @@ class Users extends MY_Controller
     {
 	if(!isset($_SESSION['logged_user'])){
 	    $this->session->set_flashdata('userErorr', 'you are login out,please login agian');
+            $_POST['id'] = $this->user_id;
+            $_POST['online_status'] = self::USER_STATUS_OFFLINE;
+            $_POST['logout_at'] = time();
+            $this->Public_model->updateUserLogoutStatus($_POST);            
 	    redirect(LANG_URL . '/login');
 	}        
         if (isset($_POST['update'])) {
@@ -117,7 +132,12 @@ class Users extends MY_Controller
     
     public function logout()
     {
-        unset($_SESSION['logged_user']);
+        $_POST['id'] = $_SESSION['logged_user'];
+        $_POST['online_status'] = self::USER_STATUS_OFFLINE;
+        $_POST['logout_at'] = time();
+        $this->Public_model->updateUserLogoutStatus($_POST);
+        
+        unset($_SESSION['logged_user']);    
         redirect(LANG_URL);
     }
 

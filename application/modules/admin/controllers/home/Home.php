@@ -10,11 +10,13 @@ if (!defined('BASEPATH')) {
 
 class Home extends ADMIN_Controller
 {
-
+    CONST USER_STATUS_NORMAL = 1;
+    CONST USER_STATUS_INVALID = 2;
+    
     public function __construct()
     {
         parent::__construct();
-        $this->load->model(array('Orders_model', 'History_model'));
+        $this->load->model(array('Orders_model', 'History_model', 'vendor/Vendorprofile_model'));
     }
 
     public function index()
@@ -36,6 +38,15 @@ class Home extends ADMIN_Controller
         $data['byReferral'] = $this->Home_admin_model->getReferralOrders();
         $data['ordersByPaymentType'] = $this->Home_admin_model->getOrdersByPaymentType();
         $data['ordersByMonth'] = $this->Home_admin_model->getOrdersByMonth();
+        $data['total_login_users'] = $this->Vendorprofile_model->getLoginUsers();
+        $data['total_login_vendors'] = $this->Vendorprofile_model->getLoginVendors();
+        $data['total_users'] = $this->Vendorprofile_model->getAllUsers();
+        $data['total_vendors'] = $this->Vendorprofile_model->getAllVendors();
+        $data['total_valid_users'] = $this->Vendorprofile_model->getTotalUsers(self::USER_STATUS_NORMAL);
+        $data['total_valid_vendors'] = $this->Vendorprofile_model->getTotalVendors(self::USER_STATUS_NORMAL);        
+        $data['payed_orders'] = $this->Orders_model->getPayedOrdersCount();
+        $data['unpay_orders'] = $this->Orders_model->getUnPayOrdersCount();
+        $data['all_orders'] = $this->Orders_model->getOrdersCount();        
         $this->load->view('_parts/header', $head);
         $this->load->view('home/home', $data);
         $this->load->view('_parts/footer');

@@ -831,7 +831,27 @@ class Public_model extends CI_Model
         ));
         return $this->db->insert_id();
     }
+    
+    public function updateUserLoginStatus($post)
+    {
+        $array = array(
+            'online_status' => $post['online_status'],
+            'login_at' => $post['login_at']
+        );
+        $this->db->where('id', $post['id']);
+        $this->db->update('users_public', $array);
+    }
 
+    public function updateUserLogoutStatus($post)
+    {
+        $array = array(
+            'online_status' => $post['online_status'],
+            'logout_at' => $post['logout_at']
+        );
+        $this->db->where('id', $post['id']);
+        $this->db->update('users_public', $array);
+    }
+    
     public function updateProfile($post)
     {
         $array = array(

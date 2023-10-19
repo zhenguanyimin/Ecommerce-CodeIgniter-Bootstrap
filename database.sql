@@ -149,8 +149,8 @@ CREATE TABLE `users_public` (
   `password` varchar(40) NOT NULL,
   `online_status` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '在线状态(0不在线 1在线)',
   `status` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '用户状态(1正常 2已注销)',
-  `login_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `logout_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `login_at` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '登录时间',
+  `logout_at` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '登出时间',
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -394,7 +394,10 @@ CREATE TABLE `vendors` (
   `vendor_weixin` varchar(50) NOT NULL DEFAULT '' COMMENT '微信账号',
   `password` varchar(100) NOT NULL,
   `bond_status` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '商户保证金缴纳状态(0未缴纳 1已缴纳 2已退还)',
-  `vendor_status` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '商户状态(1正常 2已销户)',  
+  `vendor_status` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '商户状态(1正常 2已销户)',
+  `online_status` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '在线状态(0不在线 1在线)',
+  `login_at` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '登录时间',
+  `logout_at` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '登出时间',  
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
