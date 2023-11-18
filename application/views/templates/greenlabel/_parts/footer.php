@@ -82,7 +82,7 @@
                 <?= $footercopyright ?>
                 <br>
                 <!-- Please do not remove this referention -->
-                Powered by <a href="https://github.com/">清衣商务有限公司</a>
+                Powered by <a href="https://github.com/">深圳市清衣商务有限公司</a>
             </p>
             <div class="pull-right">
                 <ul class="nav nav-pills payments">

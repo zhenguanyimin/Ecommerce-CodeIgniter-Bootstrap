@@ -222,7 +222,7 @@ class Vendorprofile_model extends CI_Model
             'online_status' => $post['online_status'],
             'logout_at' => $post['logout_at']
         );
-        $this->db->where('id', $post['id']);
+        $this->db->where('email', $post['id']);
         $this->db->update('vendors', $array);
     }
     

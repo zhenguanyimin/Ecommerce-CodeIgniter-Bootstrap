@@ -123,10 +123,11 @@ class Users extends MY_Controller
         $head['description'] = self::QueryOrderTypeDesc[$queryOrderType];
         $head['keywords'] = str_replace(" ", ",", $head['title']);
         $data['userInfo'] = $this->Public_model->getUserProfileInfo($_SESSION['logged_user']);
-        $rowscount = $this->Public_model->getUserOrdersHistoryCount($_SESSION['logged_user']);
+//        $rowscount = $this->Public_model->getUserOrdersHistoryCount($_SESSION['logged_user'], $queryOrderType);
         $data['orders_history'] = $this->Public_model->getUserOrdersHistory($_SESSION['logged_user'], $_GET, $page);
         $url = 'userorders?queryOrderType='.$queryOrderType;
-        $data['links_pagination'] = pagination($url, $rowscount, $this->num_rows, 2);
+//        $data['links_pagination'] = pagination($url, $data['orders_history']['orders_num'], $this->num_rows, 2);
+        $data['links_pagination'] = pagination($url, 5, 5, 2);
         $this->render('user_orders', $head, $data);
     }
     

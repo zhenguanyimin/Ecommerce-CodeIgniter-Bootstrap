@@ -932,7 +932,7 @@ class Public_model extends CI_Model
                 return $d !== false ? $d : $v;
             }, $v);
         }
-
+//        $result['orders_num'] = count($result);
         return $result;
     }
 
@@ -1014,30 +1014,30 @@ class Public_model extends CI_Model
         //订单查询类型
         if($params['queryOrderType'] == self::QUERY_ORDER_TYPE_DELIVERY){
             $filter[] = ['vendors_orders.pay_status =', self::PAYSTATUS_SUCCESS];
-            $filter[] = ['delivery_status =', self::NOT_DELIVERED];
+            $filter[] = ['vendors_orders.delivery_status =', self::NOT_DELIVERED];
         }
         else if($params['queryOrderType'] == self::QUERY_ORDER_TYPE_RECEIPT){
             $filter[] = ['vendors_orders.pay_status =', self::PAYSTATUS_SUCCESS];
-            $filter[] = ['delivery_status =', self::DELIVERED];
-            $filter[] = ['receipt_status =', self::NOT_RECEIVED];
+            $filter[] = ['vendors_orders.delivery_status =', self::DELIVERED];
+            $filter[] = ['vendors_orders.receipt_status =', self::NOT_RECEIVED];
         }
         else if($params['queryOrderType'] == self::QUERY_ORDER_TYPE_COMPLETED){
             $filter[] = ['vendors_orders.pay_status =', self::PAYSTATUS_SUCCESS];
-            $filter[] = ['delivery_status =', self::DELIVERED];
-            $filter[] = ['receipt_status =', self::RECEIVED];
+            $filter[] = ['vendors_orders.delivery_status =', self::DELIVERED];
+            $filter[] = ['vendors_orders.receipt_status =', self::RECEIVED];
             $filter[] = ['vendors_orders.order_status =', self::COMPLETED];
         }
         else if($params['queryOrderType'] == self::QUERY_ORDER_TYPE_CANCELED){
             $filter[] = ['vendors_orders.pay_status =', self::PAYSTATUS_SUCCESS];
-            $filter[] = ['delivery_status =', self::DELIVERED];
-            $filter[] = ['receipt_status =', self::RECEIVED];
+            $filter[] = ['vendors_orders.delivery_status =', self::DELIVERED];
+            $filter[] = ['vendors_orders.receipt_status =', self::RECEIVED];
             $filter[] = ['vendors_orders.order_status =', self::CANCELLED];
         }
         
         else if($params['queryOrderType'] == self::QUERY_ORDER_TYPE_AFTERSALES){
             $filter[] = ['vendors_orders.pay_status =', self::PAYSTATUS_SUCCESS];
-            $filter[] = ['delivery_status =', self::DELIVERED];
-            $filter[] = ['receipt_status =', self::RECEIVED];
+            $filter[] = ['vendors_orders.delivery_status =', self::DELIVERED];
+            $filter[] = ['vendors_orders.receipt_status =', self::RECEIVED];
             $filter[] = ['vendors_orders.order_status =', self::APPLY_CANCEL];
         }
         
