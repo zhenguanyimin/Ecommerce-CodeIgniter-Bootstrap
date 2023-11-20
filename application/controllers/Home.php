@@ -11,6 +11,13 @@ class Home extends MY_Controller
     {
         parent::__construct();
         $this->load->Model('admin/Brands_model');
+        $visit_history = array();
+        $visit_history['remote_addr'] = $_SERVER['REMOTE_ADDR'];
+        $visit_history['request_uri'] = $_SERVER['REQUEST_URI'];
+        $visit_history['user_name'] = '';
+        $visit_history['email'] = '';
+//                $this->load->Model('Public_model');
+        $this->Public_model->setVisitHistory($visit_history); 
     }
 
     public function index($page = 0)
@@ -36,7 +43,7 @@ class Home extends MY_Controller
         $data['showBrands'] = $this->Home_admin_model->getValueStore('showBrands');
         $data['brands'] = $this->Brands_model->getBrands();
         $data['links_pagination'] = pagination('home', $rowscount, $this->num_rows);
-        $this->render('home', $head, $data);
+        $this->render('home', $head, $data);    
     }
 
     /*

@@ -46,7 +46,11 @@ class Home extends ADMIN_Controller
         $data['total_valid_vendors'] = $this->Vendorprofile_model->getTotalVendors(self::USER_STATUS_NORMAL);        
         $data['payed_orders'] = $this->Orders_model->getPayedOrdersCount();
         $data['unpay_orders'] = $this->Orders_model->getUnPayOrdersCount();
-        $data['all_orders'] = $this->Orders_model->getOrdersCount();        
+        $data['all_orders'] = $this->Orders_model->getOrdersCount();
+        $data['user_visit_count_by_day'] = $this->Public_model->getUserVisitHistoryCountByDay();
+        $data['user_visit_count_by_month'] = $this->Public_model->getUserVisitHistoryCountByMonth();
+        $data['vendor_visit_count_by_day'] = $this->Public_model->getVendorVisitHistoryCountByDay();
+        $data['vendor_visit_count_by_month'] = $this->Public_model->getVendorVisitHistoryCountByMonth();
         $this->load->view('_parts/header', $head);
         $this->load->view('home/home', $data);
         $this->load->view('_parts/footer');

@@ -151,6 +151,7 @@
                                     <li class="header"><?= lang('user_mananger') ?></li>
                                     <li><a href="<?= base_url('admin/listvendors') ?>" <?= urldecode(uri_string()) == 'admin/listvendors' ? 'class="active"' : '' ?>><i class="fa fa-user" aria-hidden="true"></i> <?= lang('vendor_manage') ?></a></li>
                                     <li><a href="<?= base_url('admin/listusers') ?>" <?= urldecode(uri_string()) == 'admin/listusers' ? 'class="active"' : '' ?>><i class="fa fa-user" aria-hidden="true"></i> <?= lang('buyer_manage') ?></a></li>
+                                    <li><a href="<?= base_url('admin/visitCount') ?>" <?= urldecode(uri_string()) == 'admin/visitCount' ? 'class="active"' : '' ?>><i class="fa fa-user" aria-hidden="true"></i> <?= lang('visit_count') ?></a></li>                                
                                 </ul>
                             </div>
                             <div class="col-sm-9 col-md-9 col-lg-10 col-sm-offset-3 col-md-offset-3 col-lg-offset-2">

@@ -145,12 +145,14 @@
                             <i class="fa fa-envelope-o fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div class="huge"><?= $lastSubscribed ?></div>
-                            <div>New subscribed!</div>
+                            <div><?= '日用户访问数:'.$user_visit_count_by_day ?></div>
+                            <div><?= '月用户访问数:'.$user_visit_count_by_month ?></div>
+                            <div><?= '日商户访问数:'.$vendor_visit_count_by_day ?></div>
+                            <div><?= '月商户访问数:'.$vendor_visit_count_by_month ?></div>                            
                         </div>
                     </div>
                 </div>
-                <a href="<?= base_url('admin/emails') ?>">
+                <a href="<?= base_url('admin/visitCount') ?>">
                     <div class="panel-footer">
                         <span class="pull-left">View Details</span>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>

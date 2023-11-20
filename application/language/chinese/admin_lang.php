@@ -33,6 +33,7 @@ $lang['languages'] = '语言';
 $lang['user_mananger'] = '用户管理';
 $lang['vendor_manage'] = '卖家管理';
 $lang['buyer_manage'] = '买家管理';
+$lang['visit_count'] = '访问统计';
 $lang['file_manager'] = '文件管理';
 $lang['admin_users'] = '超级管理员';
 $lang['there_are_some_errors_that_you_must_fix'] = '有一些错误你必须修正';

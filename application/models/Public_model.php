@@ -831,6 +831,65 @@ class Public_model extends CI_Model
         ));
         return $this->db->insert_id();
     }
+    public function getVisitHistory()
+    {
+        $query = $this->db->get('visit_history');
+        return $query;
+    }
+    
+    public function setVisitHistory($post)
+    {
+        $this->db->insert('visit_history', array(
+            'remote_addr' => $post['remote_addr'],
+            'request_uri' => urldecode($post['request_uri']),
+            'visit_time' => time(),
+            'user_name' => $post['user_name'],
+            'email' => $post['email']
+        ));
+        return $this->db->insert_id();
+    }
+
+    public function getUserVisitHistoryCountByDay()
+    {
+        $this->db->select('count(distinct remote_addr) as count');
+        $this->db->where('request_uri not like', "%vendor%");
+        $this->db->where('request_uri like', "/%");
+        $this->db->where('to_days(date(FROM_UNIXTIME(visit_time))) = to_days(now())');
+        $query = $this->db->get('visit_history');
+        $result = $query->row_array();
+        return $result['count'];
+    }
+    
+    public function getVendorVisitHistoryCountByDay()
+    {
+        $this->db->select('count(distinct remote_addr) as count');
+        $this->db->where('request_uri like', "/vendor%");        
+        $this->db->where('to_days(date(FROM_UNIXTIME(visit_time))) = to_days(now())');
+        $query = $this->db->get('visit_history');
+        $result = $query->row_array();
+        return $result['count'];
+    }
+
+    public function getUserVisitHistoryCountByMonth()
+    {
+        $this->db->select('count(distinct remote_addr) as count');
+        $this->db->where('request_uri not like', "%vendor%");
+        $this->db->where('request_uri like', "/%");
+        $this->db->where("MONTH(date(FROM_UNIXTIME(visit_time))) = MONTH(NOW())");
+        $query = $this->db->get('visit_history');
+        $result = $query->row_array();
+        return $result['count'];
+    }
+    
+    public function getVendorVisitHistoryCountByMonth()
+    {
+        $this->db->select('count(distinct remote_addr) as count');
+        $this->db->where('request_uri like', "/vendor%");
+        $this->db->where('MONTH(date(FROM_UNIXTIME(visit_time))) = MONTH(NOW())');
+        $query = $this->db->get('visit_history');
+        $result = $query->row_array();
+        return $result['count'];
+    }
     
     public function updateUserLoginStatus($post)
     {

@@ -14,6 +14,12 @@ class Vendor extends MY_Controller
     {
         parent::__construct();
         $this->load->model('vendor/Vendorprofile_model');
+        $visit_history = array();
+        $visit_history['remote_addr'] = $_SERVER['REMOTE_ADDR'];
+        $visit_history['request_uri'] = $_SERVER['REQUEST_URI'];
+        $visit_history['user_name'] = '';
+        $visit_history['email'] = '';
+        $this->Public_model->setVisitHistory($visit_history);          
     }
 
     public function index($page = 0, $vendor)

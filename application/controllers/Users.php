@@ -27,6 +27,12 @@ class Users extends MY_Controller
         parent::__construct();
         $this->load->library('email');
         $this->load->model(array('vendor/Orders_model'));
+        $visit_history = array();
+        $visit_history['remote_addr'] = $_SERVER['REMOTE_ADDR'];
+        $visit_history['request_uri'] = $_SERVER['REQUEST_URI'];
+        $visit_history['user_name'] = $this->user_id? $this->user_id:'';
+        $visit_history['email'] = '';
+        $this->Public_model->setVisitHistory($visit_history);           
     }
 
     public function index()
@@ -126,7 +132,7 @@ class Users extends MY_Controller
 //        $rowscount = $this->Public_model->getUserOrdersHistoryCount($_SESSION['logged_user'], $queryOrderType);
         $data['orders_history'] = $this->Public_model->getUserOrdersHistory($_SESSION['logged_user'], $_GET, $page);
         $url = 'userorders?queryOrderType='.$queryOrderType;
-//        $data['links_pagination'] = pagination($url, $data['orders_history']['orders_num'], $this->num_rows, 2);
+//        $data['links_pagination'] = pagination($url, count($data['orders_history']), $this->num_rows, 2);
         $data['links_pagination'] = pagination($url, 5, 5, 2);
         $this->render('user_orders', $head, $data);
     }

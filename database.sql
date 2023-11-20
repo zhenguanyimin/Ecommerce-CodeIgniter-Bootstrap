@@ -16,6 +16,16 @@ CREATE TABLE IF NOT EXISTS `blog_posts` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
+CREATE TABLE IF NOT EXISTS `visit_history` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `remote_addr` varchar(50) NOT NULL,
+  `request_uri` varchar(255) NOT NULL,
+  `visit_time` int(10) unsigned NOT NULL,
+  `user_name` varchar(50) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  UNIQUE KEY `id` (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
 CREATE TABLE `cookie_law` (
   `id` int(10) UNSIGNED NOT NULL,
   `link` varchar(255) NOT NULL,
