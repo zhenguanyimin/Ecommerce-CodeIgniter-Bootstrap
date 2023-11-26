@@ -32,6 +32,8 @@ class Products_model extends CI_Model
                         'quantity' => $post['quantity'],
                         'position' => $post['position'],
                         'brand_id' => isset($post['brand_id']) ? $post['brand_id'] : null,
+                        'grade' => $post['grade_id'],
+                        'defect_desc' => $post['defect_desc'],
                         'time_update' => time()
                     ))) {
                 log_message('error', print_r($this->db->error(), true));

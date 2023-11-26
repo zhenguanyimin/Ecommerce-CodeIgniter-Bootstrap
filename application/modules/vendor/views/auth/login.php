@@ -16,10 +16,10 @@
                     <div class="checkbox">
                         <label><input type="checkbox" name="remember_me"><?= lang('remember_me') ?></label>
                     </div>
-                    <input type="submit" name="login" class="login submit" value="<?= lang('u_login') ?>">
+                    <input type="submit" name="login" class="login submit" value="<?= lang('vendor_login') ?>">
                 </form>
                 <div class="login-help">
-                    <a href="<?= LANG_URL . '/vendor/register' ?>"><?= lang('register_me') ?></a> - <a href="<?= LANG_URL . '/vendor/forgotten-password' ?>"><?= lang('forgot_pass') ?></a>
+                    <a href="<?= LANG_URL . '/vendor/register' ?>"><?= lang('vendor_register') ?></a> - <a href="<?= LANG_URL . '/vendor/forgotten-password' ?>"><?= lang('forgot_pass') ?></a>
                 </div>
             </div>
         </div>

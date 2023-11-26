@@ -101,7 +101,7 @@ $timeNow = time();
                 </div> 
                 <?php if ($showBrands == 1) { ?>
                     <div class="form-group for-shop">
-                        <label>Brand</label>
+                        <label><?= lang('brand') ?></label>
                         <select class="selectpicker" name="brand_id">
                             <?php foreach ($brands as $brand) { ?>
                                 <option <?= isset($_POST['brand_id']) && $_POST['brand_id'] == $brand['id'] ? 'selected' : '' ?> value="<?= $brand['id'] ?>"><?= htmlspecialchars($brand['name']) ?></option>
@@ -115,6 +115,18 @@ $timeNow = time();
                 <div class="form-group">
                     <input type="text" placeholder="<?= lang('vendor_position') ?>" name="position" value="<?= isset($_POST['quantity']) ? htmlspecialchars($_POST['position']) : '' ?>" class="form-control">
                 </div>
+                <div class="form-group for-shop">
+                    <label><?= lang('product_grade') ?></label>
+                    <select class="selectpicker" name="grade_id">
+                        <?php foreach ($productGrades as $grade) { ?>
+                            <option <?= isset($_POST['grade_id']) && $_POST['grade_id'] == $grade['grade_id'] ? 'selected' : '' ?> value="<?= $grade['grade_id'] ?>"><?= htmlspecialchars($grade['desc']) ?></option>
+                        <?php } ?>
+                    </select>
+                </div>                
+                <div class="form-group">
+                    <label><?= lang('product_defect') ?></label>
+                    <input type="text" placeholder="<?= '比如轻微污渍破损等' ?>" name="defect_desc" value="<?= isset($_POST['defect_desc']) ? htmlspecialchars($_POST['defect_desc']) : '' ?>" class="form-control">
+                </div>            
                 <button type="submit" name="setProduct" class="btn btn-green"><?= lang('vendor_submit_product') ?></button>
             </form> 
         </div>

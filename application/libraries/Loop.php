@@ -140,7 +140,14 @@ class Loop
                                 <div class="quantity">
                                     <?= lang('in_stock') ?>: <span><?= $article['quantity'] ?></span>
                                 </div>
-                            <?php } if (self::$CI->load->get_var('moreInfoBtn') == 1) { ?>
+                            <?php } ?>
+                            <div class="">
+                                <?= lang('product_grade') ?>: <span><?= $article['shop_categorie'] == 20 ? '无':$article['desc'] ?></span>
+                            </div>
+                            <div class="">
+                                <?= lang('product_defect') ?>: <span><?= empty($article['defect_desc'])? '无':$article['defect_desc'] ?></span>
+                            </div>                                                      
+                            <?php if (self::$CI->load->get_var('moreInfoBtn') == 1) { ?>
                                 <a href="<?= $article['vendor_url'] == null ? LANG_URL . '/' . $article['url'] : LANG_URL . '/' . $article['vendor_url'] . '/' . $article['url'] ?>" class="info-btn gradient-color">
                                     <span class="text-to-bg"><?= lang('info_product_list') ?></span>
                                 </a>
@@ -150,7 +157,7 @@ class Loop
                                 if(self::$CI->load->get_var('refreshAfterAddToCart') == 1) {
                                     $hasRefresh = true;
                                 }
-                            ?>
+                            ?>                         
                             <div class="add-to-cart">
                                 <a href="javascript:void(0);" class="add-to-cart btn-add <?= $hasRefresh === true ? 'refresh-me' : '' ?>" data-goto="<?= LANG_URL . '/shopping-cart' ?>" data-id="<?= $article['id'] ?>">
                                     <img class="loader" src="<?= base_url('assets/imgs/ajax-loader.gif') ?>" alt="Loding">

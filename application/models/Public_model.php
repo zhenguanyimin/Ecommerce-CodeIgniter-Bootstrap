@@ -135,9 +135,10 @@ class Public_model extends CI_Model
         if (!empty($big_get) && isset($big_get['category'])) {
             $this->getFilter($big_get);
         }
-        $this->db->select('vendors.url as vendor_url, products.id,products.image, products.quantity, products_translations.title, products_translations.price, products_translations.old_price, products.url');
+        $this->db->select('vendors.url as vendor_url, products.id,products.image, products.quantity, products_translations.title, products_translations.price, products_translations.old_price, products.url, grade_desc.desc, products.defect_desc, products.shop_categorie');
         $this->db->join('products_translations', 'products_translations.for_id = products.id', 'left');
         $this->db->join('vendors', 'vendors.id = products.vendor_id', 'left');
+        $this->db->join('grade_desc', 'grade_desc.grade_id = products.grade', 'left');
         $this->db->where('products_translations.abbr', MY_LANGUAGE_ABBR);
         $this->db->where('visibility', 1);
         if ($vendor_id !== false) {
@@ -268,9 +269,10 @@ class Public_model extends CI_Model
     {
         $this->db->where('products.id', $id);
 
-        $this->db->select('vendors.url as vendor_url, products.*, products_translations.title,products_translations.description, products_translations.price, products_translations.old_price, products.url, shop_categories_translations.name as categorie_name');
+        $this->db->select('vendors.url as vendor_url, products.*, products_translations.title,products_translations.description, products_translations.price, products_translations.old_price, products.url, shop_categories_translations.name as categorie_name, grade_desc.desc');
 
         $this->db->join('products_translations', 'products_translations.for_id = products.id', 'left');
+        $this->db->join('grade_desc', 'grade_desc.grade_id = products.grade', 'left');
         $this->db->where('products_translations.abbr', MY_LANGUAGE_ABBR);
 
         $this->db->join('shop_categories_translations', 'shop_categories_translations.for_id = products.shop_categorie', 'inner');
@@ -833,8 +835,16 @@ class Public_model extends CI_Model
     }
     public function getVisitHistory()
     {
+        $this->db->order_by('visit_time', 'desc');
         $query = $this->db->get('visit_history');
         return $query;
+    }
+
+    public function getProductGrades()
+    {
+        $this->db->order_by('grade_id', 'desc');
+        $query = $this->db->get('grade_desc');
+        return $query->result_array();
     }
     
     public function setVisitHistory($post)
@@ -842,6 +852,8 @@ class Public_model extends CI_Model
         $this->db->insert('visit_history', array(
             'remote_addr' => $post['remote_addr'],
             'request_uri' => urldecode($post['request_uri']),
+            'remote_location' => $post['remote_location'],
+            'http_referer' => $post['http_referer'],            
             'visit_time' => time(),
             'user_name' => $post['user_name'],
             'email' => $post['email']

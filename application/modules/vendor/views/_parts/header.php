@@ -46,7 +46,7 @@
                         <form method="POST" action="<?= LANG_URL . '/vendor/me' ?>" class="vendor-update">
                             <input type="text" class="form-control" value="<?= $vendor_name ?>" name="vendor_name" placeholder="<?= lang('vendor_name') ?>">
                             <input type="text" class="form-control" value="<?= $vendor_url ?>" name="vendor_url" placeholder="<?= lang('vendor_url') ?>">
-                            <button type="submit" name="saveVendorDetails" class="btn btn-default"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+                            <button type="submit" name="saveVendorDetails" class="btn btn-default"><span>保存</span></button>
                         </form>
                         <ul class="nav navbar-nav navbar-right">
                             <li><a href="<?= LANG_URL . '/vendor/logout' ?>"><?= lang('vendor_logout') ?></a></li>
@@ -56,7 +56,7 @@
                 </nav>
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-sm-3 col-md-3 col-lg-2 left-side">
+                        <div class="col-sm-3 col-md-3 col-lg-2 left-side" >
                             <ul>
                                 <li>
                                     <a href="<?= LANG_URL . '/vendor/me' ?>" aria-expanded="false">
@@ -150,7 +150,7 @@
                             </ul>
                         </div>
                         
-                        <div class="col-sm-9 col-md-9 col-lg-10 col-sm-offset-3 col-md-offset-3 col-lg-offset-2 right-side">
+                        <div class="col-sm-9 col-md-9 col-lg-10 col-sm-offset-3 col-md-offset-3 col-lg-offset-2 right-side" >
                             <div class="page-titles">
                                 <h2><?= $title ?></h2>
                             </div>

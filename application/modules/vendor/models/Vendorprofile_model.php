@@ -54,6 +54,7 @@ class Vendorprofile_model extends CI_Model
 
     public function saveNewVendorDetails($post, $vendor_id)
     {
+        log_message('debug', "saveNewVendorDetails");
         if (!$this->db->where('id', $vendor_id)->update('vendors', array(
                     'name' => $post['vendor_name'],
                     'url' => $post['vendor_url']

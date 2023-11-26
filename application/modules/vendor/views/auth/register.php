@@ -14,7 +14,7 @@
                     <input type="text" name="u_email" value="<?= $this->session->flashdata('email') ? $this->session->flashdata('email') : '' ?>" placeholder="<?= lang('email') ?>">
                     <input type="password" name="u_password" placeholder="<?= lang('password') ?>">
                     <input type="password" name="u_password_repeat" placeholder="<?= lang('password_repeat') ?>">
-                    <input type="submit" name="register" class="login submit" value="<?= lang('register_me') ?>">
+                    <input type="submit" name="register" class="login submit" value="<?= lang('vendor_register') ?>">
                 </form>
             </div>
         </div>

@@ -100,6 +100,7 @@ class VENDOR_Controller extends MX_Controller
             $errors[] = lang('vendor_url_taken');
         }
         if (empty($errors)) {
+            log_message('debug', "saveNewVendorDetails");
             $this->session->set_flashdata('update_vend_details', lang('vendor_details_updated'));
             $this->Vendorprofile_model->saveNewVendorDetails($_POST, $this->vendor_id);
         } else {

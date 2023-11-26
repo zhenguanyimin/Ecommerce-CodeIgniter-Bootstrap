@@ -11,8 +11,10 @@
                 <thead>
                     <tr>
                         <th>序号</th>                        
-                        <th>访问者IP</th>
+                        <th>访问者IP</th>                     
                         <th>访问URL</th>
+                        <th>前URL</th>
+                        <th>访问者地址</th>                           
                         <th>访问时间</th>
                         <th>访问者姓名</th>
                         <th>访问者邮箱</th>
@@ -25,6 +27,8 @@
                         <td><?= $i+1 ?></td>                        
                         <td><?= $user->remote_addr ?></td>
                         <td><?= $user->request_uri ?></td>
+                        <td><?= $user->http_referer ?></td>
+                        <td><?= $user->remote_location ?></td>                        
                         <td><?= date('Y-m-d H:i:s', $user->visit_time) ?></td>
                         <td><?= isset($user->user_name) ? $user->user_name : 'User name is empty' ?></td>
                         <td><?= $user->email ?></td>

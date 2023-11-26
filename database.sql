@@ -20,6 +20,8 @@ CREATE TABLE IF NOT EXISTS `visit_history` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `remote_addr` varchar(50) NOT NULL,
   `request_uri` varchar(255) NOT NULL,
+  `remote_location` varchar(255) NOT NULL,
+  `http_referer` varchar(255) NOT NULL,
   `visit_time` int(10) unsigned NOT NULL,
   `user_name` varchar(50) NOT NULL,
   `email` varchar(255) NOT NULL,
@@ -85,16 +87,18 @@ CREATE TABLE IF NOT EXISTS `languages` (
   `currency` varchar(10) NOT NULL,
   `currencyKey` varchar(5) NOT NULL,
   `flag` varchar(255) NOT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '0不开启 1开启',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 
 
-INSERT INTO `languages` (`id`, `abbr`, `name`, `currency`, `currencyKey`, `flag`) VALUES
-(1, 'bg', 'bulgarian', 'лв', 'BGN', 'bg.jpg'),
-(2, 'en', 'english', '$', 'USD', 'en.jpg'),
-(3, 'gr', 'greece', 'EUR', 'EUR', 'gr.png'),
-(4, 'id', 'indonesian', 'RP', 'IDR', 'id.jpg'),
-(5, 'fr', 'francais', 'EUR', 'EUR', 'fr.jpg');
+INSERT INTO `languages` (`id`, `abbr`, `name`, `currency`, `currencyKey`, `flag`, `status`) VALUES
+(1, 'bg', 'bulgarian', 'лв', 'BGN', 'bg.jpg', '1'),
+(2, 'en', 'english', '$', 'USD', 'en.jpg', '1'),
+(3, 'gr', 'greece', 'EUR', 'EUR', 'gr.png', '1'),
+(4, 'id', 'indonesian', 'RP', 'IDR', 'id.jpg', '1'),
+(5, 'fr', 'francais', 'EUR', 'EUR', 'fr.jpg', '1')
+(6, 'zh', 'chinese', '¥', 'CNY', 'zh.jpg', '1');
 
 
 CREATE TABLE IF NOT EXISTS `orders` (
@@ -179,6 +183,8 @@ CREATE TABLE IF NOT EXISTS `products` (
   `visibility` tinyint(1) NOT NULL DEFAULT '1',
   `shop_categorie` int(11) NOT NULL,
   `quantity` int(11) NOT NULL DEFAULT '0',
+  `grade` tinyint(3) unsigned NOT NULL DEFAULT '6' COMMENT '新旧程度评分(10全新 9九五新 8九成新 7八五新 6八成新 5七五新 4七成新 3六五新 2六成新 1五成新及以下)',
+  `defect_desc` varchar(255) NOT NULL DEFAULT '' COMMENT '瑕疵说明',
   `procurement` int(10) unsigned NOT NULL,
   `in_slider` tinyint(1) NOT NULL DEFAULT '0',
   `url` varchar(255) NOT NULL,
@@ -189,6 +195,24 @@ CREATE TABLE IF NOT EXISTS `products` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
+CREATE TABLE IF NOT EXISTS `grade_desc` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `grade_id` int(10) unsigned NOT NULL,
+  `desc` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+INSERT INTO `grade_desc` (`id`, `grade_id`, `desc`) VALUES
+(1, 10, '全新'),
+(2, 9, '九五新'),
+(3, 8, '九成新'),
+(4, 7, '八五新'),
+(5, 6, '八成新'),
+(6, 5, '七五新'),
+(7, 4, '七成新'),
+(8, 3, '六五新'),
+(9, 2, '六成新'),
+(10, 1, '五成新及以下');
 
 CREATE TABLE IF NOT EXISTS `seo_pages` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

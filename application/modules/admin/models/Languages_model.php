@@ -36,12 +36,13 @@ class Languages_model extends CI_Model
         if ($abbr != null) {
             $this->db->or_where('abbr', $abbr);
         }
+        $this->db->where('status', 1);
         return $this->db->count_all_results('languages');
     }
 
     public function getLanguages()
     {
-        $query = $this->db->query('SELECT * FROM languages');
+        $query = $this->db->query('SELECT * FROM languages where status = 1');
         return $query->result();
     }
 

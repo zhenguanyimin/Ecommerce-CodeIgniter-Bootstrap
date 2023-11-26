@@ -80,6 +80,7 @@ class AddProduct extends VENDOR_Controller
         $data['shop_categories'] = $this->Categories_model->getShopCategories();
         $data['otherImgs'] = $this->loadOthersImages();
         $data['showBrands'] = $this->Home_admin_model->getValueStore('showBrands');
+        $data['productGrades'] = $this->Public_model->getProductGrades();
         $data["vendor_id"] = $this->vendor_id;
         $data["vendor_name"] = $this->vendor_name;
         if($data['showBrands'] == 1) {

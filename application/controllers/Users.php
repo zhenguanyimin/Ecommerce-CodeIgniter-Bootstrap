@@ -28,13 +28,31 @@ class Users extends MY_Controller
         $this->load->library('email');
         $this->load->model(array('vendor/Orders_model'));
         $visit_history = array();
-        $visit_history['remote_addr'] = $_SERVER['REMOTE_ADDR'];
-        $visit_history['request_uri'] = $_SERVER['REQUEST_URI'];
+        $visit_history['remote_addr'] = isset($_SERVER['REMOTE_ADDR'])? $_SERVER['REMOTE_ADDR']:'';
+        $visit_history['request_uri'] = isset($_SERVER['REQUEST_URI'])? $_SERVER['REQUEST_URI']:'';
+        $visit_history['remote_location'] = $this->ip_address($visit_history['remote_addr']);
+        $visit_history['http_referer'] = isset($_SERVER['HTTP_REFERER'])? $_SERVER['HTTP_REFERER']:'';
         $visit_history['user_name'] = $this->user_id? $this->user_id:'';
         $visit_history['email'] = '';
         $this->Public_model->setVisitHistory($visit_history);           
     }
 
+     /**
+     *  调用淘宝API根据IP查询地址
+     */
+    public function ip_address($ip)
+    {
+        $url = file_get_contents("http://whois.pconline.com.cn/ipJson.jsp?ip=$ip&json=true");
+        $UTF8_RESP= iconv("GBK", "UTF-8", $url);         
+        $res1 = json_decode($UTF8_RESP,true);
+        $data =$res1;       
+        if ($data) {
+            return array_key_exists('addr', $data)? $data['addr']: 'unknown';
+        } else {
+            return 'unknown';
+        }
+    }
+    
     public function index()
     {
         show_404();
@@ -57,8 +75,8 @@ class Users extends MY_Controller
         }
         $head = array();
         $data = array();
-        $head['title'] = lang('user_login');
-        $head['description'] = lang('user_login');
+        $head['title'] = lang('login');
+        $head['description'] = lang('login');
         $head['keywords'] = str_replace(" ", ",", $head['title']);
         $this->render('login', $head, $data);
     }
@@ -81,8 +99,8 @@ class Users extends MY_Controller
         }
         $head = array();
         $data = array();
-        $head['title'] = lang('user_register');
-        $head['description'] = lang('user_register');
+        $head['title'] = lang('register');
+        $head['description'] = lang('register');
         $head['keywords'] = str_replace(" ", ",", $head['title']);
         $this->render('signup', $head, $data);
     }

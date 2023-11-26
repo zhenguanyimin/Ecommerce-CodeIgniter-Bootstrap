@@ -15,13 +15,31 @@ class Vendor extends MY_Controller
         parent::__construct();
         $this->load->model('vendor/Vendorprofile_model');
         $visit_history = array();
-        $visit_history['remote_addr'] = $_SERVER['REMOTE_ADDR'];
-        $visit_history['request_uri'] = $_SERVER['REQUEST_URI'];
+        $visit_history['remote_addr'] = isset($_SERVER['REMOTE_ADDR'])? $_SERVER['REMOTE_ADDR']:'';
+        $visit_history['request_uri'] = isset($_SERVER['REQUEST_URI'])? $_SERVER['REQUEST_URI']:'';
+        $visit_history['remote_location'] = $this->ip_address($visit_history['remote_addr']);
+        $visit_history['http_referer'] = isset($_SERVER['HTTP_REFERER'])? $_SERVER['HTTP_REFERER']:'';
         $visit_history['user_name'] = '';
         $visit_history['email'] = '';
         $this->Public_model->setVisitHistory($visit_history);          
     }
 
+     /**
+     *  调用淘宝API根据IP查询地址
+     */
+    public function ip_address($ip)
+    {
+        $url = file_get_contents("http://whois.pconline.com.cn/ipJson.jsp?ip=$ip&json=true");
+        $UTF8_RESP= iconv("GBK", "UTF-8", $url);         
+        $res1 = json_decode($UTF8_RESP,true);
+        $data =$res1;       
+        if ($data) {
+            return array_key_exists('addr', $data)? $data['addr']: 'unknown';
+        } else {
+            return 'unknown';
+        }
+    }
+    
     public function index($page = 0, $vendor)
     {
         $vendorInfo = $this->Vendorprofile_model->getVendorByUrlAddress($vendor);
