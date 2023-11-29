@@ -117,9 +117,9 @@ $timeNow = time();
                 </div>
                 <div class="form-group for-shop">
                     <label><?= lang('product_grade') ?></label>
-                    <select class="selectpicker" name="grade_id">
+                    <select class="selectpicker" name="grade">
                         <?php foreach ($productGrades as $grade) { ?>
-                            <option <?= isset($_POST['grade_id']) && $_POST['grade_id'] == $grade['grade_id'] ? 'selected' : '' ?> value="<?= $grade['grade_id'] ?>"><?= htmlspecialchars($grade['desc']) ?></option>
+                            <option <?= isset($_POST['grade']) && $_POST['grade'] == $grade['grade_id'] ? 'selected' : '' ?> value="<?= $grade['grade_id'] ?>"><?= htmlspecialchars($grade['desc']) ?></option>
                         <?php } ?>
                     </select>
                 </div>                

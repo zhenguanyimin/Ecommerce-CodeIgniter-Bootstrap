@@ -567,9 +567,10 @@ class Public_model extends CI_Model
 
     public function sameCagegoryProducts($categorie, $noId, $vendor_id = false)
     {
-        $this->db->select('vendors.url as vendor_url, products.id, products.quantity, products.image, products.url, products_translations.price, products_translations.title, products_translations.old_price');
+        $this->db->select('vendors.url as vendor_url, products.id, products.quantity, products.image, products.url, products_translations.price, products_translations.title, products_translations.old_price, grade_desc.desc, products.defect_desc, products.shop_categorie');
         $this->db->join('products_translations', 'products_translations.for_id = products.id', 'left');
         $this->db->join('vendors', 'vendors.id = products.vendor_id', 'left');
+        $this->db->join('grade_desc', 'grade_desc.grade_id = products.grade', 'left');
         $this->db->where('products.id !=', $noId);
         if ($vendor_id !== false) {
             $this->db->where('vendor_id', $vendor_id);

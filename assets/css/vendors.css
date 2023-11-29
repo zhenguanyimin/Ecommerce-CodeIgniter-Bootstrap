@@ -15,7 +15,7 @@ html, body { height: 100%; color:#131313; background-color: #eef5f9;}
 .vendor-login a{text-decoration:none;color:#666;font-weight:400;text-align:center;display:inline-block;opacity:.6;transition:opacity ease .5s}
 .vendor-login .login-help{font-size:12px}
 
-.left-side { z-index:9; background-color: #ffffff; box-shadow: 1px 0 20px rgba(0, 0, 0, 0.08); padding: 15px;  bottom: 0;  display: block;  left: 0; overflow: auto; position: absolute;top: 51px; color:#67757c;}
+.left-side {background-color: #ffffff; box-shadow: 1px 0 20px rgba(0, 0, 0, 0.08); padding: 15px;  bottom: 0;  display: block;  left: 0; overflow: auto; position: relative;top: -1px; color:#67757c;}
 .left-side ul {margin: 0; padding: 0; margin-top: 30px; list-style: none;}
 .left-side ul li {margin-bottom: 20px;}
 .left-side ul li a { border-radius: 4px; color: #607d8b;  display: block;  font-size: 15px;  padding: 8px 35px 8px 15px; white-space: nowrap;}
@@ -87,7 +87,7 @@ html, body { height: 100%; color:#131313; background-color: #eef5f9;}
 .page-titles { background-color: #ffffff; box-shadow: 1px 0 5px rgba(0, 0, 0, 0.1);  left: 0;  padding: 30px 20px; position: absolute; top: -20px; width: 100%;}
 .page-titles h2 {color:#009efb; font-size:22px; margin: 0; padding: 0;}
 
-.right-side {padding-top: 80px;}
+.right-side {padding-top: 80px; display: block; overflow: auto; position: absolute;}
 
 .content {border:1px solid #d7dfe3; border-radius: 4px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05); padding: 15px; background-color: #ffffff; color:#67757c;}
 .home-page .fast-view-panel {height: 130px;}
