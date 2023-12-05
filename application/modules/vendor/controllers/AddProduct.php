@@ -29,6 +29,7 @@ class AddProduct extends VENDOR_Controller
         $trans_load = null;
         if ($id > 0 && $_POST == null) {
             $_POST = $this->Products_model->getOneProduct($id, $this->vendor_id);
+            $_POST['grade_id'] = $_POST['grade'];
             $trans_load = $this->Products_model->getTranslations($id);
         }
         if (isset($_POST['setProduct'])) {
