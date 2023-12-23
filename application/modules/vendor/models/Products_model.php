@@ -144,10 +144,9 @@ class Products_model extends CI_Model
         return $this->db->count_all_results('products');
     }
 
-    public function deleteProduct($id)
+    public function deleteProduct($id, $vendor_id)
     {
         $this->db->trans_begin();
-
         $this->db->where('id', $id);
         $this->db->where('vendor_id', $vendor_id);
         if (!$this->db->delete('products')) {

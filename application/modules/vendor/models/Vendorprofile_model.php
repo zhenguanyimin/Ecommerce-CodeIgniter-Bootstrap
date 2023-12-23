@@ -194,7 +194,8 @@ class Vendorprofile_model extends CI_Model
         $this->db->select('vendor_status');
         $this->db->limit(1);
         $result1 = $this->db->get('vendors');
-        return $result1->row_array();        
+        $result = $result1->row_array();
+        return $result['vendor_status'];        
     }
     
     public function updateVendorStatus($vendor_id, $status)

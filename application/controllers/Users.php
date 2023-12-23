@@ -42,7 +42,7 @@ class Users extends MY_Controller
      */
     public function ip_address($ip)
     {
-        $url = file_get_contents("http://whois.pconline.com.cn/ipJson.jsp?ip=$ip&json=true");
+        $url = @file_get_contents("http://whois.pconline.com.cn/ipJson.jsp?ip=$ip&json=true");
         $UTF8_RESP= iconv("GBK", "UTF-8", $url);         
         $res1 = json_decode($UTF8_RESP,true);
         $data =$res1;       

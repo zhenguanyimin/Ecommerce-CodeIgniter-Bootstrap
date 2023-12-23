@@ -33,9 +33,10 @@ class AddProduct extends VENDOR_Controller
             $trans_load = $this->Products_model->getTranslations($id);
         }
         if (isset($_POST['setProduct'])) {
-            
+            log_message("debug", "is true?".($this->Products_model->productsCount($this->vendor_id)));
             //是否已缴纳商户保证金判断
-            if($this->Home_admin_model->getValueStore('vendorBond') > 0 && $this->Vendorprofile_model-> getVendorStatus($this->vendor_id) == 1){ //需缴纳商户保证金
+            if($this->Home_admin_model->getValueStore('vendorBond') > 0 && $this->Vendorprofile_model->getVendorStatus($this->vendor_id) == 1 
+                    && $this->Public_model->getBondPayStatus($this->vendor_id) == 0 && $this->Products_model->productsCount($this->vendor_id) > 2){ //需缴纳商户保证金
                 $order_info = [
                     "name" => $this->vendor_name,
                     "email" => $_SESSION['logged_vendor'],
