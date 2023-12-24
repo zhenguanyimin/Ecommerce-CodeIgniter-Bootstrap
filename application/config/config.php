@@ -25,7 +25,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   |
  */
 $config['base_url'] = defined('BASE_URL')?BASE_URL:'';
-
 /**
  * Show/Hide social share buttons in product pages
  */
