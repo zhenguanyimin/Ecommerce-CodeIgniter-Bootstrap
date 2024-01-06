@@ -365,6 +365,68 @@ footer .footer-icon li { display : block; height : 40px; width : 100%; }
     .social-media-product-share {margin-bottom: 20px;}
 }
 
+.banner {
+    position: relative;
+    height:  500px;
+    width: 100%;
+    border: 1px solid;
+    margin: 10px auto;
+}
+
+.banner_img {
+    height: 100%;
+    width: 100%;
+    background-size: 100% 100%;
+}
+
+.circles {
+    position: absolute;
+    left: 50%;
+    bottom: 0px;
+    transform: translate(-50%, -50%);
+}
+
+circle {
+    height: 15px;
+    width: 15px;
+    background-color: gray;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+circle:nth-child(1) {
+    background-color: white;
+}
+
+.banner_pre,
+.banner_next {
+    height: 30px;
+    width: 30px;
+    background-color: rgba(255,255,255,0.9);
+    border-radius: 50%;
+    display: inline-block;
+    text-align: center;
+    line-height: 30px;
+    margin-top: -15px;
+
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 30px;
+    font-weight: bolder;
+    position: absolute;
+    top: 50%;
+}
+
+.banner_pre {
+    left: 10px;
+    transform: translate(15%, -50%);
+}
+
+.banner_next {
+    right: 10px;
+    transform: translate(-15%, -50%);
+}
+
 @media (max-width: 480px) { 
     #home-slider .carousel-control.right { background-position : -140px center; width : 50px; }
     #home-slider .carousel-control.left { background-position : 0 center; width : 50px; }

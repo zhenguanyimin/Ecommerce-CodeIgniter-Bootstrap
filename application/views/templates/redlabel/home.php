@@ -68,72 +68,29 @@ if (count($sliderProducts) > 0) {
         <a class="right carousel-control" href="#home-slider" role="button" data-slide="next"></a>
     </div>
 <?php } ?>
-<style>
-    section {
-        position: relative;
-        height: 500px;
-        width: 780px;
-        border: 1px solid;
-        margin: 100px auto;
-    }
- 
-    #img {
-        height: 100%;
-        width: 100%;
-        background-size: 100% 100%;
-    }
- 
-    p {
-        position: absolute;
-        left: 50%;
-        bottom: 0px;
-        transform: translate(-50%, -50%);
-    }
- 
-    i {
-        height: 15px;
-        width: 15px;
-        background-color: gray;
-        border-radius: 50%;
-        display: inline-block;
-        margin-right: 10px;
-    }
- 
-    i:nth-child(1) {
-        background-color: white;
-    }
- 
-    i:nth-child(4) {
-        margin-right: 0;
-    }
- 
-    .left,
-    .right {
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 50px;
-        font-weight: bolder;
-        position: absolute;
-        top: 50%;
-        font-weight: 500;
-    }
- 
-    .left {
-        left: 0px;
-        transform: translate(15%, -50%);
-    }
- 
-    .right {
-        right: 0px;
-        transform: translate(-15%, -50%);
-    }
-</style>    
 <div>
-    <section id="img_roll">
-        <span class="left iconfont icon-anniu_jiantouxiangzuo"></span>
-        <img src="<?= base_url('template/imgs/reading_girl.jpg') ?>" alt="" id="img">
-        <span class="right iconfont icon-anniu-jiantouxiangyou"></span>
-        <p id="circles"></p>
-    </section>
+    <div class="row">
+        <div class="col-md-3">
+            <div>
+                <span>名人名言</span>                 
+            </div>   
+        </div>
+        <div class="col-md-6">
+            <section class="banner" id="img_roll">            
+                <span class="banner_pre"> < </span>
+                <a href="#" id="img_link">
+                    <img class="banner_img" src="<?= base_url('template/imgs/reading_girl.jpg') ?>" alt="" id="img_id">
+                </a>
+                <span class="banner_next"> > </span>
+                <p id="circles" class="circles"></p>
+             </section>    
+        </div>
+        <div class="col-md-3">
+            <div>
+                <span>笑话集锦</span>                 
+            </div>            
+        </div>        
+    </div>
 </div>  
 <div class="container" id="home-page">
     <div class="row">
