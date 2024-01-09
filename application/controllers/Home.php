@@ -26,7 +26,7 @@ class Home extends MY_Controller
      */
     public function ip_address($ip)
     {
-        $url = @file_get_contents("http://whois.pconline.com.cn/ipJson.jsp?ip=$ip&json=true");
+        $url = file_get_contents("http://whois.pconline.com.cn/ipJson.jsp?ip=$ip&json=true");
         $UTF8_RESP= iconv("GBK", "UTF-8", $url);         
         $res1 = json_decode($UTF8_RESP,true);
         $data =$res1;       
@@ -46,7 +46,9 @@ class Home extends MY_Controller
         $head['description'] = @$arrSeo['description'];
         $head['keywords'] = str_replace(" ", ",", $head['title']);
         $all_categories = $this->Public_model->getShopCategories();
+        $all_recommendation_books = $this->Public_model->getRecommendationBooks();
         $data['home_categories'] = $this->getHomeCategories($all_categories);
+        $data['home_recommendation_books'] = $this->getHomeRecommendationBooks($all_recommendation_books);
         $data['all_categories'] = $all_categories;
         $data['countQuantities'] = $this->Public_model->getCountQuantities();
         $data['bestSellers'] = $this->Public_model->getbestSellers();
@@ -115,6 +117,31 @@ class Home extends MY_Controller
         return buildTree($categories);
     }
 
+    private function getHomeRecommendationBooks($categories)
+    {
+
+        /*
+         * Tree Builder for recommendation books menu
+         */
+
+        function buildBooksTree(array $elements, $parentId = 0)
+        {
+            $branch = array();
+            foreach ($elements as $element) {
+                if ($element['sub_for'] == $parentId) {
+                    $children = buildBooksTree($elements, $element['id']);
+                    if ($children) {
+                        $element['children'] = $children;
+                    }
+                    $branch[] = $element;
+                }
+            }
+            return $branch;
+        }
+
+        return buildBooksTree($categories);
+    }
+    
     /*
      * Called to add/remove quantity from cart
      * If is ajax request send POST'S to class ShoppingCart

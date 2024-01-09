@@ -427,6 +427,33 @@ circle:nth-child(1) {
     transform: translate(-15%, -50%);
 }
 
+.recommendation_books_head{
+    color: #52c41a;
+}
+
+.col-md-3 .recommendation_books{
+    overflow: auto;
+    height:  500px;
+    background-color: pink;
+    margin: 10px 0px;
+    padding: 5px;    
+}
+
+.recommendation_books a{
+    text-decoration: none;
+}
+
+.joke_collection_head{
+    color: yellow;
+}
+
+.joke_collection{
+    overflow: auto;
+    height:  500px;
+    background-color: #b7eb8f;
+    margin: 10px 0px;
+}
+
 @media (max-width: 480px) { 
     #home-slider .carousel-control.right { background-position : -140px center; width : 50px; }
     #home-slider .carousel-control.left { background-position : 0 center; width : 50px; }

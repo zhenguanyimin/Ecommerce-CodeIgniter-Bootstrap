@@ -80,10 +80,11 @@ class Public_model extends CI_Model
 
     public function getNewProducts()
     {
-        $this->db->select('vendors.url as vendor_url, products.id, products.quantity, products.image, products.url, products_translations.price, products_translations.title, products_translations.old_price');
+        $this->db->select('vendors.url as vendor_url, products.id, products.quantity, products.image, products.url, products_translations.price, products_translations.title, products_translations.old_price, grade_desc.desc, products.defect_desc, products.shop_categorie');
         $this->db->join('products_translations', 'products_translations.for_id = products.id', 'left');
         $this->db->join('vendors', 'vendors.id = products.vendor_id', 'left');
         $this->db->where('products_translations.abbr', MY_LANGUAGE_ABBR);
+        $this->db->join('grade_desc', 'grade_desc.grade_id = products.grade', 'left');
         $this->db->where('products.in_slider', 0);
         $this->db->where('visibility', 1);
         if ($this->showOutOfStock == 0) {
@@ -162,6 +163,7 @@ class Public_model extends CI_Model
     {
         $this->db->select('*');
         $this->db->where('abbr', $myLang);
+        $this->db->where('status', 1);
         $result = $this->db->get('languages');
         return $result->row_array();
     }
@@ -250,6 +252,22 @@ class Public_model extends CI_Model
         return $arr;
     }
 
+    public function getRecommendationBooks()
+    {
+        $this->db->select('recommendation_book.sub_for, recommendation_book.id, recommendation_book_translations.name');
+        $this->db->where('abbr', MY_LANGUAGE_ABBR);
+        $this->db->order_by('position', 'asc');
+        $this->db->join('recommendation_book', 'recommendation_book.id = recommendation_book_translations.for_id', 'INNER');
+        $query = $this->db->get('recommendation_book_translations');
+        $arr = array();
+        if ($query !== false) {
+            foreach ($query->result_array() as $row) {
+                $arr[] = $row;
+            }
+        }
+        return $arr;
+    }
+    
     public function getSeo($page)
     {
         $this->db->where('page_type', $page);
@@ -393,9 +411,10 @@ class Public_model extends CI_Model
     
     private function getOneProductForSerialize($id)
     {
-        $this->db->select('vendors.name as vendor_name, vendors.id as vendor_id, products.*, products_translations.price');
+        $this->db->select('vendors.name as vendor_name, vendors.id as vendor_id, products.*, products_translations.price, grade_desc.desc');
         $this->db->where('products.id', $id);
         $this->db->join('vendors', 'vendors.id = products.vendor_id', 'left');
+        $this->db->join('grade_desc', 'grade_desc.grade_id = products.grade', 'left');
         $this->db->join('products_translations', 'products_translations.for_id = products.id', 'inner');
         $this->db->where('products_translations.abbr', MY_DEFAULT_LANGUAGE_ABBR);
         $query = $this->db->get('products');
@@ -522,16 +541,6 @@ class Public_model extends CI_Model
         }
     }
 
-    public function getBondPayStatus($vendor_id)
-    {
-        $this->db->where('id', $vendor_id);
-        $this->db->select('bond_status');
-        $this->db->limit(1);
-        $result1 = $this->db->get('vendors');
-        $result = $result1->row_array();
-        return $result['bond_status'];    
-    }
-    
     public function setActivationLink($link, $orderId)
     {
         $result = $this->db->insert('confirm_links', array('link' => $link, 'for_order' => $orderId));
@@ -555,9 +564,10 @@ class Public_model extends CI_Model
 
     public function getbestSellers($categorie = 0, $noId = 0)
     {
-        $this->db->select('vendors.url as vendor_url, products.id, products.quantity, products.image, products.url, products_translations.price, products_translations.title, products_translations.old_price');
+        $this->db->select('vendors.url as vendor_url, products.id, products.quantity, products.image, products.url, products_translations.price, products_translations.title, products_translations.old_price, grade_desc.desc, products.defect_desc, products.shop_categorie');
         $this->db->join('products_translations', 'products_translations.for_id = products.id', 'left');
         $this->db->join('vendors', 'vendors.id = products.vendor_id', 'left');
+        $this->db->join('grade_desc', 'grade_desc.grade_id = products.grade', 'left');
         if ($noId > 0) {
             $this->db->where('products.id !=', $noId);
         }

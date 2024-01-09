@@ -541,3 +541,213 @@ ALTER TABLE area ADD INDEX level (level, sort, status);
 ALTER TABLE area ADD INDEX longitude (longitude, latitude);
 
 ALTER TABLE area ADD INDEX pid (pid);
+
+CREATE TABLE IF NOT EXISTS `recommendation_book` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `sub_for` int(11) NOT NULL,
+  `position` int(10) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `recommendation_book_translations` (
+  `id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `abbr` varchar(5) NOT NULL,
+  `url` varchar(50) NOT NULL DEFAULT '',
+  `for_id` int(11) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+INSERT INTO `recommendation_book` (`id`, `sub_for`, `position`) VALUES
+(1, 0, 0),
+(2, 0, 1),
+(3, 0, 2),
+(4, 0, 3),
+(5, 0, 4),
+(6, 0, 5),
+(7, 0, 6);
+
+INSERT INTO `recommendation_book` (`id`, `sub_for`, `position`) VALUES
+(8, 1, 7),
+(9, 1, 8),
+(10, 1, 9),
+(11, 1, 10),
+(12, 1, 11),
+(13, 1, 12),
+(14, 1, 13),
+(15, 1, 14),
+(16, 2, 15),
+(17, 2, 16),
+(18, 2, 17),
+(19, 2, 18),
+(20, 2, 19),
+(21, 2, 20),
+(22, 2, 21),
+(23, 2, 22),
+(24, 2, 23),
+(25, 2, 24);
+
+INSERT INTO `recommendation_book` (`id`, `sub_for`, `position`) VALUES
+(26, 3, 25),
+(27, 3, 26),
+(28, 3, 27),
+(29, 3, 28),
+(30, 3, 29),
+(31, 3, 30),
+(32, 4, 31),
+(33, 4, 32),
+(34, 4, 33),
+(35, 4, 34),
+(36, 4, 35),
+(37, 4, 36),
+(38, 4, 37),
+(39, 4, 38),
+(40, 4, 39),
+(41, 4, 40),
+(42, 4, 41);
+
+INSERT INTO `recommendation_book` (`id`, `sub_for`, `position`) VALUES
+(43, 5, 42),
+(44, 5, 43),
+(45, 5, 44),
+(46, 5, 45),
+(47, 5, 46),
+(48, 5, 47),
+(49, 5, 48),
+(50, 5, 49),
+(51, 5, 50),
+(52, 5, 51);
+
+INSERT INTO `recommendation_book` (`id`, `sub_for`, `position`) VALUES
+(53, 6, 52),
+(54, 6, 53),
+(55, 6, 54),
+(56, 6, 55),
+(57, 6, 56),
+(58, 6, 57),
+(59, 6, 58),
+(60, 6, 59),
+(61, 6, 60),
+(62, 6, 61),
+(63, 6, 62);
+
+INSERT INTO `recommendation_book` (`id`, `sub_for`, `position`) VALUES
+(64, 7, 63),
+(65, 7, 64),
+(66, 7, 65),
+(67, 7, 66),
+(68, 7, 67),
+(69, 7, 68),
+(70, 7, 69),
+(71, 7, 70),
+(72, 7, 71),
+(73, 7, 72),
+(74, 7, 73),
+(75, 7, 74),
+(76, 7, 75),
+(77, 7, 76),
+(78, 7, 77),
+(79, 7, 78),
+(80, 7, 79),
+(81, 7, 80),
+(82, 7, 81),
+(83, 7, 82),
+(84, 7, 83);
+
+INSERT INTO `recommendation_book_translations` (`id`, `name`, `abbr`, `for_id` ) VALUES
+(1, '提高情商必看书单', 'zh', 1),
+(2, '职场升职加薪必读', 'zh', 2),
+(3, '高效率工作必读', 'zh', 3),
+(4, '优秀管理者书单', 'zh', 4),
+(5, '提升格局好书推荐', 'zh', 5),
+(6, '财富自由必读', 'zh', 6),
+(7, '人生必读', 'zh', 7);
+
+INSERT INTO `recommendation_book_translations` (`id`, `name`, `abbr`, `for_id` ) VALUES
+(8, '非暴力沟通', 'zh', 8),
+(9, '情商', 'zh', 9),
+(10, '少有人走的路', 'zh', 10),
+(11, '洗脑术:怎样有逻辑地说服他人', 'zh', 11),
+(12, '自控力', 'zh', 12),
+(13, '爱的五种语言', 'zh', 13),
+(14, '感谢自己的不完美', 'zh', 14),
+(15, '为何家会伤人', 'zh', 15);
+
+INSERT INTO `recommendation_book_translations` (`id`, `name`, `abbr`, `for_id` ) VALUES
+(16, '金字塔原理', 'zh', 16),
+(17, '学会提问', 'zh', 17),
+(18, '请停止无效努力', 'zh', 18),
+(19, '如何阅读一本书', 'zh',19),
+(20, '问题解决力', 'zh', 20),
+(21, '怦然心动的人生整理魔法', 'zh', 21),
+(22, '鬼谷子', 'zh', 22),
+(23, '让创意更有黏性', 'zh', 23),
+(24, '阿里铁军销售心法：顶级销售的21条军规', 'zh', 24),
+(25, '认知天性', 'zh', 25);
+
+INSERT INTO `recommendation_book_translations` (`id`, `name`, `abbr`, `for_id` ) VALUES
+(26, '高效能人士的七个习惯', 'zh', 26),
+(27, '把时间当作朋友', 'zh', 27),
+(28, '拖延心理学力', 'zh', 28),
+(29, '小强升职记', 'zh',29),
+(30, '麦肯锡工作法', 'zh', 30),
+(31, '番茄工作法', 'zh', 31),
+(32, '原则', 'zh', 32),
+(33, '管理的实践', 'zh', 33),
+(34, '卓有成效的管理者', 'zh', 34),
+(35, '权利与领导', 'zh', 35),
+(36, '自我发现与重塑', 'zh', 36),
+(37, '经营者养成笔记', 'zh', 37),
+(38, '浪潮之巅', 'zh', 38),
+(39, '第五项修炼', 'zh', 39),
+(40, '基业长青', 'zh', 40),
+(41, '定位', 'zh', 41),
+(42, '创业维艰', 'zh', 42);
+
+INSERT INTO `recommendation_book_translations` (`id`, `name`, `abbr`, `for_id` ) VALUES
+(43, '大问题', 'zh', 43),
+(44, '超越感觉', 'zh', 44),
+(45, '做出好决定', 'zh', 45),
+(46, '系统之美', 'zh',46),
+(47, '态度改变和社会影响', 'zh', 47),
+(48, '沟通的艺术', 'zh', 48),
+(49, '社会性动物', 'zh', 49),
+(50, '哲学家们都干了些什么', 'zh', 50),
+(51, '活出生命的意义', 'zh', 51),
+(52, '曾国藩的正面与侧面', 'zh', 52);
+
+INSERT INTO `recommendation_book_translations` (`id`, `name`, `abbr`, `for_id` ) VALUES
+(53, '穷爸爸富爸爸', 'zh', 53),
+(54, '小狗钱钱', 'zh', 54),
+(55, '邻家的百万富翁', 'zh', 55),
+(56, '财富自由之路', 'zh',56),
+(57, '聪明的投资者', 'zh', 57),
+(58, '穷查理宝典', 'zh', 58),
+(59, '彼得林奇的成功投资', 'zh', 59),
+(60, '巴比伦最富有的人', 'zh', 60),
+(61, '钱的外遇', 'zh', 61),
+(62, '有钱人跟你想的不一样', 'zh', 62),
+(63, '投资最重要的事', 'zh', 63);
+
+INSERT INTO `recommendation_book_translations` (`id`, `name`, `abbr`, `for_id` ) VALUES
+(64, '红楼梦', 'zh', 64),
+(65, '卡拉马佐夫兄弟', 'zh', 65),
+(66, '史记', 'zh', 66),
+(67, '天生有罪', 'zh',67),
+(68, '雕刻时光', 'zh', 68),
+(69, '莎士比亚全集', 'zh', 69),
+(70, '福尔摩斯探案全集', 'zh', 70),
+(71, '哥德尔、艾舍尔、巴赫', 'zh', 71),
+(72, '三体', 'zh', 72),
+(73, '少有人走的路', 'zh', 73),
+(74, '艺术的故事', 'zh', 74),
+(75, '寻路中国', 'zh', 75),
+(76, '金锁记', 'zh', 76),
+(77, '雅舍谈吃', 'zh', 77),
+(78, '国史大纲', 'zh',78),
+(79, '活着', 'zh', 79),
+(80, 'ZOO', 'zh', 80),
+(81, '全球通史', 'zh', 81),
+(82, '批判性思维', 'zh', 82),
+(83, '逻辑学导论', 'zh', 83),
+(84, '白夜行', 'zh', 84);

@@ -71,8 +71,50 @@ if (count($sliderProducts) > 0) {
 <div>
     <div class="row">
         <div class="col-md-3">
-            <div>
-                <span>名人名言</span>                 
+            <div class="recommendation_books">
+                <h4 class="recommendation_books_head">书单推荐</h4>                
+                <?php
+                function books_loop_tree($pages, $is_recursion = false)
+                {
+                    ?>
+                    <ol class="<?= $is_recursion === true ? 'children' : 'parent' ?>">
+                        <?php
+                        foreach ($pages as $page) {
+                            $children = false;
+                            if (isset($page['children']) && !empty($page['children'])) {
+                                $children = true;
+                            }
+                            ?>
+                            <li>
+                                <?php if ($children === true) {
+                                    ?>
+                                    <i></i>
+                                <?php } else { ?>
+                                    <i></i>
+                                <?php } ?>
+                                <a href="#">
+                                    <?= $page['name'] ?>
+                                </a>
+                                <?php
+                                if ($children === true) {
+                                     books_loop_tree($page['children'], true);
+                                } else {
+                                    ?>
+                                </li>
+                                <?php
+                            }
+                        }
+                        ?>
+                    </ol>
+                    <?php
+                    if ($is_recursion === true) {
+                        ?>
+                        </li>
+                        <?php
+                    }
+                }
+                books_loop_tree($home_recommendation_books);
+                ?>               
             </div>   
         </div>
         <div class="col-md-6">
@@ -86,8 +128,8 @@ if (count($sliderProducts) > 0) {
              </section>    
         </div>
         <div class="col-md-3">
-            <div>
-                <span>笑话集锦</span>                 
+            <div class="joke_collection">
+                <h4 class="joke_collection_head">笑话集锦</h4>                 
             </div>            
         </div>        
     </div>
