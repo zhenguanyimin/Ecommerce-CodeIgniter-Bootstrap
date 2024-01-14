@@ -252,6 +252,35 @@ class Public_model extends CI_Model
         return $arr;
     }
 
+    public function getBestsellerList()
+    {
+        $this->db->select('id, list_name');
+        $this->db->order_by('id', 'asc');
+        $query = $this->db->get('bestseller_list');
+        $arr = array();
+        if ($query !== false) {
+            foreach ($query->result_array() as $row) {
+                $arr[] = $row;
+            }
+        }
+        return $arr;
+    }
+
+    public function getBestsellerBooks()
+    {
+        $this->db->select('bestseller_book.for_id, bestseller_book.book_name');
+        $this->db->order_by('bestseller_book.id', 'asc');
+        $this->db->join('bestseller_list', 'bestseller_list.id = bestseller_book.for_id', 'INNER');
+        $query = $this->db->get('bestseller_book');
+        $arr = array();
+        if ($query !== false) {
+            foreach ($query->result_array() as $row) {
+                $arr[] = $row;
+            }
+        }
+        return $arr;
+    }
+    
     public function getRecommendationBooks()
     {
         $this->db->select('recommendation_book.sub_for, recommendation_book.id, recommendation_book_translations.name');

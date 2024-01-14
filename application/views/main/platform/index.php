@@ -20,7 +20,7 @@
             <div>
             <h3 class="float-md-start mb-0">Kiril Kirkov</h3>
             <nav class="nav nav-masthead justify-content-center float-md-end">
-                <a class="nav-link active" aria-current="page" href="https://github.com/kirilkirkov/Ecommerce-CodeIgniter-Bootstrap">About Platform</a>
+                <a class="nav-link active" aria-current="page" href="#">About Platform</a>
             </nav>
             </div>
         </header>
@@ -29,7 +29,7 @@
             <h1>Ecommerce-CodeIgniter-Bootstrap</h1>
             <p class="lead">Find out big database of Open Source projects.</p>
             <p class="lead">
-            <a href="https://github.com/kirilkirkov" class="btn btn-lg btn-secondary fw-bold border-white bg-white text-black">GitHub</a>
+            <a href="#" class="btn btn-lg btn-secondary fw-bold border-white bg-white text-black">GitHub</a>
             </p>
         </main>
         

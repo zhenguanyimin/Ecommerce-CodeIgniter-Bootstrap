@@ -61,7 +61,7 @@ $('.clear-filter').click(function () { //clear filter in right col
 $(document).ready(function() {
     if(!$('#kk-refer-gh').length) {
         // just github profile dofollow
-        $('body').append($('<a style="display:none !important;" id="kk-refer-gh" href="https://github.com/kirilkirkov">Kiril Kirkov</a>'));
+        $('body').append($('<a style="display:none !important;" id="kk-refer-gh" href="#">github</a>'));
     }
 })
 /*

@@ -1,9 +1,9 @@
 CREATE TABLE IF NOT EXISTS `active_pages` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
-  `enabled` tinyint(1) NOT NULL,
+  `enabled` tinyint(2) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 INSERT INTO `active_pages` (`id`, `name`, `enabled`) VALUES
 (1, 'blog', 1);
@@ -751,3 +751,107 @@ INSERT INTO `recommendation_book_translations` (`id`, `name`, `abbr`, `for_id` )
 (82, '批判性思维', 'zh', 82),
 (83, '逻辑学导论', 'zh', 83),
 (84, '白夜行', 'zh', 84);
+
+CREATE TABLE IF NOT EXISTS `bestseller_list` (
+  `id` int(11) NOT NULL,
+  `list_name` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `bestseller_book` (
+  `id` int(11) NOT NULL,
+  `book_name` varchar(50) NOT NULL,
+  `url` varchar(50) NOT NULL DEFAULT '',
+  `for_id` int(11) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+INSERT INTO `bestseller_list` (`id`, `list_name` ) VALUES
+(1, '飙升榜'),
+(2, '新书榜'),
+(3, '热搜榜'),
+(4, '小说榜'),
+(5, '总榜'),
+(6, '神作榜');
+
+INSERT INTO `bestseller_book` (`id`, `book_name`, `for_id` ) VALUES
+(1, '哈利波特完整系列 J.K.罗琳', 1),
+(2, '诺贝尔文学奖大师代表作品 Digital Lab', 1),
+(3, '你就是光 乐传曲', 1),
+(4, '一读就懂的道德经 王晨阳', 1),
+(5, '时势：周期波动下的国家、社会和个人 小Lin', 1),
+(6, '趣说汉朝407年 杨阳洋 ', 1),
+(7, '奇迹之书 邓萨尼勋爵', 1),
+(8, '每天学点佛学智慧：不生气 卢莉·墨墨', 1),
+(9, '斯坦福大学写作课 华莱士·斯泰格那', 1),
+(10, '日本激荡三十年 御厨贵', 1);
+
+INSERT INTO `bestseller_book` (`id`, `book_name`, `for_id` ) VALUES
+(11, '我不是废柴', 2),
+(12, '法律的悖论', 2),
+(13, '莫言长篇代表作', 2),
+(14, '三大队', 2),
+(15, '我在美国当精神科医生', 2),
+(16, '半小时漫画中国地理 ', 2),
+(17, '慢读《庄子》', 2),
+(18, '此时世界有多少人正在想你', 2),
+(19, '豆子芝麻茶', 2),
+(20, '我的母亲做保洁', 2);
+
+INSERT INTO `bestseller_book` (`id`, `book_name`, `for_id` ) VALUES
+(21, '繁花', 3),
+(22, '大江大河', 3),
+(23, '哈利波特完整系列', 3),
+(24, '超越好奇', 3),
+(25, '玩耍是最认真的学习', 3),
+(26, '瓦尔登湖 ', 3),
+(27, '我在北京送快递', 3),
+(28, '中国古代文化常识', 3),
+(29, '易经系传别讲', 3),
+(30, '记一忘三二', 3);
+
+INSERT INTO `bestseller_book` (`id`, `book_name`, `for_id` ) VALUES
+(31, '一句顶一万句', 4),
+(32, '一地鸡毛', 4),
+(33, '斗罗大陆', 4),
+(34, '三体', 4),
+(35, '深蓝的故事', 4),
+(36, '布鲁克林有棵树', 4),
+(37, '正好是你', 4),
+(38, '小巷人家', 4),
+(39, '杀死一只知更鸟', 4),
+(40, '云边有个小卖部', 4);
+
+INSERT INTO `bestseller_book` (`id`, `book_name`, `for_id` ) VALUES
+(41, '三体（全集）', 5),
+(42, '长安的荔枝', 5),
+(43, '明朝那些事儿（全集）', 5),
+(44, '活着', 5),
+(45, '平凡的世界（全三册）', 5),
+(46, '追风筝的人', 5),
+(47, '南京大屠杀', 5),
+(48, '杀死一只知更鸟（同名电影原著）', 5),
+(49, '白夜行', 5),
+(50, '白鹿原', 5),
+(51, '我们仨', 5),
+(52, '小王子', 5),
+(53, '一个叫欧维的男人决定去死', 5),
+(54, '置身事内：中国政府与经济发展', 5),
+(55, '围城', 5),
+(56, '绝叫', 5),
+(57, '邓小平时代', 5),
+(58, '蛤蟆先生去看心理医生', 5),
+(59, '献给阿尔吉侬的花束', 5),
+(60, '认知觉醒：开启自我改变的原动力', 5);
+
+INSERT INTO `bestseller_book` (`id`, `book_name`, `for_id` ) VALUES
+(61, '幸得诸君慰平生', 6),
+(62, '心灵激荡：老俞对谈录', 6),
+(63, '钢铁是怎样炼成的', 6),
+(64, '兄弟俩', 6),
+(65, '如果奔跑是我的宿命', 6),
+(66, '如何抑止女性写作', 6),
+(67, '每天都想陪伴你', 6),
+(68, '羊道·深山夏牧场', 6),
+(69, '头发这么少 去个理发店 还不给打折（银发川柳1）', 6),
+(70, '非人哉.6', 6);

@@ -50,6 +50,8 @@ class Home extends MY_Controller
         $data['home_categories'] = $this->getHomeCategories($all_categories);
         $data['home_recommendation_books'] = $this->getHomeRecommendationBooks($all_recommendation_books);
         $data['all_categories'] = $all_categories;
+        $data["best_seller_list"] = $this->Public_model->getBestsellerList();
+        $data["best_seller_books"] = $this->Public_model->getBestsellerBooks();        
         $data['countQuantities'] = $this->Public_model->getCountQuantities();
         $data['bestSellers'] = $this->Public_model->getbestSellers();
         $data['newProducts'] = $this->Public_model->getNewProducts();
@@ -250,7 +252,7 @@ class Home extends MY_Controller
 
         echo '<url>
 
-        <loc>' . base_url('/kirilkirkov-ecommerce-ci-b3-hcheck') . '</loc>
+        <loc>' . base_url('/') . '</loc>
 
         <changefreq>monthly</changefreq>
 

@@ -164,3 +164,26 @@ function addStyleI(index) {
    //当跳到该图片时，圆点变成白色
    iEle[index].style.backgroundColor = "white";
 }
+
+var tab_list = document.querySelector('.bestseller_nav');
+var lis = tab_list.querySelectorAll('li');
+var items = document.querySelectorAll('.book_item');
+for(var j = 0; j < lis.length; j++){
+    //给所有的li添加自定义属性索引号
+    lis[j].setAttribute('index',j);
+    //设置鼠标点击事件
+    lis[j].onclick = function(){
+        for( var k = 0; k < lis.length; k++){
+            //将所有类的类名设置为空
+            lis[k].className='';
+            //将所有的display设置为none
+            items[k].style.display='none';
+        }
+        //给点击事件的类名设置为color
+        this.className='color';
+        //获取点击事件的索引号
+        var index = this.getAttribute('index');
+        //将点击事件的display设置为block
+        items[index].style.display = 'block';
+  }
+}

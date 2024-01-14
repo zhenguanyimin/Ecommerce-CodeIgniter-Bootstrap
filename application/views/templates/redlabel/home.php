@@ -70,7 +70,7 @@ if (count($sliderProducts) > 0) {
 <?php } ?>
 <div>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-3 banner_padding">
             <div class="recommendation_books">
                 <h4 class="recommendation_books_head">书单推荐</h4>                
                 <?php
@@ -117,7 +117,7 @@ if (count($sliderProducts) > 0) {
                 ?>               
             </div>   
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 banner_padding">
             <section class="banner" id="img_roll">            
                 <span class="banner_pre"> < </span>
                 <a href="#" id="img_link">
@@ -127,10 +127,32 @@ if (count($sliderProducts) > 0) {
                 <p id="circles" class="circles"></p>
              </section>    
         </div>
-        <div class="col-md-3">
-            <div class="joke_collection">
-                <h4 class="joke_collection_head">笑话集锦</h4>                 
-            </div>            
+        <div class="col-md-3 banner_padding">
+            <div class="bestseller_list">
+                <h4 class="bestseller_list_head">畅销书榜单</h4>                
+                <div>
+                    <?php
+                    ?>
+                    <ul class="bestseller_nav">
+                        <?php foreach ($best_seller_list as $list) { ?>
+                            <li class= <?= $list["id"] == 1 ? "color":"" ?> ><?= $list["list_name"] ?></li>
+                        <?php }?>                                         
+                    </ul>
+                </div>
+                <div class="bestseller_body">
+                    <?php foreach ($best_seller_list as $list) { ?>
+                        <div class="book_item" style= <?= $list["id"] == 1 ? "display:block;":"display:none;" ?>>
+                            <ol>
+                                <?php foreach ($best_seller_books as $book) { ?>
+                                    <?php if($list["id"] == $book["for_id"]) { ?>
+                                        <li><a href=""><?= $book["book_name"] ?></a></li>
+                                    <?php }?>
+                                <?php }?>       
+                            </ol>
+                        </div>
+                    <?php }?>                  
+                </div>
+            </div>
         </div>        
     </div>
 </div>  

@@ -370,7 +370,7 @@ footer .footer-icon li { display : block; height : 40px; width : 100%; }
     height:  500px;
     width: 100%;
     border: 1px solid;
-    margin: 10px auto;
+    margin: 0px auto;
 }
 
 .banner_img {
@@ -435,24 +435,64 @@ circle:nth-child(1) {
     overflow: auto;
     height:  500px;
     background-color: pink;
-    margin: 10px 0px;
+    margin: 0px;
     padding: 5px;    
 }
 
 .recommendation_books a{
     text-decoration: none;
+    color: #78828D;
 }
 
-.joke_collection_head{
+.bestseller_list_head{
     color: yellow;
 }
-
-.joke_collection{
-    overflow: auto;
-    height:  500px;
+.bestseller_list {
+    margin: 0px;
+    height: 500px;
     background-color: #b7eb8f;
-    margin: 10px 0px;
+    padding: 5px;
 }
+.bestseller_list .bestseller_nav {
+    height: 25px;
+    padding: 2px;
+}
+
+.bestseller_nav li{           
+    float: left;
+    display: inline-block;
+    background-color: pink;
+    color: white;
+    margin: 0px 2px;
+    list-style: none;
+    width: 50px;
+    height: 25px;
+    line-height: 25px;
+    font-size: 16px;
+    text-align: center;
+}
+.color {
+    background-color: red  !important;
+}
+
+.bestseller_list .bestseller_body {
+    height: 420px;
+}  
+
+.bestseller_body {
+    margin-top: 15px;
+}  
+
+.bestseller_body a{
+    text-decoration: none;
+}
+
+.banner_padding{
+    padding-left: 1px !important;
+    padding-right: 1px !important;
+    margin-bottom: 10px;
+}
+
 
 @media (max-width: 480px) { 
     #home-slider .carousel-control.right { background-position : -140px center; width : 50px; }
