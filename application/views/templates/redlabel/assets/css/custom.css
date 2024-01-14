@@ -429,28 +429,28 @@ circle:nth-child(1) {
 
 .recommendation_books_head{
     color: #52c41a;
+    margin-left: 10px;
 }
 
 .col-md-3 .recommendation_books{
     overflow: auto;
     height:  500px;
-    background-color: pink;
+    background-image: url(imgs/banner-left.jpg);
     margin: 0px;
     padding: 5px;    
 }
 
 .recommendation_books a{
     text-decoration: none;
-    color: #78828D;
 }
 
 .bestseller_list_head{
-    color: yellow;
+    color: purple;
 }
 .bestseller_list {
     margin: 0px;
     height: 500px;
-    background-color: #b7eb8f;
+    background-image: url(imgs/banner-right.jpg);;
     padding: 5px;
 }
 .bestseller_list .bestseller_nav {
@@ -461,7 +461,7 @@ circle:nth-child(1) {
 .bestseller_nav li{           
     float: left;
     display: inline-block;
-    background-color: pink;
+    background-color: #0781ad;
     color: white;
     margin: 0px 2px;
     list-style: none;
@@ -470,6 +470,7 @@ circle:nth-child(1) {
     line-height: 25px;
     font-size: 16px;
     text-align: center;
+    margin-bottom: 10px;
 }
 .color {
     background-color: red  !important;
@@ -485,12 +486,13 @@ circle:nth-child(1) {
 
 .bestseller_body a{
     text-decoration: none;
+    color: green;
 }
 
 .banner_padding{
     padding-left: 1px !important;
     padding-right: 1px !important;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 

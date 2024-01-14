@@ -47,23 +47,17 @@ let imgArr = [
    "../template/imgs/reading_girl2.jpg",
    "../template/imgs/reading_girl3.jpg",
    "../template/imgs/reading_little_girl.jpg",
-   "../template/imgs/qihefu.jpg",
-   "../template/imgs/true.jpg",
    "../template/imgs/reading_girl5.jpg",
-   "../template/imgs/reading_girl6.jpg",            
-   "../template/imgs/read_method.jpg"
+   "../template/imgs/reading_girl6.jpg"         
 ];
 
 let imgLinkArr = [
    "/blog/为什么买二手书_1",
    "/blog/季羡林有福读书可慰平生_2",
-   "/checkout",
-   "/checkout",
-   "/checkout",
-   "/checkout",
-   "/checkout",
-   "/checkout",            
-   "/checkout"
+   "/blog",
+   "/blog",
+   "/blog",
+   "/blog",
 ];        
 //获取时间函数的起始下标
 let i = 0;

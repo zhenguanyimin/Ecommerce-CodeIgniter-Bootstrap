@@ -145,7 +145,7 @@ if (count($sliderProducts) > 0) {
                             <ol>
                                 <?php foreach ($best_seller_books as $book) { ?>
                                     <?php if($list["id"] == $book["for_id"]) { ?>
-                                        <li><a href=""><?= $book["book_name"] ?></a></li>
+                                        <li><a href="#"><?= $book["book_name"] ?></a></li>
                                     <?php }?>
                                 <?php }?>       
                             </ol>
