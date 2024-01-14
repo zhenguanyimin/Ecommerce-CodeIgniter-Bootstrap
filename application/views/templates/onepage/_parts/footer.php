@@ -26,7 +26,7 @@
                 <span><?= base_url() ?> © 2017</span>
                 <br>
                 <!-- Please do not remove this referention -->
-                Powered by <a href="https://github.com/kirilkirkov">Kiril Kirkov</a>
+                Powered by <a href="#">深圳市清衣商务有限公司</a>
             </div>
         </div>
     </div>

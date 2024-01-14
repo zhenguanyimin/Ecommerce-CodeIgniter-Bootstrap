@@ -68,72 +68,93 @@ if (count($sliderProducts) > 0) {
         <a class="right carousel-control" href="#home-slider" role="button" data-slide="next"></a>
     </div>
 <?php } ?>
-<style>
-    section {
-        position: relative;
-        height: 500px;
-        width: 780px;
-        border: 1px solid;
-        margin: 100px auto;
-    }
- 
-    #img {
-        height: 100%;
-        width: 100%;
-        background-size: 100% 100%;
-    }
- 
-    p {
-        position: absolute;
-        left: 50%;
-        bottom: 0px;
-        transform: translate(-50%, -50%);
-    }
- 
-    i {
-        height: 15px;
-        width: 15px;
-        background-color: gray;
-        border-radius: 50%;
-        display: inline-block;
-        margin-right: 10px;
-    }
- 
-    i:nth-child(1) {
-        background-color: white;
-    }
- 
-    i:nth-child(4) {
-        margin-right: 0;
-    }
- 
-    .left,
-    .right {
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 50px;
-        font-weight: bolder;
-        position: absolute;
-        top: 50%;
-        font-weight: 500;
-    }
- 
-    .left {
-        left: 0px;
-        transform: translate(15%, -50%);
-    }
- 
-    .right {
-        right: 0px;
-        transform: translate(-15%, -50%);
-    }
-</style>    
 <div>
-    <section id="img_roll">
-        <span class="left iconfont icon-anniu_jiantouxiangzuo"></span>
-        <img src="<?= base_url('template/imgs/reading_girl.jpg') ?>" alt="" id="img">
-        <span class="right iconfont icon-anniu-jiantouxiangyou"></span>
-        <p id="circles"></p>
-    </section>
+    <div class="row">
+        <div class="col-md-3 banner_padding">
+            <div class="recommendation_books">
+                <h4 class="recommendation_books_head">书单推荐</h4>                
+                <?php
+                function books_loop_tree($pages, $is_recursion = false)
+                {
+                    ?>
+                    <ol class="<?= $is_recursion === true ? 'children' : 'parent' ?>">
+                        <?php
+                        foreach ($pages as $page) {
+                            $children = false;
+                            if (isset($page['children']) && !empty($page['children'])) {
+                                $children = true;
+                            }
+                            ?>
+                            <li>
+                                <?php if ($children === true) {
+                                    ?>
+                                    <i></i>
+                                <?php } else { ?>
+                                    <i></i>
+                                <?php } ?>
+                                <a href="#">
+                                    <?= $page['name'] ?>
+                                </a>
+                                <?php
+                                if ($children === true) {
+                                     books_loop_tree($page['children'], true);
+                                } else {
+                                    ?>
+                                </li>
+                                <?php
+                            }
+                        }
+                        ?>
+                    </ol>
+                    <?php
+                    if ($is_recursion === true) {
+                        ?>
+                        </li>
+                        <?php
+                    }
+                }
+                books_loop_tree($home_recommendation_books);
+                ?>               
+            </div>   
+        </div>
+        <div class="col-md-6 banner_padding">
+            <section class="banner" id="img_roll">            
+                <span class="banner_pre"> < </span>
+                <a href="#" id="img_link">
+                    <img class="banner_img" src="<?= base_url('template/imgs/reading_girl.jpg') ?>" alt="" id="img_id">
+                </a>
+                <span class="banner_next"> > </span>
+                <p id="circles" class="circles"></p>
+             </section>    
+        </div>
+        <div class="col-md-3 banner_padding">
+            <div class="bestseller_list">
+                <h4 class="bestseller_list_head">畅销书榜单</h4>                
+                <div>
+                    <?php
+                    ?>
+                    <ul class="bestseller_nav">
+                        <?php foreach ($best_seller_list as $list) { ?>
+                            <li class= <?= $list["id"] == 1 ? "color":"" ?> ><?= $list["list_name"] ?></li>
+                        <?php }?>                                         
+                    </ul>
+                </div>
+                <div class="bestseller_body">
+                    <?php foreach ($best_seller_list as $list) { ?>
+                        <div class="book_item" style= <?= $list["id"] == 1 ? "display:block;":"display:none;" ?>>
+                            <ol>
+                                <?php foreach ($best_seller_books as $book) { ?>
+                                    <?php if($list["id"] == $book["for_id"]) { ?>
+                                        <li><a href="#"><?= $book["book_name"] ?></a></li>
+                                    <?php }?>
+                                <?php }?>       
+                            </ol>
+                        </div>
+                    <?php }?>                  
+                </div>
+            </div>
+        </div>        
+    </div>
 </div>  
 <div class="container" id="home-page">
     <div class="row">

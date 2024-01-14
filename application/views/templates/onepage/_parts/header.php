@@ -32,7 +32,7 @@
         <![endif]-->
     </head>
     <body>
-        <a style="display:none !important;" id="kk-refer-gh" href="https://github.com/kirilkirkov">Kiril Kirkov</a>
+        <a style="display:none !important;" id="kk-refer-gh" href="#">深圳市清衣商务有限公司</a>
         <nav class="navbar navbar-onepoge navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
