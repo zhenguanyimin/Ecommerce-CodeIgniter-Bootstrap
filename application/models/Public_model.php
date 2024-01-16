@@ -1000,6 +1000,53 @@ class Public_model extends CI_Model
         }
     }
 
+    public function handleUserOffline()
+    {
+        $this->db->select('id, login_at');        
+        $this->db->where('status', 1);
+        $this->db->where('online_status', 1);
+        $query = $this->db->get('users_public');
+        $result = $query->result_array();
+        if (!empty($result)) {
+            foreach ($result as $res) {
+                $now =  time();
+                log_message("debug", "user online time:".($now - $res['login_at']));
+                if(($now - $res['login_at']) > 4*3600){
+                    $array = array(
+                        'online_status' => 0,
+                        'logout_at' => $now
+                    );
+                    $this->db->where('id', $res['id']);
+                    $this->db->update('users_public', $array);
+                }
+            }                      
+        }
+    }
+
+    public function handleVendorOffline()
+    {
+        $this->db->select('id, login_at');        
+        $this->db->where('vendor_status', 1);
+        $this->db->where('online_status', 1);
+        $query = $this->db->get('vendors');
+        $result = $query->result_array();
+        if (!empty($result)) {
+            foreach ($result as $res) {
+                
+                $now =  time();
+                log_message("debug", "vendor online time:".($now - $res['login_at']));
+                if(($now - $res['login_at']) > 4*3600){
+                    $array = array(
+                        'online_status' => 0,
+                        'logout_at' => $now
+                    );
+                    $this->db->where('id', $res['id']);
+                    $this->db->update('vendors', $array);
+                }
+            } 
+        }
+    }
+        
     public function getUserProfileInfo($id)
     {
         $this->db->where('id', $id);
