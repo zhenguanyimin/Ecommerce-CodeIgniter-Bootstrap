@@ -62,6 +62,9 @@ $route['(\w{2})?/?checkout/paypalpayment'] = 'checkout/paypalPayment';
 $route['(\w{2})?/?checkout/alipay'] = 'checkout/Alipay';
 $route['(\w{2})?/?checkout/order-error'] = 'checkout/orderError';
 
+//CronTask
+$route['cronTask'] = "CronTask/runCronTask";
+
 // Ajax called. Functions for managing shopping cart
 $route['(\w{2})?/?manageShoppingCart'] = 'home/manageShoppingCart';
 $route['(\w{2})?/?clearShoppingCart'] = 'home/clearShoppingCart';
