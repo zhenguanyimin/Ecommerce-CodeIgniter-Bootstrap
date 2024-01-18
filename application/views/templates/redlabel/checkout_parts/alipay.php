@@ -7,12 +7,12 @@ if (get_cookie('alipay') == null ) {
   redirect(LANG_URL . '/checkout');
 }
 
-if (!isset($_SESSION['final_amount'])) {
+if (!isset($_SESSION['payAmount'])) {
   $this->session->set_flashdata('amountErorr', '总金额为空');
   redirect(LANG_URL . '/checkout');
 }
 
-$total_amount = $_SESSION['final_amount']+$_SESSION['realShippingAmount'];
+$total_amount = $_SESSION['payAmount'];
 $orderId = get_cookie('alipay');
 $alipay_sandbox = $_SESSION['alipay_sandbox'];
 $proudct_config = [
@@ -28,8 +28,8 @@ $proudct_config = [
             'alipay_public_cert_path' => '/home/lighthouse/aplipay_cert_product/alipayCertPublicKey_RSA2.crt',
             // 必填-支付宝根证书 路径
             'alipay_root_cert_path' => '/home/lighthouse/aplipay_cert_product/alipayRootCert.crt',            
-            'return_url' => 'http://159.75.179.165/checkout/alipay_return',
-            'notify_url' => 'http://159.75.179.165/checkout/successbank',
+            'return_url' => 'https://买买买.cn/checkout/alipay_return',
+            'notify_url' => 'https://买买买.cn/checkout/alipay_notify',
             // 选填-第三方应用授权token
             'app_auth_token' => '',
             // 选填-服务商模式下的服务商 id，当 mode 为 Pay::MODE_SERVICE 时使用该参数
@@ -132,8 +132,8 @@ $sandbox_config = [
             'alipay_public_cert_path' => '/home/lighthouse/alipay_cert/alipayPublicCert.crt',
             // 必填-支付宝根证书 路径
             'alipay_root_cert_path' => '/home/lighthouse/alipay_cert/alipayRootCert.crt',           
-            'return_url' => 'http://159.75.179.165/checkout/alipay_return',
-            'notify_url' => 'http://159.75.179.165/checkout/successbank',
+            'return_url' => 'http://买买买.cn:8080/checkout/alipay_return',
+            'notify_url' => 'http://买买买.cn:8080/checkout/alipay_notify',
             // 选填-第三方应用授权token
             'app_auth_token' => '',
             // 选填-服务商模式下的服务商 id，当 mode 为 Pay::MODE_SERVICE 时使用该参数
@@ -225,19 +225,17 @@ if($alipay_sandbox == 0){
 else{
     Pay::config($sandbox_config);
     $total_amount = '0.01';
-    $orderId = $orderId+10000;
+    $orderId = $orderId+10000000;
 }
 
 
 // 注意返回类型为 Response，具体见详细文档
 $response = Pay::alipay()->web([
     'out_trade_no' => $orderId,
-//    'total_amount' => '0.01',
     'total_amount' => $total_amount,
     'subject' => $_SESSION['order_desc']
 ]);
 $content = $response->getBody()->getContents();
 echo "$content";
 //return $response;
-?>
 

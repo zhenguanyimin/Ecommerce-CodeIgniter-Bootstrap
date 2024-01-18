@@ -374,13 +374,47 @@ class Public_model extends CI_Model
         return $arr;
     }
 
+    public function getUserPaymentLog($order_id)
+    {
+        $this->db->select('*');
+        $this->db->where('order_id', $order_id);
+        $result = $this->db->get('users_payment_log');
+        return $result->row_array();         
+    }
+
+    public function updateUserPaymentLog($data)
+    {
+        $this->db->where('order_id', $data->out_trade_no);
+        if (!$this->db->update('users_payment_log', array(
+                'seller_id' => $data->seller_id,
+                'notify_time' => $data->notify_time,
+                'notify_type' => $data->notify_type,
+                'notify_id' => $data->notify_id,
+                'app_id' => $data->app_id,
+                'out_trade_no' => $data->out_trade_no,
+                'out_biz_no' => $data->out_biz_no,
+                'trade_no' => $data->trade_no,
+                'trade_status' => $data->trade_status,
+                'receipt_amount' => $data->receipt_amount,
+                'buyer_pay_amount' => $data->buyer_pay_amount,
+                'refund_fee' => $data->refund_fee,
+                'subject' => $data->subject,
+                'gmt_create' => $data->gmt_create,
+                'gmt_payment' => $data->gmt_payment,
+                'gmt_refund' => $data->gmt_refund,
+                'gmt_close' => $data->gmt_close
+                ))) {
+            log_message('error', print_r($this->db->error(), true));
+        }
+    }
+    
     public function setOrder($post)
     {
         $q = $this->db->query('SELECT MAX(order_id) as order_id FROM orders');
         $rr = $q->row_array();
         if ($rr['order_id'] == 0) {
             $rr['order_id'] = 1233;
-        }
+        }       
         $post['order_id'] = $rr['order_id'] + 1;
 
         $i = 0;
@@ -416,6 +450,7 @@ class Public_model extends CI_Model
                 ))) {
             log_message('error', print_r($this->db->error(), true));
         }
+        
         $lastId = $this->db->insert_id();
         if (!$this->db->insert('orders_clients', array(
                     'for_id' => $lastId,
@@ -429,6 +464,16 @@ class Public_model extends CI_Model
                 ))) {
             log_message('error', print_r($this->db->error(), true));
         }
+        
+        if (!$this->db->insert('users_payment_log', array(
+                    'user_id' => $post['user_id'],
+                    'order_id' => $post['order_id'],
+                    'channel' => 1,
+                    'amount' => $post['payAmount']
+                ))) {
+            log_message('error', print_r($this->db->error(), true));
+        }
+        
         if ($this->db->trans_status() === FALSE) {
             $this->db->trans_rollback();
             return false;
@@ -723,11 +768,12 @@ class Public_model extends CI_Model
         }
     }
 
-    public function changeAlipayPayStatus($order_id, $pay_status)
+    public function changeAlipayPayStatus($order_id, $pay_status, $trade_no)
     {
         $this->db->trans_begin();
         $this->db->where('order_id', $order_id);
         if (!$this->db->update('orders', array(
+                    'trade_no' => $trade_no,            
                     'pay_status' => $pay_status
                 ))) {
             log_message('error', print_r($this->db->error(), true));
