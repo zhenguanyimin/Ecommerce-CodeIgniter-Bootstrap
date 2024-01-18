@@ -61,7 +61,7 @@ $route['(\w{2})?/?checkout/successbank'] = 'checkout/successPaymentBank';
 $route['(\w{2})?/?checkout/paypalpayment'] = 'checkout/paypalPayment';
 $route['(\w{2})?/?checkout/alipay'] = 'checkout/Alipay';
 $route['(\w{2})?/?checkout/order-error'] = 'checkout/orderError';
-
+        
 //CronTask
 $route['cronTask'] = "CronTask/runCronTask";
 

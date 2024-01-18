@@ -104,6 +104,7 @@ INSERT INTO `languages` (`id`, `abbr`, `name`, `currency`, `currencyKey`, `flag`
 CREATE TABLE IF NOT EXISTS `orders` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `order_id` int(11) NOT NULL,
+  `trade_no` varchar(50) COMMENT '交易id',
   `user_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'point to public_users ID',
   `products` text NOT NULL,
   `date` int(10) unsigned NOT NULL,
@@ -855,3 +856,85 @@ INSERT INTO `bestseller_book` (`id`, `book_name`, `for_id` ) VALUES
 (68, '羊道·深山夏牧场', 6),
 (69, '头发这么少 去个理发店 还不给打折（银发川柳1）', 6),
 (70, '非人哉.6', 6);
+
+CREATE TABLE IF NOT EXISTS `platform_balances` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `total_amount` DOUBLE(20,6) DEFAULT 0 COMMENT '平台销售总额',
+  `platform_amount` DOUBLE(20,6) DEFAULT 0 COMMENT '平台分成总金额',
+  `pay_fee_amount` DOUBLE(20,6) DEFAULT 0 COMMENT '支付渠道佣金总额',
+  `vendors_amount` DOUBLE(20,6) DEFAULT 0 COMMENT '卖家分成总金额',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `vendors_balances` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `vendor_id` int(10) NOT NULL ,
+  `total_amount` DOUBLE(20,6) DEFAULT 0 COMMENT '卖家总金额',
+  `balances` DOUBLE(20,6) DEFAULT 0 COMMENT '卖家余额',
+  `withdraw_amount` DOUBLE(20,6) DEFAULT 0 COMMENT '卖家已提现金额',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `users_payment_log` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) NOT NULL ,
+  `order_id` int(11) NOT NULL,
+  `channel` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '交易渠道(1 支付宝)',
+  `buyer_id` varchar(50) COMMENT '用户付款账号',
+  `seller_id` varchar(50) COMMENT '平台收款账号',
+  `notify_time` varchar(50) COMMENT '通知的发送时间',
+  `notify_type` varchar(50) COMMENT '通知类型',
+  `notify_id` varchar(128) COMMENT '通知校验 ID',
+  `app_id` varchar(50) COMMENT '收款应用id',
+  `out_trade_no` varchar(64) COMMENT '平台订单id',
+  `out_biz_no` varchar(64) COMMENT '商家业务号。商家业务ID，通常是退款通知中返回的退款申请流水号',
+  `trade_no` varchar(50) COMMENT '交易id',
+  `trade_status` varchar(50) COMMENT '交易状态（WAIT_BUYER_PAY 交易创建，TRADE_SUCCESS 支付成功，TRADE_FINISHED 交易完成，TRADE_CLOSED 交易关闭）',
+  `amount` DOUBLE(20,2) DEFAULT 0 COMMENT '订单金额。本次交易支付订单金额，单位为人民币（元），精确到小数点后 2 位',
+  `receipt_amount` DOUBLE(20,2) DEFAULT 0 COMMENT '实收金额。商家在交易中实际收到的款项，单位为人民币（元），精确到小数点后 2 位',
+  `buyer_pay_amount` DOUBLE(20,2) DEFAULT 0 COMMENT '用户在交易中支付的金额，单位为人民币（元），精确到小数点后 2 位',
+  `refund_fee` DOUBLE(20,2) DEFAULT 0 COMMENT '总退款金额。退款通知中，返回总退款金额，单位为人民币（元），精确到小数点后 2 位',
+  `subject` varchar(256) COMMENT '订单标题/商品标题/交易标题/订单关键字等，是请求时对应参数，会在通知中原样传回',
+  `gmt_create` varchar(50) COMMENT '交易创建时间。格式为 yyyy-MM-dd HH:mm:ss',
+  `gmt_payment` varchar(50) COMMENT '交易付款时间。格式为 yyyy-MM-dd HH:mm:ss',
+  `gmt_refund` varchar(50) COMMENT '交易退款时间。格式为 yyyy-MM-dd HH:mm:ss.S',
+  `gmt_close` varchar(50) COMMENT '交易结束时间。格式为 yyyy-MM-dd HH:mm:ss',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `comment` varchar(50) COMMENT '备注',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `vendors_payment_log` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) NOT NULL ,
+  `order_id` int(11) NOT NULL,
+  `channel` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '交易渠道(1 支付宝)',
+  `buyer_id` varchar(50) COMMENT '用户付款账号',
+  `seller_id` varchar(50) COMMENT '平台收款账号',
+  `notify_time` varchar(50) COMMENT '通知的发送时间',
+  `notify_type` varchar(50) COMMENT '通知类型',
+  `notify_id` varchar(128) COMMENT '通知校验 ID',
+  `app_id` varchar(50) COMMENT '收款应用id',
+  `out_trade_no` varchar(64) COMMENT '平台订单id',
+  `out_biz_no` varchar(64) COMMENT '商家业务号。商家业务ID，通常是退款通知中返回的退款申请流水号',
+  `trade_no` varchar(50) COMMENT '交易id',
+  `trade_status` varchar(50) COMMENT '交易状态（WAIT_BUYER_PAY 交易创建，TRADE_SUCCESS 支付成功，TRADE_FINISHED 交易完成，TRADE_CLOSED 交易关闭）',
+  `amount` DOUBLE(20,2) DEFAULT 0 COMMENT '订单金额。本次交易支付订单金额，单位为人民币（元），精确到小数点后 2 位',
+  `receipt_amount` DOUBLE(20,2) DEFAULT 0 COMMENT '实收金额。商家在交易中实际收到的款项，单位为人民币（元），精确到小数点后 2 位',
+  `buyer_pay_amount` DOUBLE(20,2) DEFAULT 0 COMMENT '用户在交易中支付的金额，单位为人民币（元），精确到小数点后 2 位',
+  `refund_fee` DOUBLE(20,2) DEFAULT 0 COMMENT '总退款金额。退款通知中，返回总退款金额，单位为人民币（元），精确到小数点后 2 位',
+  `subject` varchar(256) COMMENT '订单标题/商品标题/交易标题/订单关键字等，是请求时对应参数，会在通知中原样传回',
+  `gmt_create` varchar(50) COMMENT '交易创建时间。格式为 yyyy-MM-dd HH:mm:ss',
+  `gmt_payment` varchar(50) COMMENT '交易付款时间。格式为 yyyy-MM-dd HH:mm:ss',
+  `gmt_refund` varchar(50) COMMENT '交易退款时间。格式为 yyyy-MM-dd HH:mm:ss.S',
+  `gmt_close` varchar(50) COMMENT '交易结束时间。格式为 yyyy-MM-dd HH:mm:ss',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `comment` varchar(50) COMMENT '备注',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
