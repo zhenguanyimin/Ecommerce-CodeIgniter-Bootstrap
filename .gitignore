@@ -3,3 +3,6 @@
 /yoshop
 /.htaccess
 /index.php
+/logs
+/vendor/*
+/composer*

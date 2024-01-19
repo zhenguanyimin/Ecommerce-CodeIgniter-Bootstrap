@@ -146,10 +146,19 @@ class Checkout extends MY_Controller
         $head['description'] = @$arrSeo['description'];
         $head['keywords'] = str_replace(" ", ",", $head['title']);
 
-	if(!isset($_SESSION['logged_user'])){
-	    $this->session->set_flashdata('userErorr', 'you must register user before purchase');                        
-	    redirect(LANG_URL . '/login');
+	if(!(isset($_SESSION['logged_user']) || isset($_SESSION['logged_vendor']))){
+	    $this->session->set_flashdata('userErorr', 'you must login before purchase');  
+            if(!isset($_SESSION['logged_user'])){
+                redirect(LANG_URL . '/login');                
+            }
+            else if(!isset($_SESSION['logged_vendor'])){
+                redirect(LANG_URL . '/vendor/login');                
+            }
 	}
+        if(isset($_SESSION["pay_bond_data"])){
+            $_POST = $_SESSION["pay_bond_data"];
+            unset($_SESSION["pay_bond_data"]);
+        }
         if (isset($_POST['payment_type'])) {
             $errors = $this->userInfoValidate($_POST);
             if (!empty($errors)) {
@@ -157,7 +166,9 @@ class Checkout extends MY_Controller
             } else {
                 $_POST['referrer'] = $this->session->userdata('referrer');
                 $_POST['clean_referrer'] = cleanReferral($_POST['referrer']);
-                $_POST['user_id'] = isset($_SESSION['logged_user']) ? $_SESSION['logged_user'] : 0;
+                if(!isset($_POST['user_id'])){
+                    $_POST['user_id'] = isset($_SESSION['logged_user']) ? $_SESSION['logged_user'] : 0;                    
+                }
                 $this->countPayAmount($_POST);
                 $orderId = $this->Public_model->setOrder($_POST);
                 if ($orderId != false) {
@@ -226,7 +237,7 @@ class Checkout extends MY_Controller
         }
         $_POST['payAmount'] = $_POST['final_amount'] + $_POST['realShippingAmount'];
         if($this->Home_admin_model->getValueStore('alipay_sandbox') != 0){
-            $_POST['payAmount'] = 0.01;
+            $_POST['payAmount'] = 1.0;
         }        
     }
     
@@ -249,15 +260,19 @@ class Checkout extends MY_Controller
             $_SESSION['discountAmount'] = $_POST['discountAmount'];
             redirect(LANG_URL . '/checkout/paypalpayment');
         }
-        if ($_POST['payment_type'] == 'alipay') {         
-            $total_amount = $_POST['final_amount']*1.0;
-            $commission = $_POST['final_amount']*($this->Home_admin_model->getValueStore('commissonRate')/100);
-            $vendor_share = $total_amount-$commission;
-            $total_amount = number_format( $total_amount, 6);
-            $vendor_share = number_format( $vendor_share, 6);
-            $commission = number_format( $commission, 6);
-
-            $this->Public_model->updateOrderAmount($this->orderId, $total_amount, $vendor_share, $commission,  $_POST['realShippingAmount']);            
+        if ($_POST['payment_type'] == 'alipay') {
+            if($_POST['order_source'] == 20){
+                $this->Public_model->updateOrderAmount($this->orderId, $_POST['final_amount'],  $_POST['vendor_share'],  $_POST['commission'],  $_POST['realShippingAmount']);                   
+            }               
+            else{
+                $total_amount = $_POST['final_amount']*1.0;            
+                $commission = $_POST['final_amount']*($this->Home_admin_model->getValueStore('commissonRate')/100);
+                $vendor_share = $total_amount-$commission;
+                $total_amount = number_format( $total_amount, 6);
+                $vendor_share = number_format( $vendor_share, 6);
+                $commission = number_format( $commission, 6);
+                $this->Public_model->updateOrderAmount($this->orderId, $total_amount, $vendor_share, $commission,  $_POST['realShippingAmount']);                   
+            }         
             $this->web();          
         }        
     }
@@ -410,6 +425,16 @@ class Checkout extends MY_Controller
 	$this->render('checkout_parts/alipay_success', $head, $data);
     }    
 
+    public function bond_success()
+    {
+        $data = array();
+        $head = array();
+        $head['title'] = '';
+        $head['description'] = '';
+	$head['keywords'] = '';
+	$this->render('checkout_parts/bond_success', $head, $data);
+    }   
+    
     public function web()
     {
         if($this->Home_admin_model->getValueStore('alipay_sandbox') == 0){
@@ -458,12 +483,18 @@ class Checkout extends MY_Controller
     {
         if($this->returnDataValidate($data)){
             log_message("debug", "verify return callback data success");
-            if (get_cookie('vendorBond') != null){
-                redirect(LANG_URL . '/vendor/me');
+            $result = $this->Public_model->getOrderSource($data->out_trade_no);
+            if(empty($result)){
+                log_message('error', "can not find the order,order id:".$data->out_trade_no);
+                return;
+            }            
+            if($result['order_source'] == 20){
+                redirect(LANG_URL . '/checkout/bond_success');
             }
             else{
                 redirect(LANG_URL . '/checkout/alipay_success');
-            }                    
+            }
+                
         }
         else{
            log_message("debug", "verify return callback data fail"); 
@@ -527,24 +558,12 @@ class Checkout extends MY_Controller
     {
         if($this->notifyDataValidate($data)){
             log_message("debug", "verify notify callback data success");
-            @delete_cookie('ordertype');
-            @delete_cookie('vendorBond');
             $this->shoppingcart->clearShoppingCart();
             $result = $this->Public_model->changeAlipayPayStatus($data->out_trade_no, self::PAYSTATUS_SUCCESS, $data->trade_no);
-            if ($result == true)
-            {            
-                if (get_cookie('vendorBond') != null)
-                {
-                    $this->Public_model->changeAlipayOrderStatus($data->out_trade_no, 30);
-                    $this->Public_model->updateBondPayStatus(get_cookie('vendorBond'), self::VENDOR_BOND_PAYED);
-                }
-                else
-                {
-                    $this->Public_model->manageQuantitiesAndProcurement($data->out_trade_no);
-                }
+            if ($result == true){            
+                log_message("debug", "change alipay pay status success");
             }
-            else
-            {
+            else{
                 log_message("debug", "change alipay pay status fail");
             }            
         }

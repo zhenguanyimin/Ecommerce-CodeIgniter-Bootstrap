@@ -106,6 +106,7 @@ $lang['you_choose_paypal'] = '你选择PayPal了支付方式，请继续购买�
 $lang['paypal_cancel_msg'] = '您成功取消paypal订单。';
 $lang['paypal_success_msg'] = '您成功购买您的订单!';
 $lang['pay_success_msg'] = '购买成功，请您等待收货并确认!';
+$lang['bond_success_msg'] = '商户保证金已缴纳，您可以添加任意数量商品了!';
 $lang['pay_processing_msg'] = '交易处理中，请耐心等待!';
 $lang['not_selected'] = '没有选择任何内容';
 $lang['shopping_cart'] = '购物车';
