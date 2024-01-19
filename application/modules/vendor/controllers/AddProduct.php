@@ -49,18 +49,21 @@ class AddProduct extends VENDOR_Controller
                     "id" => [],
                     'referrer' => "",
                     'clean_referrer' => "",
-                    'payment_type' => "20",
+                    'payment_type' => "alipay",
 		    'paypal_status' => "",
 		    'alipay_status' => "",
                     'discountCode' => "",
                     'date' => time(),
-                    "total_amount" => number_format( $this->Home_admin_model->getValueStore('vendorBond'), 6),
-                    "vendor_share" => number_format( 0.0, 6),
-                    "commission" => number_format( 0.0, 6),                       
+                    'final_amount' => number_format( $this->Home_admin_model->getValueStore('vendorBond'), 6),
+                    'vendor_share' => number_format( 0.0, 6),
+                    "commission" => number_format( 0.0, 6),
+                    'realShippingAmount' => number_format( 0.0, 6),                    
+                    "discountAmount" => number_format( 0.0, 6),                     
                     'order_source' => "20",
                 ];
-                $order_info["productInfo"]["vendor_id"] = $this->vendor_id;                    
-                $this->payVendorBond($order_info);
+                $order_info["productInfo"]["vendor_id"] = $this->vendor_id; 
+                $_SESSION["pay_bond_data"] = $order_info;
+                redirect(LANG_URL . '/checkout');
             }
             $_POST['image'] = $this->uploadImage();
             $_POST['vendor_id'] = $this->vendor_id;
@@ -92,12 +95,7 @@ class AddProduct extends VENDOR_Controller
         $this->load->view('_parts/header', $head);
         $this->load->view('add_product', $data);
         $this->load->view('_parts/footer');
-    }
-    
-    private function setVendorOrders($order_info)
-    {
-        $this->Public_model->setVendorOrder($order_info);
-    }
+    }    
     
     /*
      * Send notifications to users that have nofify=1 in /admin/adminusers
@@ -114,44 +112,6 @@ class AddProduct extends VENDOR_Controller
             }
         }
     }
-
-    private function goToDestination()
-    {
-        @set_cookie('alipay', $this->orderId, 2678400);
-        @set_cookie('vendorBond', $this->vendor_id, 2678400);
-        $_SESSION['discountAmount'] = 0.0;
-        $_SESSION['final_amount'] = $this->Home_admin_model->getValueStore('vendorBond');
-        $_SESSION['order_desc'] = "商户诚信保证金";
-        $_SESSION['alipay_sandbox'] = $this->Home_admin_model->getValueStore('alipay_sandbox');        
-        $total_amount = $_SESSION['final_amount']*1.0;
-        $commission = 0.0;
-        $vendor_share = 0.0;
-        $total_amount = number_format( $total_amount, 6);
-        $vendor_share = number_format( $vendor_share, 6);
-        $commission = number_format( $commission, 6);
-        $this->realShippingAmount = 0.0;
-        $_SESSION['realShippingAmount'] = $this->realShippingAmount;
-        $this->Public_model->updateOrderAmount($this->orderId, $total_amount, $vendor_share, $commission, $this->realShippingAmount);          
-        redirect(LANG_URL . '/checkout/alipay');              
-    }
-    
-    private function payVendorBond($order_info){
-        $orderId = $this->Public_model->setOrder($order_info);
-        if ($orderId != false) {
-            /*
-             * Save product orders in vendors profiles
-             */
-            $order_info['parent_order_id'] = $orderId;
-            $this->orderId = $orderId;
-            $this->setVendorOrders($order_info);
-            $this->sendNotifications();
-            $this->goToDestination();
-        } else {
-            log_message('error', 'Cant save order!! ' . implode('::', $order_info));
-            $this->session->set_flashdata('order_error', true);
-            redirect(LANG_URL . '/checkout/order-error');
-        }
-    } 
     
     private function uploadImage()
     {

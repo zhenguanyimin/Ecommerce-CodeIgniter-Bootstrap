@@ -376,7 +376,7 @@ class Public_model extends CI_Model
 
     public function getUserPaymentLog($order_id)
     {
-        $this->db->select('*');
+        $this->db->select('user_id, amount');
         $this->db->where('order_id', $order_id);
         $result = $this->db->get('users_payment_log');
         return $result->row_array();         
@@ -407,6 +407,14 @@ class Public_model extends CI_Model
             log_message('error', print_r($this->db->error(), true));
         }
     }
+
+    public function getOrderSource($order_id)
+    {
+        $this->db->select('user_id, order_source');
+        $this->db->where('order_id', $order_id);
+        $result = $this->db->get('orders');
+        return $result->row_array();        
+    } 
     
     public function setOrder($post)
     {
@@ -445,6 +453,7 @@ class Public_model extends CI_Model
                     'payment_type' => $post['payment_type'],
 		    'paypal_status' => @$post['paypal_status'],
 		    'alipay_status' => @$post['alipay_status'],
+                    'order_source' => @$post['order_source'],
                     'discount_code' => @$post['discountCode'],
                     'user_id' => $post['user_id']
                 ))) {
@@ -559,7 +568,7 @@ class Public_model extends CI_Model
                     'payment_type' => $post['payment_type'],
                     'paypal_status' => @$post['paypal_status'],
                     'alipay_status' => @$post['alipay_status'],
-                    'total_amount' => $post["total_amount"],
+                    'total_amount' => $post["final_amount"],
                     'vendor_share' => $post["vendor_share"],
                     'commission' => $post["commission"],
                     'order_source' => $post["order_source"],
@@ -613,6 +622,16 @@ class Public_model extends CI_Model
             log_message('error', print_r($this->db->error(), true));
             show_error(lang('database_error'));
         }
+    }
+    
+    public function getBondPayStatus($vendor_id)
+    {
+        $this->db->where('id', $vendor_id);
+        $this->db->select('bond_status');
+        $this->db->limit(1);
+        $result1 = $this->db->get('vendors');
+        $result = $result1->row_array();
+        return $result['bond_status'];
     }
 
     public function setActivationLink($link, $orderId)
@@ -770,6 +789,12 @@ class Public_model extends CI_Model
 
     public function changeAlipayPayStatus($order_id, $pay_status, $trade_no)
     {
+        $result = $this->getOrderSource($order_id);
+        if(empty($result)){
+            log_message('error', "can not find the order,order id:".$order_id);
+            return;
+        }
+        
         $this->db->trans_begin();
         $this->db->where('order_id', $order_id);
         if (!$this->db->update('orders', array(
@@ -787,6 +812,14 @@ class Public_model extends CI_Model
                     ))) {
                 log_message('error', print_r($this->db->error(), true));
             }            
+        }
+        
+        if( $result['order_source'] == 20){
+            $this->changeAlipayOrderStatus($order_id, 30);
+            $this->updateBondPayStatus($result['user_id'], 1);            
+        }
+        else{
+            $this->manageQuantitiesAndProcurement($order_id);
         }
         if ($this->db->trans_status() === FALSE) {
             $this->db->trans_rollback();
