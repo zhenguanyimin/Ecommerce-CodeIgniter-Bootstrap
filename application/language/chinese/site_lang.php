@@ -181,6 +181,7 @@ $lang['vendor_add_product'] = '添加产品';
 $lang['vendor_dashboard'] = '面板';
 $lang['vendor_products'] = '所有产品';
 $lang['vendor_home'] = '主页';
+$lang['vendor_home_page'] = '主页';
 $lang['vendor_profile'] = '个人资料';
 $lang['vendor_login'] = '卖家登录';
 $lang['vendor_register'] = '卖家注册';
