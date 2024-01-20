@@ -529,7 +529,6 @@ class Public_model extends CI_Model
                 $productInfo = $this->getOneProduct($product_id);
                 if ($productInfo['vendor_id'] > 0) {
                     /*calculate commission and save*/
-                    echo $productInfo['price'].$product_quantity.$_POST['discountAmount'];
                     $total_amount = $productInfo['price']*$product_quantity*1.0;
     //                $total_amount = $total_amount - $_POST['discountAmount'];
                     $commission = $total_amount*($this->Home_admin_model->getValueStore('commissonRate')/100);
