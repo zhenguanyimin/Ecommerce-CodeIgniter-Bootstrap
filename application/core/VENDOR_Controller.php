@@ -28,9 +28,9 @@ class VENDOR_Controller extends MX_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->model(array('Orders_model', 'Products_model', 'Vendorprofile_model'));        
         $this->loginCheck();
         $this->setVendorInfo();
-        $this->load->model(array('Orders_model', 'Products_model'));
         $this->allowed_img_types = $this->config->item('allowed_img_types');
         $numNotHandleDeliveryOrders = $this->Orders_model->newOrdersCheck($this->vendor_id, self::QUERY_ORDER_TYPE_DELIVERY);
         $numNotHandleUnPayOrders = $this->Orders_model->newOrdersCheck($this->vendor_id, self::QUERY_ORDER_TYPE_UNPAY);
@@ -52,8 +52,7 @@ class VENDOR_Controller extends MX_Controller
         if (!isset($_SESSION['logged_vendor']) && get_cookie('logged_vendor') != null) {
             $_SESSION['logged_vendor'] = get_cookie('logged_vendor');
         }
-        if(isset($_SESSION['logged_vendor'])){
-            $this->load->model('Vendorprofile_model');            
+        if(isset($_SESSION['logged_vendor'])){           
             $result_online_status = $this->Vendorprofile_model->getVendorInfoFromEmail($_SESSION['logged_vendor']);
             if($result_online_status['online_status'] == 0){
                 log_message("debug", "vendor login out by timeout, unset session logged_vendor");
@@ -87,7 +86,6 @@ class VENDOR_Controller extends MX_Controller
 
     private function setVendorInfo()
     {
-        $this->load->model('Vendorprofile_model');
         if (isset($_SESSION['logged_vendor'])) {
             $array = $this->Vendorprofile_model->getVendorInfoFromEmail($_SESSION['logged_vendor']);
             $this->vendor_id = $array['id'];
