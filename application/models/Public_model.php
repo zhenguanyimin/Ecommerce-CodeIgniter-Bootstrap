@@ -7,6 +7,9 @@ class Public_model extends CI_Model
     private $showInSliderProducts;
     private $multiVendor;
     private $vendorOrderId = 1233;
+    
+    const ALIPAY_COMMISSION_RATE = 0.006;
+    
     // 待支付
     const PAYSTATUS_PENDING = 10;
 
@@ -786,40 +789,153 @@ class Public_model extends CI_Model
         }
     }
 
-    public function changeAlipayPayStatus($order_id, $pay_status, $trade_no)
+    public function countCommission($order_amount)
     {
-        $result = $this->getOrderSource($order_id);
+        $return_result = array();
+        $commissonRate = number_format($this->Home_admin_model->getValueStore('commissonRate')/100.0, 3);      
+        $realCommissonRate = $commissonRate - self::ALIPAY_COMMISSION_RATE;
+        log_message("debug", "commissonRate:".$commissonRate.", realCommissonRate:".$realCommissonRate);
+        
+        $return_result['order_pay_fee_amount'] = $order_amount*self::ALIPAY_COMMISSION_RATE;
+        log_message("debug", "order_pay_fee_amount:".$return_result['order_pay_fee_amount']);
+
+        $return_result['order_platform_amount'] = $order_amount*$realCommissonRate;
+        log_message("debug", "order_platform_amount:".$return_result['order_platform_amount']);
+
+        $return_result['order_vendors_amount'] = $order_amount - $return_result['order_pay_fee_amount'] - $return_result['order_platform_amount'];
+        log_message("debug", "order_vendors_amount:".$return_result['order_vendors_amount']); 
+        
+        return $return_result;
+        
+    }
+    
+    public function accumuPlatformBalances($data, $commissionRet)
+    {
+        $return_data = array();  
+        $result = $this->getPlatformBalances();
         if(empty($result)){
-            log_message('error', "can not find the order,order id:".$order_id);
+            log_message('error', "can not find platform balances");
+            return;            
+        }
+        
+        $return_data['total_amount'] = $result['total_amount'] + $data->total_amount;
+        log_message("debug", "cur platform total_amount:".$return_data['total_amount'].", pre platform total_amountt:".$result['total_amount'].", order total_amount:".$data->total_amount);
+        
+        $return_data['pay_fee_amount'] = $result['pay_fee_amount'] + $commissionRet['order_pay_fee_amount'];
+        log_message("debug", "cur platform pay_fee_amount:".$return_data['pay_fee_amount'].", pre platform pay_fee_amount:".$result['pay_fee_amount'].", order pay_fee_amount:".$commissionRet['order_pay_fee_amount']);
+
+        $return_data['platform_amount'] = $result['platform_amount'] + $commissionRet['order_platform_amount'];
+        log_message("debug", "cur platform_amount:".$return_data['platform_amount'].", pre platform_amount:".$result['platform_amount'].", order platform_amount:".$commissionRet['order_platform_amount']);
+
+        $return_data['vendors_amount'] = $result['vendors_amount'] + $commissionRet['order_vendors_amount'];
+        log_message("debug", "cur vendors_amount:".$return_data['vendors_amount'].", pre vendors_amount:".$result['vendors_amount'].", order vendors_amount:".$commissionRet['order_vendors_amount']);
+
+        return $return_data;        
+    }
+    
+    public function getPlatformBalances()
+    {
+        $this->db->select('*');
+        $result = $this->db->get('platform_balances');
+        return $result->row_array();           
+    }
+
+    public function accumuVendorsBalances($vendor_id, $commissionRet)
+    {
+        $return_data = array();  
+        $result = $this->getVendorsBalances($vendor_id);
+        if(empty($result)){
+            log_message('error', "can not find the vendor balances, vendor_id:".$vendor_id);
+            return;            
+        }
+        
+        $return_data['vendor_id'] = $vendor_id;
+        log_message("debug", "vendor_id:".$vendor_id);
+                
+        $return_data['total_amount'] = $result['total_amount'] + $commissionRet['order_vendors_amount'];
+        log_message("debug", "cur vendor total_amount:".$return_data['total_amount'].", pre vendor total_amountt:".$result['total_amount'].", order total_amount:".$commissionRet['order_vendors_amount']);
+        
+        return $return_data;        
+    }
+    
+    public function getVendorsBalances($vendor_id)
+    {
+        $this->db->select('*');
+        $this->db->where('vendor_id', $vendor_id);        
+        $result = $this->db->get('vendors_balances');
+        return $result->row_array();           
+    }
+    
+    public function updatePlatformBalances($data)
+    {
+        if (!$this->db->update('platform_balances', array(
+                    'total_amount' => $data['total_amount'],            
+                    'platform_amount' => $data['platform_amount'],
+                    'pay_fee_amount' => $data['pay_fee_amount'],
+                    'vendors_amount' => $data['vendors_amount'],
+                    'updated_at' => date("Y-m-d H:i:s", time())            
+                ))) {
+            log_message('error', print_r($this->db->error(), true));
+        }           
+    }
+
+    public function updateVendorsBalances($data)
+    {
+        $this->db->where('vendor_id', $data['vendor_id']);
+        if (!$this->db->update('vendors_balances', array(
+                    'total_amount' => $data['total_amount'],
+                    'updated_at' => date("Y-m-d H:i:s", time())
+                ))) {
+            log_message('error', print_r($this->db->error(), true));
+        }           
+    }
+    
+    public function changeAlipayPayStatus($data, $pay_status)
+    {
+        $result = $this->getOrderSource($data->out_trade_no);
+        if(empty($result)){
+            log_message('error', "can not find the order,order id:".$data->out_trade_no);
+            return;
+        }
+        $commissionRet = $this->countCommission($data->total_amount);
+        if(empty($commissionRet)){
+            log_message('error', "count commssion error");
             return;
         }
         
         $this->db->trans_begin();
-        $this->db->where('order_id', $order_id);
+        $this->db->where('order_id', $data->out_trade_no);
         if (!$this->db->update('orders', array(
-                    'trade_no' => $trade_no,            
+                    'trade_no' => $data->trade_no,            
                     'pay_status' => $pay_status
                 ))) {
             log_message('error', print_r($this->db->error(), true));
         }
         
-        $orderIds = $this->queryChildOrders($order_id);
+        $orderIds = $this->queryChildOrders($data->out_trade_no);
         foreach($orderIds as $orderId){
-             $this->db->where('order_id', $orderId["order_id"]);
+            $this->db->where('order_id', $orderId["order_id"]);
             if (!$this->db->update('vendors_orders', array(
                         'pay_status' => $pay_status
                     ))) {
                 log_message('error', print_r($this->db->error(), true));
-            }            
+            }
+            
+            $vendor_balances = $this->accumuVendorsBalances($orderId["vendor_id"], $commissionRet);
+            $this->updateVendorsBalances($vendor_balances);            
         }
         
         if( $result['order_source'] == 20){
-            $this->changeAlipayOrderStatus($order_id, 30);
+            $this->changeAlipayOrderStatus($data->out_trade_no, 30);
             $this->updateBondPayStatus($result['user_id'], 1);            
         }
         else{
-            $this->manageQuantitiesAndProcurement($order_id);
+            $this->manageQuantitiesAndProcurement($data->out_trade_no);
         }
+        
+        $platform_balances = $this->accumuPlatformBalances($data, $commissionRet);
+        $this->updatePlatformBalances($platform_balances);
+        
         if ($this->db->trans_status() === FALSE) {
             $this->db->trans_rollback();
             return false;
@@ -832,7 +948,7 @@ class Public_model extends CI_Model
     public function queryChildOrders($order_id)
     {
         $this->db->where('parent_order_id', $order_id);
-        $this->db->select('order_id');
+        $this->db->select('order_id, vendor_id');
         $result1 = $this->db->get('vendors_orders');
         return $result1->result_array();        
     }   

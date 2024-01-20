@@ -569,7 +569,7 @@ class Checkout extends MY_Controller
             log_message("debug", "verify notify callback data success");
             $this->shoppingcart->clearShoppingCart();
             log_message("debug", "notify callback clearShoppingCart");
-            $result = $this->Public_model->changeAlipayPayStatus($data->out_trade_no, self::PAYSTATUS_SUCCESS, $data->trade_no);
+            $result = $this->Public_model->changeAlipayPayStatus($data, self::PAYSTATUS_SUCCESS);
             if ($result == true){            
                 log_message("debug", "change alipay pay status success");
             }
