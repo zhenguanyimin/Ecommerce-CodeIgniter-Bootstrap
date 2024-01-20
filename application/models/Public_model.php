@@ -1030,6 +1030,14 @@ class Public_model extends CI_Model
         $result = $query->row_array();
         return $result['count'];
     }
+
+    public function getUserLoginStatus($user_id)
+    {
+        $this->db->select('online_status');
+        $this->db->where('id', $user_id);
+        $result = $this->db->get('users_public');
+        return $result->row_array();  
+    }
     
     public function updateUserLoginStatus($post)
     {
