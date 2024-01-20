@@ -9,7 +9,8 @@ class Auth_model extends CI_Model
     }
 
     public function registerVendor($post)
-    {
+    {    
+        $this->db->trans_begin();
         $input = array(
             'email' => trim($post['u_email']),
             'password' => password_hash($post['u_password'], PASSWORD_DEFAULT)
@@ -18,6 +19,19 @@ class Auth_model extends CI_Model
             log_message('error', print_r($this->db->error(), true));
             show_error(lang('database_error'));
         }
+        
+        $lastId = $this->db->insert_id();
+        if (!$this->db->insert('vendors_balances', array(
+                    'vendor_id' => $lastId
+                ))) {
+            log_message('error', print_r($this->db->error(), true));
+        }
+              
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+        } else {
+            $this->db->trans_commit();
+        }        
     }
 
     public function countVendorsWithEmail($email)
