@@ -237,7 +237,7 @@ class Checkout extends MY_Controller
         }
         $_POST['payAmount'] = $_POST['final_amount'] + $_POST['realShippingAmount'];
         if($this->Home_admin_model->getValueStore('alipay_sandbox') != 0){
-            $_POST['payAmount'] = 1.0;
+            $_POST['payAmount'] = 0.01;
         }        
     }
     
@@ -478,23 +478,26 @@ class Checkout extends MY_Controller
         
         return true;       
     }
-        
+     
     public function handleReturnCallback($data)
-    {
+    {   
         if($this->returnDataValidate($data)){
             log_message("debug", "verify return callback data success");
             $result = $this->Public_model->getOrderSource($data->out_trade_no);
             if(empty($result)){
                 log_message('error', "can not find the order,order id:".$data->out_trade_no);
                 return;
-            }            
+            }
+              
             if($result['order_source'] == 20){
                 redirect(LANG_URL . '/checkout/bond_success');
             }
             else{
+                //清空购物车
+                $this->shoppingcart->clearShoppingCart();
+                log_message("debug", "return callback clearShoppingCart");                
                 redirect(LANG_URL . '/checkout/alipay_success');
-            }
-                
+            }          
         }
         else{
            log_message("debug", "verify return callback data fail"); 
@@ -503,7 +506,7 @@ class Checkout extends MY_Controller
     }
     
     public function returnCallback()
-    {
+    {            
         if(!isset($_GET['trade_no'])){
             log_message("debug", "return callback data invalid.");
             redirect(LANG_URL . '/checkout/alipay_fail');
@@ -559,6 +562,7 @@ class Checkout extends MY_Controller
         if($this->notifyDataValidate($data)){
             log_message("debug", "verify notify callback data success");
             $this->shoppingcart->clearShoppingCart();
+            log_message("debug", "notify callback clearShoppingCart");
             $result = $this->Public_model->changeAlipayPayStatus($data->out_trade_no, self::PAYSTATUS_SUCCESS, $data->trade_no);
             if ($result == true){            
                 log_message("debug", "change alipay pay status success");
