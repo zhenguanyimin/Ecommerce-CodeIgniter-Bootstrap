@@ -37,8 +37,8 @@ class Checkout extends MY_Controller
                 'alipay_public_cert_path' => '/home/lighthouse/aplipay_cert_product/alipayCertPublicKey_RSA2.crt',
                 // 必填-支付宝根证书 路径
                 'alipay_root_cert_path' => '/home/lighthouse/aplipay_cert_product/alipayRootCert.crt',            
-                'return_url' => 'https://买买买.cn/checkout/alipay_return',
-                'notify_url' => 'https://买买买.cn/checkout/alipay_notify',
+                'return_url' => 'https://买买买.cn/checkout/returnCallback',
+                'notify_url' => 'https://159.75.179.165/checkout/notifyCallback',
                 // 选填-第三方应用授权token
                 'app_auth_token' => '',
                 // 选填-服务商模式下的服务商 id，当 mode 为 Pay::MODE_SERVICE 时使用该参数
@@ -145,7 +145,7 @@ class Checkout extends MY_Controller
         $head['title'] = @$arrSeo['title'];
         $head['description'] = @$arrSeo['description'];
         $head['keywords'] = str_replace(" ", ",", $head['title']);
-
+        
 	if(!(isset($_SESSION['logged_user']) || isset($_SESSION['logged_vendor']))){
 	    $this->session->set_flashdata('userErorr', 'you must login before purchase');  
             if(!isset($_SESSION['logged_user'])){
@@ -155,6 +155,12 @@ class Checkout extends MY_Controller
                 redirect(LANG_URL . '/vendor/login');                
             }
 	}
+        $result_online_status = $this->Public_model->getUserLoginStatus($_SESSION['logged_user']);
+        if($result_online_status['online_status'] == 0){
+            log_message("debug", "user login out by timeout, unset session logged_user");
+            unset($_SESSION['logged_user']);
+        } 
+        
         if(isset($_SESSION["pay_bond_data"])){
             $_POST = $_SESSION["pay_bond_data"];
             unset($_SESSION["pay_bond_data"]);

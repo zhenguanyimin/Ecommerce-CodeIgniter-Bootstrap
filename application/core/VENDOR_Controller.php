@@ -52,6 +52,15 @@ class VENDOR_Controller extends MX_Controller
         if (!isset($_SESSION['logged_vendor']) && get_cookie('logged_vendor') != null) {
             $_SESSION['logged_vendor'] = get_cookie('logged_vendor');
         }
+        if(isset($_SESSION['logged_vendor'])){
+            $this->load->model('Vendorprofile_model');            
+            $result_online_status = $this->Vendorprofile_model->getVendorInfoFromEmail($_SESSION['logged_vendor']);
+            if($result_online_status['online_status'] == 0){
+                log_message("debug", "vendor login out by timeout, unset session logged_vendor");
+                unset($_SESSION['logged_vendor']);
+                delete_cookie('logged_vendor');                
+            }            
+        }        
         $authPages = array(
             'vendor/login',
             'vendor/register',

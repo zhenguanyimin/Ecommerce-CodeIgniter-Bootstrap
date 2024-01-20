@@ -64,6 +64,14 @@ class Home extends MY_Controller
         $data['showBrands'] = $this->Home_admin_model->getValueStore('showBrands');
         $data['brands'] = $this->Brands_model->getBrands();
         $data['links_pagination'] = pagination('home', $rowscount, $this->num_rows);
+        
+        if(isset($_SESSION['logged_user'])){
+            $result_online_status = $this->Public_model->getUserLoginStatus($_SESSION['logged_user']);
+            if($result_online_status['online_status'] == 0){
+                log_message("debug", "user login out by timeout, unset session logged_user");
+                unset($_SESSION['logged_user']);
+            }            
+        }
         $this->render('home', $head, $data);    
     }
 
