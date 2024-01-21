@@ -146,7 +146,7 @@ class Checkout extends MY_Controller
         $head['description'] = @$arrSeo['description'];
         $head['keywords'] = str_replace(" ", ",", $head['title']);
         
-	if(!(isset($_SESSION['logged_user']) || isset($_SESSION['logged_vendor']))){
+	if(!isset($_SESSION['logged_user']) || !isset($_SESSION['logged_vendor'])){
 	    $this->session->set_flashdata('userErorr', 'you must login before purchase');  
             if(!isset($_SESSION['logged_user'])){
                 redirect(LANG_URL . '/login');                
@@ -160,7 +160,7 @@ class Checkout extends MY_Controller
             log_message("debug", "user login out by timeout, unset session logged_user");
             unset($_SESSION['logged_user']);
         } 
-        
+            
         if(isset($_SESSION["pay_bond_data"])){
             $_POST = $_SESSION["pay_bond_data"];
             unset($_SESSION["pay_bond_data"]);
