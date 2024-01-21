@@ -341,7 +341,7 @@ class Public_model extends CI_Model
 
     public function getShopItems($array_items)
     {
-        $this->db->select('products.id, products.image, products.url, products.quantity, products_translations.price, products_translations.title');
+        $this->db->select('products.id, products.image, products.url, products.quantity, products_translations.price, products_translations.title, vendors.id as vendor_id, vendors.name as vendor_name');
         $this->db->from('products');
         if (count($array_items) > 1) {
             $i = 1;
@@ -358,6 +358,7 @@ class Public_model extends CI_Model
             $this->db->where('products.id =', current($array_items));
         }
         $this->db->join('products_translations', 'products_translations.for_id = products.id', 'inner');
+        $this->db->join('vendors', 'products.vendor_id = vendors.id', 'inner');        
         $this->db->where('products_translations.abbr', MY_LANGUAGE_ABBR);
         $query = $this->db->get();
         return $query->result_array();
@@ -1021,19 +1022,6 @@ class Public_model extends CI_Model
                         show_error(lang('database_error'));
                     }
                 } 
-        }
-    }
-    
-    public function updateOrderAmount($order_id, $totalAmount, $vendorShare, $commission, $shippingAmount)
-    {
-        $this->db->where('order_id', $order_id);
-        if (!$this->db->update('orders', array(
-                    'total_amount' => $totalAmount,
-                    'vendor_share' => $vendorShare,
-                    'commission' => $commission,
-                    'shipping_amount' => $shippingAmount
-                ))) {
-            log_message('error', print_r($this->db->error(), true));
         }
     }
     

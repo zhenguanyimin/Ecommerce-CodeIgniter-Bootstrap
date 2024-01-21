@@ -74,6 +74,7 @@ class ShoppingCart
         $this->sumValues = array_sum($count_articles);
         $finalSum = 0;
 
+        $vendors = array();     
         foreach ($result['array'] as &$article) {
             $article['num_added'] = $count_articles[$article['id']];
             $article['price'] = $article['price'] == '' ? 0 : $article['price'];
@@ -81,7 +82,9 @@ class ShoppingCart
             $finalSum = $finalSum + $article['sum_price'];
             $article['sum_price'] = number_format($article['sum_price'], 2);
             $article['price'] = $article['price'] != '' ? number_format($article['price'], 2) : 0;
+            $vendors[$article['vendor_id']] = $article['vendor_name'];            
         }
+        $result['vendors'] = $vendors;
         $result['finalSum'] = number_format($finalSum, 2);
         return $result;
     }

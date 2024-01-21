@@ -120,6 +120,10 @@ $province_list = [];
                         </div>
                     <?php } ?>
                     <div class="table-responsive">
+                        <?php foreach ($cartItems['vendors'] as $vendor_id => $vendor_name){ 
+                            $vendorFinalSum = 0;
+                        ?>
+                        <span>商户:<?= $vendor_name ?></span>                            
                         <table class="table table-bordered table-products">
                             <thead>
                                 <tr>
@@ -132,6 +136,9 @@ $province_list = [];
                             </thead>
                             <tbody>
                                 <?php foreach ($cartItems['array'] as $item) { ?>
+                                    <?php if($item['vendor_id'] == $vendor_id) { 
+                                        $vendorFinalSum += $item['sum_price'];
+                                    ?>
                                     <tr>
                                         <td class="relative">
                                             <input type="hidden" name="id[]" value="<?= $item['id'] ?>">
@@ -164,7 +171,33 @@ $province_list = [];
                                         <td><?= $item['price'] . CURRENCY ?></td>
                                         <td><?= $item['sum_price'] . CURRENCY ?></td>
                                     </tr>
+                                    <?php } ?>
                                 <?php } ?>
+                                <tr>
+                                    <td colspan="4" class="text-right"><?= lang('total') ?></td>
+                                    <td>
+                                        <span class="final-amount"><?= $vendorFinalSum ?></span><?= CURRENCY ?>
+                                        <input type="hidden" class="final-amount" name="vendor_final_amount" value="<?= $vendorFinalSum ?>">
+                                        <input type="hidden" name="amount_currency" value="<?= CURRENCY ?>">
+                                        <input type="hidden" name="discountAmount" value="">
+                                    </td>
+                                </tr>
+
+                                <?php
+                                    if((int)$shippingAmount > 0 && ((int)$shippingOrder > $vendorFinalSum)) {
+                                ?>
+                                <tr>
+                                    <td colspan="4" class="text-right"><?= lang('shipping') ?></td>
+                                    <td>
+                                        <span><?= (int)$shippingAmount ?></span><?= CURRENCY ?>
+                                    </td>
+                                </tr>
+                                <?php } ?>
+                            </tbody>                         
+                        </table>
+                    <?php }?>                             
+                        <table class="table table-bordered table-products">
+                            <tbody>
                                 <tr>
                                     <td colspan="4" class="text-right"><?= lang('total') ?></td>
                                     <td>
@@ -176,20 +209,19 @@ $province_list = [];
                                 </tr>
 
                                 <?php
-                              $total_parsed = str_replace(' ', '', str_replace(',', '', $cartItems['finalSum']));
-                              if((int)$shippingAmount > 0 && ((int)$shippingOrder > $total_parsed)) {
+                                    $total_parsed = str_replace(' ', '', str_replace(',', '', $cartItems['finalSum']));
+                                    if((int)$shippingAmount > 0 && ((int)$shippingOrder > $total_parsed)) {
                                 ?>
                                 <tr>
                                     <td colspan="4" class="text-right"><?= lang('shipping') ?></td>
                                     <td>
                                         <span><?= (int)$shippingAmount ?></span><?= CURRENCY ?>
                                     </td>
-                                </tr>
-                                <?php } ?>
-
-                            </tbody>
-                        </table>
-                    </div>
+                                </tr> 
+                                <?php }?>                                 
+                            </tbody>                            
+                        </table>                            
+                    </div>                       
                 </form>
                 <div>
                     <a href="<?= LANG_URL ?>" class="btn btn-primary go-shop">
