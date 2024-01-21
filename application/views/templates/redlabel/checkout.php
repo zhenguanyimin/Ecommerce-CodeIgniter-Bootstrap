@@ -118,12 +118,9 @@ $province_list = [];
                             <input class="form-control" name="discountCode" value="<?= @$_POST['discountCode'] ?>" placeholder="<?= lang('enter_discount_code') ?>" type="text">
                             <a href="javascript:void(0);" class="btn btn-default" onclick="checkDiscountCode()"><?= lang('check_code') ?></a>
                         </div>
-                    <?php } ?>
-                    <div class="table-responsive">
-                        <?php foreach ($cartItems['vendors'] as $vendor_id => $vendor_name){ 
-                            $vendorFinalSum = 0;
-                        ?>
-                        <span>商户:<?= $vendor_name ?></span>                            
+                    <?php } 
+                    $finalShippingAmount = 0;?>
+                    <div class="table-responsive">                         
                         <table class="table table-bordered table-products">
                             <thead>
                                 <tr>
@@ -135,10 +132,14 @@ $province_list = [];
                                 </tr>
                             </thead>
                             <tbody>
+                                <?php foreach ($cartItems['vendors'] as $vendor_id => $vendor_name){ 
+                                    $vendorFinalSum = 0;
+                                ?>                                   
                                 <?php foreach ($cartItems['array'] as $item) { ?>
                                     <?php if($item['vendor_id'] == $vendor_id) { 
                                         $vendorFinalSum += $item['sum_price'];
                                     ?>
+                                <tr><td colspan="5"><label style="color: #600">商户:<?= $vendor_name ?></label></td></tr>                                
                                     <tr>
                                         <td class="relative">
                                             <input type="hidden" name="id[]" value="<?= $item['id'] ?>">
@@ -172,9 +173,10 @@ $province_list = [];
                                         <td><?= $item['sum_price'] . CURRENCY ?></td>
                                     </tr>
                                     <?php } ?>
-                                <?php } ?>
+                                <?php }
+                                $finalShippingAmount += $vendorFinalSum;?>
                                 <tr>
-                                    <td colspan="4" class="text-right"><?= lang('total') ?></td>
+                                    <td colspan="4" class="text-right"><?= lang('vendor_total') ?></td>
                                     <td>
                                         <span class="final-amount"><?= $vendorFinalSum ?></span><?= CURRENCY ?>
                                         <input type="hidden" class="final-amount" name="vendor_final_amount" value="<?= $vendorFinalSum ?>">
@@ -187,40 +189,31 @@ $province_list = [];
                                     if((int)$shippingAmount > 0 && ((int)$shippingOrder > $vendorFinalSum)) {
                                 ?>
                                 <tr>
-                                    <td colspan="4" class="text-right"><?= lang('shipping') ?></td>
+                                    <td colspan="4" class="text-right"><?= lang('vendor_shipping') ?></td>
                                     <td>
                                         <span><?= (int)$shippingAmount ?></span><?= CURRENCY ?>
                                     </td>
                                 </tr>
                                 <?php } ?>
-                            </tbody>                         
-                        </table>
-                    <?php }?>                             
-                        <table class="table table-bordered table-products">
-                            <tbody>
-                                <tr>
-                                    <td colspan="4" class="text-right"><?= lang('total') ?></td>
-                                    <td>
-                                        <span class="final-amount"><?= $cartItems['finalSum'] ?></span><?= CURRENCY ?>
-                                        <input type="hidden" class="final-amount" name="final_amount" value="<?= $cartItems['finalSum'] ?>">
-                                        <input type="hidden" name="amount_currency" value="<?= CURRENCY ?>">
-                                        <input type="hidden" name="discountAmount" value="">
-                                    </td>
-                                </tr>
-
-                                <?php
-                                    $total_parsed = str_replace(' ', '', str_replace(',', '', $cartItems['finalSum']));
-                                    if((int)$shippingAmount > 0 && ((int)$shippingOrder > $total_parsed)) {
-                                ?>
-                                <tr>
-                                    <td colspan="4" class="text-right"><?= lang('shipping') ?></td>
-                                    <td>
-                                        <span><?= (int)$shippingAmount ?></span><?= CURRENCY ?>
-                                    </td>
-                                </tr> 
-                                <?php }?>                                 
+                            <?php }?>
+                            <tr><td colspan="5"></td></tr>
+                            <tr>
+                                <td colspan="4" class="text-right"><?= lang('order_total') ?></td>
+                                <td>
+                                    <span class="final-amount"><?= $cartItems['finalSum'] ?></span><?= CURRENCY ?>
+                                    <input type="hidden" class="final-amount" name="final_amount" value="<?= $cartItems['finalSum'] ?>">
+                                    <input type="hidden" name="amount_currency" value="<?= CURRENCY ?>">
+                                    <input type="hidden" name="discountAmount" value="">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="text-right"><?= lang('order_shipping') ?></td>
+                                <td>
+                                    <span><?= (int)$finalShippingAmount ?></span><?= CURRENCY ?>
+                                </td>
+                            </tr>                                   
                             </tbody>                            
-                        </table>                            
+                        </table>                         
                     </div>                       
                 </form>
                 <div>
