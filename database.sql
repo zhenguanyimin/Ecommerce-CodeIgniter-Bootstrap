@@ -130,6 +130,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `total_amount` DOUBLE(16,6) DEFAULT 0,
   `vendor_share` DOUBLE(16,6) DEFAULT 0,
   `commission` DOUBLE(16,6) DEFAULT 0,
+  `pay_fee_amount` DOUBLE(16,6) DEFAULT 0,
   `shipping_amount` int(11) DEFAULT '0',
   `processed` tinyint(1) NOT NULL DEFAULT '0',
   `viewed` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'viewed status is change when change processed status',
@@ -473,6 +474,7 @@ CREATE TABLE `vendors_orders` (
   `total_amount` DOUBLE(16,6) DEFAULT 0,
   `vendor_share` DOUBLE(16,6) DEFAULT 0,
   `commission` DOUBLE(16,6) DEFAULT 0,
+  `pay_fee_amount` DOUBLE(16,6) DEFAULT 0,
   `shipping_amount` int(11) DEFAULT '0',
   `processed` tinyint(1) NOT NULL DEFAULT '0',
   `viewed` tinyint(1) NOT NULL DEFAULT '0',
@@ -868,6 +870,9 @@ CREATE TABLE IF NOT EXISTS `platform_balances` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
+INSERT INTO `platform_balances` (`id`, `total_amount`, `platform_amount`, `pay_fee_amount`, `vendors_amount`) VALUES
+(1, 0.0, 0.0, 0.0, 0.0);
+
 CREATE TABLE IF NOT EXISTS `vendors_balances` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `vendor_id` int(10) NOT NULL ,
@@ -893,7 +898,7 @@ CREATE TABLE IF NOT EXISTS `users_payment_log` (
   `out_trade_no` varchar(64) COMMENT '平台订单id',
   `out_biz_no` varchar(64) COMMENT '商家业务号。商家业务ID，通常是退款通知中返回的退款申请流水号',
   `trade_no` varchar(50) COMMENT '交易id',
-  `trade_status` varchar(50) COMMENT '交易状态（WAIT_BUYER_PAY 交易创建，TRADE_SUCCESS 支付成功，TRADE_FINISHED 交易完成，TRADE_CLOSED 交易关闭）',
+  `trade_status` varchar(50) NOT NULL DEFAULT 'WAIT_BUYER_PAY' COMMENT '交易状态（WAIT_BUYER_PAY 交易创建，TRADE_SUCCESS 支付成功，TRADE_FINISHED 交易完成，TRADE_CLOSED 交易关闭）',
   `amount` DOUBLE(20,2) DEFAULT 0 COMMENT '订单金额。本次交易支付订单金额，单位为人民币（元），精确到小数点后 2 位',
   `receipt_amount` DOUBLE(20,2) DEFAULT 0 COMMENT '实收金额。商家在交易中实际收到的款项，单位为人民币（元），精确到小数点后 2 位',
   `buyer_pay_amount` DOUBLE(20,2) DEFAULT 0 COMMENT '用户在交易中支付的金额，单位为人民币（元），精确到小数点后 2 位',

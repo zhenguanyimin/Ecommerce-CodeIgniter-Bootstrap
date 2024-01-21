@@ -108,3 +108,10 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
  */
 defined('TEMPLATES_DIR')       OR define('TEMPLATES_DIR', APPPATH.'views/templates/'); // directory of templates
 defined('VIEWS_DIR')           OR define('VIEWS_DIR', APPPATH.'views/'); // directory of views
+
+
+/*
+ | Application used constants
+ */
+defined('ORDER_SOURCE_NORMAL') OR define('ORDER_SOURCE_NORMAL', 10);
+defined('ORDER_SOURCE_BOND')   OR define('ORDER_SOURCE_BOND', 20);
