@@ -446,6 +446,19 @@ class Public_model extends CI_Model
             }
         }
         $post['products'] = serialize($products_to_order);
+        $post["total_amount"] = number_format( $post['final_amount'], 6);
+        $post["vendor_share"] = number_format(0, 6);
+        $post["commission"] = number_format(0, 6);                
+        $post["pay_fee_amount"] = number_format(0, 6); 
+        
+        log_message('debug', "ORDER_SOURCE_BOND:".ORDER_SOURCE_BOND);
+        if($_POST['order_source'] != ORDER_SOURCE_BOND){
+            $count_result = $this->countCommission($post['final_amount']);            
+            $post["vendor_share"] = number_format( $count_result['order_vendors_amount'], 6);
+            $post["commission"] = number_format($count_result['order_platform_amount'], 6);                
+            $post["pay_fee_amount"] = number_format($count_result['order_pay_fee_amount'], 6);                
+        }      
+        
         $this->db->trans_begin();
         if (!$this->db->insert('orders', array(
                     'order_id' => $post['order_id'],
@@ -456,6 +469,11 @@ class Public_model extends CI_Model
                     'payment_type' => $post['payment_type'],
 		    'paypal_status' => @$post['paypal_status'],
 		    'alipay_status' => @$post['alipay_status'],
+                    'total_amount' => $post["total_amount"],
+                    'vendor_share' => $post["vendor_share"],
+                    'commission' => $post["commission"],
+                    'pay_fee_amount' => $post["pay_fee_amount"],
+                    'shipping_amount' => $post["realShippingAmount"],            
                     'order_source' => @$post['order_source'],
                     'discount_code' => @$post['discountCode'],
                     'user_id' => $post['user_id']
@@ -519,7 +537,7 @@ class Public_model extends CI_Model
             $post['products'][$product] = $post['quantity'][$i];
             $i++;
         }
-
+        log_message("debug", "product count:".$i);
         /*
          * Loop products and check if its from vendor - save order for him
          */
@@ -528,23 +546,22 @@ class Public_model extends CI_Model
             return $this->insertVendorOrder($post); 
         }
         else{
-            foreach ($post['products'] as $product_id => $product_quantity) {
-                $productInfo = $this->getOneProduct($product_id);
+            foreach ($post['products'] as $product_id => $product_quantity) {                
+                $productInfo = $this->getOneProduct($product_id);             
                 if ($productInfo['vendor_id'] > 0) {
                     /*calculate commission and save*/
+                    log_message("debug", "vendor_id:".$productInfo['vendor_id']);
                     $total_amount = $productInfo['price']*$product_quantity*1.0;
-    //                $total_amount = $total_amount - $_POST['discountAmount'];
-                    $commission = $total_amount*($this->Home_admin_model->getValueStore('commissonRate')/100);
-                    $vendor_share = $total_amount-$commission;
+                    $count_result = $this->countCommission($total_amount);
                     $post["total_amount"] = number_format( $total_amount, 6);
-                    $post["vendor_share"] = number_format( $vendor_share, 6);
-                    $post["commission"] = number_format( $commission, 6);                
-
+                    $post["vendor_share"] = number_format( $count_result['order_vendors_amount'], 6);
+                    $post["commission"] = number_format($count_result['order_platform_amount'], 6);                
+                    $post["pay_fee_amount"] = number_format($count_result['order_pay_fee_amount'], 6);                     
                     unset($post['id'], $post['quantity']);
                     $post['date'] = time();
                     $post['products'] = serialize(array($product_id => $product_quantity));
                     $post["productInfo"] = $productInfo;
-                    return $this->insertVendorOrder($post);
+                    $this->insertVendorOrder($post);
                 }
             }            
         }
@@ -552,7 +569,7 @@ class Public_model extends CI_Model
 
     public function insertVendorOrder($post)
     {
-        $q = $this->db->query('SELECT MAX(order_id) as order_id FROM vendors_orders');
+        $q = $this->db->query('SELECT MAX(order_id) as order_id FROM orders');
         $rr = $q->row_array();
         if ($rr['order_id'] == 0) {
             $rr['order_id'] = 1233;
@@ -570,9 +587,10 @@ class Public_model extends CI_Model
                     'payment_type' => $post['payment_type'],
                     'paypal_status' => @$post['paypal_status'],
                     'alipay_status' => @$post['alipay_status'],
-                    'total_amount' => $post["final_amount"],
+                    'total_amount' => $post["total_amount"],
                     'vendor_share' => $post["vendor_share"],
                     'commission' => $post["commission"],
+                    'pay_fee_amount' => $post["pay_fee_amount"],
                     'order_source' => $post["order_source"],
                     'discount_code' => @$post['discountCode'],
                     'vendor_id' => $post["productInfo"]['vendor_id'],
@@ -1147,6 +1165,16 @@ class Public_model extends CI_Model
         return $result['count'];
     }
 
+    public function getVendorUnsettledOrders()
+    {
+        $this->db->select('count(distinct remote_addr) as count');
+        $this->db->where('order_status', 10);
+        $this->db->where('delivery_status', 20);
+        $this->db->where('receipt_status', 20);        
+        $query = $this->db->get('vendors_orders');
+        return $query->row_array();
+    }
+    
     public function getUserLoginStatus($user_id)
     {
         $this->db->select('online_status');

@@ -266,20 +266,8 @@ class Checkout extends MY_Controller
             $_SESSION['discountAmount'] = $_POST['discountAmount'];
             redirect(LANG_URL . '/checkout/paypalpayment');
         }
-        if ($_POST['payment_type'] == 'alipay') {
-            if($_POST['order_source'] == 20){
-                $this->Public_model->updateOrderAmount($this->orderId, $_POST['final_amount'],  $_POST['vendor_share'],  $_POST['commission'],  $_POST['realShippingAmount']);                   
-            }               
-            else{
-                $total_amount = $_POST['final_amount']*1.0;            
-                $commission = $_POST['final_amount']*($this->Home_admin_model->getValueStore('commissonRate')/100);
-                $vendor_share = $total_amount-$commission;
-                $total_amount = number_format( $total_amount, 6);
-                $vendor_share = number_format( $vendor_share, 6);
-                $commission = number_format( $commission, 6);
-                $this->Public_model->updateOrderAmount($this->orderId, $total_amount, $vendor_share, $commission,  $_POST['realShippingAmount']);                   
-            }         
-            $this->web();          
+        if ($_POST['payment_type'] == 'alipay') {      
+//            $this->webPay();          
         }        
     }
     
@@ -441,7 +429,7 @@ class Checkout extends MY_Controller
 	$this->render('checkout_parts/bond_success', $head, $data);
     }   
     
-    public function web()
+    public function webPay()
     {
         if($this->Home_admin_model->getValueStore('alipay_sandbox') == 0){
             Pay::config($this->proudct_config);
@@ -460,6 +448,29 @@ class Checkout extends MY_Controller
         echo "$content";              
     }
 
+    //买家确认收货后自动打款给商户
+    public function vendorFundSettle()
+    {
+        if($this->Home_admin_model->getValueStore('alipay_sandbox') == 0){
+            Pay::config($this->proudct_config);
+        }
+        else{
+            Pay::config($this->sandbox_config);
+        }
+
+        $result = Pay::alipay()->transfer([
+            'out_biz_no' => '202106051432',
+            'trans_amount' => '0.01',
+            'product_code' => 'TRANS_ACCOUNT_NO_PWD',
+            'biz_scene' => 'DIRECT_TRANSFER',
+            'payee_info' => [
+                'identity' => 'ghdhjw7124@sandbox.com',
+                'identity_type' => 'ALIPAY_LOGON_ID',
+                'name' => '沙箱环境'
+            ],
+        ]);          
+    }
+    
     public function returnDataValidate($data)
     {
         if(empty($data)){

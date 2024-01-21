@@ -30,7 +30,12 @@ class CronTask extends MY_Controller
     {
         log_message("debug", "handleVendorOffline");
         $this->Public_model->handleVendorOffline();
-
     }
+    
+    public function handleVendorFundSettle()
+    {
+        log_message("debug", "handleVendorFundSettle");
+        redirect(LANG_URL . '/checkout/vendorFundSettle');
+    }    
 }
 
