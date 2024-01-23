@@ -21,7 +21,6 @@ class Checkout extends MY_Controller
     const VENDOR_BOND_PAYED = 1; 
     
     private $orderId;
-    private $realShippingAmount;
     private $alipay_config;
 
     protected $proudct_config = [
@@ -146,7 +145,7 @@ class Checkout extends MY_Controller
         $head['description'] = @$arrSeo['description'];
         $head['keywords'] = str_replace(" ", ",", $head['title']);
         
-	if(!isset($_SESSION['logged_user']) || !isset($_SESSION['logged_vendor'])){
+	if(!isset($_SESSION['logged_user']) && !isset($_SESSION['logged_vendor'])){
 	    $this->session->set_flashdata('userErorr', 'you must login before purchase');  
             if(!isset($_SESSION['logged_user'])){
                 redirect(LANG_URL . '/login');                
@@ -155,12 +154,13 @@ class Checkout extends MY_Controller
                 redirect(LANG_URL . '/vendor/login');                
             }
 	}
-        $result_online_status = $this->Public_model->getUserLoginStatus($_SESSION['logged_user']);
-        if($result_online_status['online_status'] == 0){
-            log_message("debug", "user login out by timeout, unset session logged_user");
-            unset($_SESSION['logged_user']);
-        } 
-            
+        if(isset($_SESSION['logged_user'])){
+            $result_online_status = $this->Public_model->getUserLoginStatus($_SESSION['logged_user']);
+            if($result_online_status['online_status'] == 0){
+                log_message("debug", "user login out by timeout, unset session logged_user");
+                unset($_SESSION['logged_user']);
+            } 
+        }            
         if(isset($_SESSION["pay_bond_data"])){
             $_POST = $_SESSION["pay_bond_data"];
             unset($_SESSION["pay_bond_data"]);
@@ -175,7 +175,7 @@ class Checkout extends MY_Controller
                 if(!isset($_POST['user_id'])){
                     $_POST['user_id'] = isset($_SESSION['logged_user']) ? $_SESSION['logged_user'] : 0;                    
                 }
-                $this->countPayAmount($_POST);
+                $this->countPayAmount();
                 $orderId = $this->Public_model->setOrder($_POST);
                 if ($orderId != false) {
                     /*
@@ -235,16 +235,11 @@ class Checkout extends MY_Controller
         }
     }
 
-    private function countPayAmount($post)
+    private function countPayAmount()
     {
-        $_POST['realShippingAmount'] = 0.0;
-        if($post['final_amount'] < $this->Home_admin_model->getValueStore('shippingOrder')){    
-            $_POST['realShippingAmount'] = $this->Home_admin_model->getValueStore('shippingAmount');
-        }
-        $_POST['payAmount'] = $_POST['final_amount'] + $_POST['realShippingAmount'];
-        if($this->Home_admin_model->getValueStore('alipay_sandbox') != 0){
-            $_POST['payAmount'] = 0.01;
-        }        
+//        if($this->Home_admin_model->getValueStore('alipay_sandbox') != 0){
+//            $_POST['payAmount'] = 0.01;
+//        }        
     }
     
     private function goToDestination()
@@ -266,8 +261,8 @@ class Checkout extends MY_Controller
             $_SESSION['discountAmount'] = $_POST['discountAmount'];
             redirect(LANG_URL . '/checkout/paypalpayment');
         }
-        if ($_POST['payment_type'] == 'alipay') {      
-//            $this->webPay();          
+        if ($_POST['payment_type'] == 'alipay') {
+            $this->webPay();          
         }        
     }
     
@@ -447,29 +442,6 @@ class Checkout extends MY_Controller
         $content = $response->getBody()->getContents();
         echo "$content";              
     }
-
-    //买家确认收货后自动打款给商户
-    public function vendorFundSettle()
-    {
-        if($this->Home_admin_model->getValueStore('alipay_sandbox') == 0){
-            Pay::config($this->proudct_config);
-        }
-        else{
-            Pay::config($this->sandbox_config);
-        }
-
-        $result = Pay::alipay()->transfer([
-            'out_biz_no' => '202106051432',
-            'trans_amount' => '0.01',
-            'product_code' => 'TRANS_ACCOUNT_NO_PWD',
-            'biz_scene' => 'DIRECT_TRANSFER',
-            'payee_info' => [
-                'identity' => 'ghdhjw7124@sandbox.com',
-                'identity_type' => 'ALIPAY_LOGON_ID',
-                'name' => '沙箱环境'
-            ],
-        ]);          
-    }
     
     public function returnDataValidate($data)
     {
@@ -500,13 +472,13 @@ class Checkout extends MY_Controller
     {   
         if($this->returnDataValidate($data)){
             log_message("debug", "verify return callback data success");
-            $result = $this->Public_model->getOrderSource($data->out_trade_no);
-            if(empty($result)){
+            $orderInfo = $this->Public_model->getOrderInfo($data->out_trade_no);
+            if(empty($orderInfo)){
                 log_message('error', "can not find the order,order id:".$data->out_trade_no);
                 return;
             }
               
-            if($result['order_source'] == 20){
+            if($orderInfo['order_source'] == ORDER_SOURCE_BOND){
                 redirect(LANG_URL . '/checkout/bond_success');
             }
             else{

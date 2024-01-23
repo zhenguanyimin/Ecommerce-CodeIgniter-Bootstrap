@@ -115,3 +115,5 @@ defined('VIEWS_DIR')           OR define('VIEWS_DIR', APPPATH.'views/'); // dire
  */
 defined('ORDER_SOURCE_NORMAL') OR define('ORDER_SOURCE_NORMAL', 10);
 defined('ORDER_SOURCE_BOND')   OR define('ORDER_SOURCE_BOND', 20);
+
+defined('FLOAT_ZERO')   OR define('FLOAT_ZERO', 0.0000000001);

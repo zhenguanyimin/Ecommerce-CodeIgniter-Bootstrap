@@ -495,6 +495,22 @@ circle:nth-child(1) {
     margin-bottom: 20px;
 }
 
+.checkout_vendor_name{
+    color: #337ab7;
+    font-weight: bolder;
+    font-size: 14px;
+}
+
+.checkout_subtotal{
+    color: #d9534f;
+    font-weight: bolder;
+    font-size: 14px;
+}
+
+.checkout_subtotal_detail{
+    color: #d9534f;
+    font-weight: bolder;
+}
 
 @media (max-width: 480px) { 
     #home-slider .carousel-control.right { background-position : -140px center; width : 50px; }
