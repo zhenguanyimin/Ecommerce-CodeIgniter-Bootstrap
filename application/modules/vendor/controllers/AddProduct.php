@@ -55,9 +55,10 @@ class AddProduct extends VENDOR_Controller
                     'discountCode' => "",
                     'date' => time(),
                     'final_amount' => number_format( $this->Home_admin_model->getValueStore('vendorBond'), 6),
+                    'payAmount' => number_format( $this->Home_admin_model->getValueStore('vendorBond'), 6),                    
                     'vendor_share' => number_format( 0.0, 6),
                     "commission" => number_format( 0.0, 6),
-                    'realShippingAmount' => number_format( 0.0, 6),                    
+                    'shipping_amount' => 0,                    
                     "discountAmount" => number_format( 0.0, 6),                     
                     'order_source' => "20",
                 ];

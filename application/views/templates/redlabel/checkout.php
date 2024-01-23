@@ -119,7 +119,9 @@ $province_list = [];
                             <a href="javascript:void(0);" class="btn btn-default" onclick="checkDiscountCode()"><?= lang('check_code') ?></a>
                         </div>
                     <?php } 
-                    $finalShippingAmount = 0;?>
+                    $finalShippingAmount = 0;
+                    $vendors_order_info = array();
+                    ?>
                     <div class="table-responsive">                         
                         <table class="table table-bordered table-products">
                             <thead>
@@ -134,12 +136,14 @@ $province_list = [];
                             <tbody>
                                 <?php foreach ($cartItems['vendors'] as $vendor_id => $vendor_name){ 
                                     $vendorFinalSum = 0;
-                                ?>                                   
+                                    $vendorShippingAmount = 0;
+                                    $vendor_order_info = array();
+                                ?>
+                                <tr><td colspan="5"><label class="checkout_vendor_name">商户:<?= $vendor_name ?></label></td></tr>                                   
                                 <?php foreach ($cartItems['array'] as $item) { ?>
                                     <?php if($item['vendor_id'] == $vendor_id) { 
                                         $vendorFinalSum += $item['sum_price'];
-                                    ?>
-                                <tr><td colspan="5"><label style="color: #600">商户:<?= $vendor_name ?></label></td></tr>                                
+                                    ?>                               
                                     <tr>
                                         <td class="relative">
                                             <input type="hidden" name="id[]" value="<?= $item['id'] ?>">
@@ -172,36 +176,39 @@ $province_list = [];
                                         <td><?= $item['price'] . CURRENCY ?></td>
                                         <td><?= $item['sum_price'] . CURRENCY ?></td>
                                     </tr>
-                                    <?php } ?>
-                                <?php }
-                                $finalShippingAmount += $vendorFinalSum;?>
+                                    <?php } $vendorFinalSum = number_format($vendorFinalSum, 2)?>
+                                <?php }?>
                                 <tr>
                                     <td colspan="4" class="text-right"><?= lang('vendor_total') ?></td>
                                     <td>
                                         <span class="final-amount"><?= $vendorFinalSum ?></span><?= CURRENCY ?>
-                                        <input type="hidden" class="final-amount" name="vendor_final_amount" value="<?= $vendorFinalSum ?>">
-                                        <input type="hidden" name="amount_currency" value="<?= CURRENCY ?>">
-                                        <input type="hidden" name="discountAmount" value="">
                                     </td>
                                 </tr>
 
                                 <?php
                                     if((int)$shippingAmount > 0 && ((int)$shippingOrder > $vendorFinalSum)) {
+                                        $vendorShippingAmount = $shippingAmount;
                                 ?>
                                 <tr>
                                     <td colspan="4" class="text-right"><?= lang('vendor_shipping') ?></td>
-                                    <td>
-                                        <span><?= (int)$shippingAmount ?></span><?= CURRENCY ?>
+                                    <td>                                        
+                                        <span><?= (int)$vendorShippingAmount ?></span><?= CURRENCY ?>
                                     </td>
                                 </tr>
-                                <?php } ?>
-                            <?php }?>
-                            <tr><td colspan="5"></td></tr>
+                                <?php }
+                                   $vendor_order_info["vendor_final_amount"] = $vendorFinalSum;
+                                   $vendor_order_info["vendor_shipping_amount"] = $vendorShippingAmount;
+                                   $vendors_order_info[$vendor_id] = $vendor_order_info;                                   
+                                   $finalShippingAmount += $vendorShippingAmount;?>
+                            <?php } $payAmount = number_format($cartItems['finalSum'] + $finalShippingAmount, 2);
+                                     $vendors_amount = json_encode($vendors_order_info);?>
+                                <tr><td colspan="5"><label class="checkout_subtotal">小计:</label></td></tr>
                             <tr>
-                                <td colspan="4" class="text-right"><?= lang('order_total') ?></td>
+                                <td colspan="4" class="text-right"><?= lang('prouducts_total') ?></td>
                                 <td>
-                                    <span class="final-amount"><?= $cartItems['finalSum'] ?></span><?= CURRENCY ?>
+                                    <span class="final-amount checkout_subtotal_detail"><?= $cartItems['finalSum'] ?><?= CURRENCY ?></span>
                                     <input type="hidden" class="final-amount" name="final_amount" value="<?= $cartItems['finalSum'] ?>">
+                                    <input type="hidden" name="vendors_amount" value='<?= $vendors_amount ?>'>                                    
                                     <input type="hidden" name="amount_currency" value="<?= CURRENCY ?>">
                                     <input type="hidden" name="discountAmount" value="">
                                 </td>
@@ -209,11 +216,19 @@ $province_list = [];
                             <tr>
                                 <td colspan="4" class="text-right"><?= lang('order_shipping') ?></td>
                                 <td>
-                                    <span><?= (int)$finalShippingAmount ?></span><?= CURRENCY ?>
+                                    <span class="checkout_subtotal_detail"><?= (int)$finalShippingAmount ?><?= CURRENCY ?></span>
+                                    <input type="hidden" class="final-amount" name="finalShippingAmount" value="<?= $finalShippingAmount ?>">                                    
                                 </td>
-                            </tr>                                   
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="text-right"><?= lang('order_total') ?></td>
+                                <td>
+                                    <span class="final-amount checkout_subtotal_detail"><?= $payAmount ?><?= CURRENCY ?></span>
+                                    <input type="hidden" class="final-amount" name="payAmount" value="<?= $payAmount ?>">
+                                </td>
+                            </tr>                            
                             </tbody>                            
-                        </table>                         
+                        </table>     
                     </div>                       
                 </form>
                 <div>

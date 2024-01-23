@@ -386,6 +386,15 @@ class Public_model extends CI_Model
         return $result->row_array();         
     }
 
+    public function getVendorPaymentLog($order_id)
+    {
+        $this->db->select('vendor_id, tranfer_order_id, vendor_alipay_account, vendor_real_name, trans_amount, trans_date');
+        $this->db->where('order_id', $order_id);
+        $this->db->where('status', "SUCCESS");        
+        $result = $this->db->get('vendors_payment_log');
+        return $result->row_array();         
+    }
+    
     public function updateUserPaymentLog($data)
     {
         $this->db->where('order_id', $data->out_trade_no);
@@ -412,9 +421,30 @@ class Public_model extends CI_Model
         }
     }
 
-    public function getOrderSource($order_id)
+    public function updateVendorPaymentLog($order, $response)
     {
-        $this->db->select('user_id, order_source');
+        $this->db->where('order_id', $order['order_id']);
+        if (!$this->db->update('vendors_payment_log', array(
+                'trans_date' => @$response['trans_date'],
+                'vendor_alipay_account' => $order['vendor_alipay_account'],
+                'vendor_real_name' => $order['vendor_real_name'],            
+                'tranfer_order_id' => @$response['order_id'],
+                'out_biz_no' => @$response['out_biz_no'],
+                'pay_fund_order_id' => @$response['pay_fund_order_id'],
+                'status' => @$response['status'],
+                'trans_amount' => $order["transfer_amount"],            
+                'code' => $response['code'],
+                'msg' => $response['msg'],
+                'sub_code' => @$response['sub_code'],
+                'sub_msg' => @$response['sub_msg'],              
+                ))) {
+            log_message('error', print_r($this->db->error(), true));
+        }
+    }
+    
+    public function getOrderInfo($order_id)
+    {
+        $this->db->select('user_id, order_source, total_amount, commission, vendor_share, pay_fee_amount');
         $this->db->where('order_id', $order_id);
         $result = $this->db->get('orders');
         return $result->row_array();        
@@ -474,7 +504,7 @@ class Public_model extends CI_Model
                     'vendor_share' => $post["vendor_share"],
                     'commission' => $post["commission"],
                     'pay_fee_amount' => $post["pay_fee_amount"],
-                    'shipping_amount' => $post["realShippingAmount"],            
+                    'shipping_amount' => $post["finalShippingAmount"],            
                     'order_source' => @$post['order_source'],
                     'discount_code' => @$post['discountCode'],
                     'user_id' => $post['user_id']
@@ -530,6 +560,16 @@ class Public_model extends CI_Model
         }
     }
 
+    public function getVendorOrderAmount($vendorId, $vendors_amount)
+    {
+        foreach ($vendors_amount as $vendor_id => $vendor_amount){
+            if($vendor_id == $vendorId){
+                log_message("debug", "vendor_amount:". implode(', ', $vendor_amount));                
+                return $vendor_amount;
+            }
+        }
+    }
+    
     public function setVendorOrder($post)
     {
         $i = 0;
@@ -547,15 +587,18 @@ class Public_model extends CI_Model
             return $this->insertVendorOrder($post); 
         }
         else{
+            $vendors_amount = json_decode($post['vendors_amount'],true);
             foreach ($post['products'] as $product_id => $product_quantity) {                
                 $productInfo = $this->getOneProduct($product_id);             
                 if ($productInfo['vendor_id'] > 0) {
                     /*calculate commission and save*/
                     log_message("debug", "vendor_id:".$productInfo['vendor_id']);
-                    $total_amount = $productInfo['price']*$product_quantity*1.0;
-                    $count_result = $this->countCommission($total_amount);
-                    $post["total_amount"] = number_format( $total_amount, 6);
-                    $post["vendor_share"] = number_format( $count_result['order_vendors_amount'], 6);
+                    $post["vendor_id"] = $productInfo['vendor_id'];
+                    $vendorAmount = $this->getVendorOrderAmount($productInfo['vendor_id'], $vendors_amount);
+                    $count_result = $this->countCommission($vendorAmount['vendor_final_amount']);
+                    $post["total_amount"] = number_format($vendorAmount['vendor_final_amount'], 6);
+                    $post["shipping_amount"] = $vendorAmount['vendor_shipping_amount'];                    
+                    $post["vendor_share"] = number_format($count_result['order_vendors_amount'], 6);
                     $post["commission"] = number_format($count_result['order_platform_amount'], 6);                
                     $post["pay_fee_amount"] = number_format($count_result['order_pay_fee_amount'], 6);                     
                     unset($post['id'], $post['quantity']);
@@ -570,7 +613,7 @@ class Public_model extends CI_Model
 
     public function insertVendorOrder($post)
     {
-        $q = $this->db->query('SELECT MAX(order_id) as order_id FROM orders');
+        $q = $this->db->query('SELECT MAX(order_id) as order_id FROM vendors_orders');
         $rr = $q->row_array();
         if ($rr['order_id'] == 0) {
             $rr['order_id'] = 1233;
@@ -589,6 +632,7 @@ class Public_model extends CI_Model
                     'paypal_status' => @$post['paypal_status'],
                     'alipay_status' => @$post['alipay_status'],
                     'total_amount' => $post["total_amount"],
+                    'shipping_amount' => $post["shipping_amount"],            
                     'vendor_share' => $post["vendor_share"],
                     'commission' => $post["commission"],
                     'pay_fee_amount' => $post["pay_fee_amount"],
@@ -613,6 +657,15 @@ class Public_model extends CI_Model
                 ))) {
             log_message('error', print_r($this->db->error(), true));
         }
+       
+        if (!$this->db->insert('vendors_payment_log', array(
+                    'vendor_id' => $post['vendor_id'],
+                    'order_id' => $post['order_id'],
+                    'channel' => 1
+                ))) {
+            log_message('error', print_r($this->db->error(), true));
+        }
+        
         if ($this->db->trans_status() === FALSE) {
             $this->db->trans_rollback();
             return false;
@@ -634,6 +687,32 @@ class Public_model extends CI_Model
         }
     }
 
+    public function updateVendorOrderStatus($transfer, $order_status)
+    {
+        $this->db->trans_begin();
+        $this->db->where('order_id', $transfer['order_id']);
+        if (!$this->db->update('vendors_orders', array(
+                    'order_status' => $order_status
+                ))) {
+            log_message('error', print_r($this->db->error(), true));
+        }
+        $vendor_payment_log = $this->getVendorPaymentLog($transfer['vendor_id']);
+        if(empty($vendor_payment_log)){
+            $result = $this->reduceVendorsBalances($transfer);
+            if(!empty($result)){
+                $this->updateVendorsWithdraw($result);                
+            }       
+        }
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            return false;
+        } else {
+            $this->db->trans_commit();
+            return true;
+        }                 
+    }
+    
     public function updateBondPayStatus($vendor_id, $status)
     {
         $this->db->where('id', $vendor_id);
@@ -828,7 +907,7 @@ class Public_model extends CI_Model
         
     }
     
-    public function accumuPlatformBalances($data, $commissionRet)
+    public function accumuPlatformBalances($orderInfo)
     {
         $return_data = array();  
         $result = $this->getPlatformBalances();
@@ -837,17 +916,17 @@ class Public_model extends CI_Model
             return;            
         }
         
-        $return_data['total_amount'] = $result['total_amount'] + $data->total_amount;
-        log_message("debug", "cur platform total_amount:".$return_data['total_amount'].", pre platform total_amountt:".$result['total_amount'].", order total_amount:".$data->total_amount);
+        $return_data['total_amount'] = $result['total_amount'] + $orderInfo['total_amount'];
+        log_message("debug", "cur platform total_amount:".$return_data['total_amount'].", pre platform total_amount:".$result['total_amount'].", order total_amount:".$orderInfo['total_amount']);
         
-        $return_data['pay_fee_amount'] = $result['pay_fee_amount'] + $commissionRet['order_pay_fee_amount'];
-        log_message("debug", "cur platform pay_fee_amount:".$return_data['pay_fee_amount'].", pre platform pay_fee_amount:".$result['pay_fee_amount'].", order pay_fee_amount:".$commissionRet['order_pay_fee_amount']);
+        $return_data['pay_fee_amount'] = $result['pay_fee_amount'] + $orderInfo['pay_fee_amount'];
+        log_message("debug", "cur platform pay_fee_amount:".$return_data['pay_fee_amount'].", pre platform pay_fee_amount:".$result['pay_fee_amount'].", order pay_fee_amount:".$orderInfo['pay_fee_amount']);
 
-        $return_data['platform_amount'] = $result['platform_amount'] + $commissionRet['order_platform_amount'];
-        log_message("debug", "cur platform_amount:".$return_data['platform_amount'].", pre platform_amount:".$result['platform_amount'].", order platform_amount:".$commissionRet['order_platform_amount']);
+        $return_data['platform_amount'] = $result['platform_amount'] + $orderInfo['commission'];
+        log_message("debug", "cur platform_amount:".$return_data['platform_amount'].", pre platform_amount:".$result['platform_amount'].", order platform_amount:".$orderInfo['commission']);
 
-        $return_data['vendors_amount'] = $result['vendors_amount'] + $commissionRet['order_vendors_amount'];
-        log_message("debug", "cur vendors_amount:".$return_data['vendors_amount'].", pre vendors_amount:".$result['vendors_amount'].", order vendors_amount:".$commissionRet['order_vendors_amount']);
+        $return_data['vendors_amount'] = $result['vendors_amount'] + $orderInfo['vendor_share'];
+        log_message("debug", "cur vendors_amount:".$return_data['vendors_amount'].", pre vendors_amount:".$result['vendors_amount'].", order vendors_amount:".$orderInfo['vendor_share']);
 
         return $return_data;        
     }
@@ -859,20 +938,49 @@ class Public_model extends CI_Model
         return $result->row_array();           
     }
 
-    public function accumuVendorsBalances($vendor_id, $commissionRet)
+    public function accumuVendorsBalances($order)
     {
         $return_data = array();  
-        $result = $this->getVendorsBalances($vendor_id);
+        $result = $this->getVendorsBalances($order['vendor_id']);
         if(empty($result)){
-            log_message('error', "can not find the vendor balances, vendor_id:".$vendor_id);
+            log_message('error', "can not find the vendor balances, vendor_id:".$order['vendor_id']);
             return;            
         }
         
-        $return_data['vendor_id'] = $vendor_id;
-        log_message("debug", "vendor_id:".$vendor_id);
+        $return_data['vendor_id'] = $order['vendor_id'];
+        log_message("debug", "vendor_id:".$order['vendor_id']);
                 
-        $return_data['total_amount'] = $result['total_amount'] + $commissionRet['order_vendors_amount'];
-        log_message("debug", "cur vendor total_amount:".$return_data['total_amount'].", pre vendor total_amountt:".$result['total_amount'].", order total_amount:".$commissionRet['order_vendors_amount']);
+        $return_data['total_amount'] = $result['total_amount'] + $order['vendor_share'] + $order['shipping_amount'];
+        log_message("debug", "cur vendor total_amount:".$return_data['total_amount'].", pre vendor total_amount:".$result['total_amount'].", order vendor_share:".$order['vendor_share'].", order shipping_amount:".$order['shipping_amount']);
+
+        $return_data['balances'] = $result['balances'] + $order['vendor_share'] + $order['shipping_amount'];
+        log_message("debug", "cur vendor balances:".$return_data['balances'].", pre vendor balances:".$result['balances'].", order vendor_share:".$order['vendor_share'].", order shipping_amount:".$order['shipping_amount']);
+        
+        return $return_data;        
+    }
+
+    public function reduceVendorsBalances($transfer)
+    {
+        $return_data = array();  
+        $result = $this->getVendorsBalances($transfer['vendor_id']);
+        if(empty($result)){
+            log_message('error', "can not find the vendor balances, vendor_id:".$transfer['vendor_id']);
+            return $return_data;            
+        }
+
+        if($result['balances'] < $transfer['transfer_amount']){
+            log_message("debug", "transfer_amount more than balances error, balances:".$result['balances'].", transfer_amount:".$transfer['transfer_amount']);
+            return $return_data;
+        }
+        
+        $return_data['vendor_id'] = $transfer['vendor_id'];
+        log_message("debug", "vendor_id:".$transfer['vendor_id']);
+        
+        $return_data['balances'] = $result['balances'] - $transfer['transfer_amount'];
+        log_message("debug", "cur vendor balances:".$return_data['balances'].", pre vendor balances:".$result['balances'].", transfer_amount:".$transfer['transfer_amount']);                 
+        
+        $return_data['withdraw_amount'] = $result['withdraw_amount'] + $transfer['transfer_amount'];
+        log_message("debug", "cur vendor withdraw_amount:".$return_data['withdraw_amount'].", pre vendor withdraw_amount:".$result['withdraw_amount'].", transfer_amount:".$transfer['transfer_amount']);
         
         return $return_data;        
     }
@@ -903,6 +1011,19 @@ class Public_model extends CI_Model
         $this->db->where('vendor_id', $data['vendor_id']);
         if (!$this->db->update('vendors_balances', array(
                     'total_amount' => $data['total_amount'],
+                    'balances' => $data['balances'],
+                    'updated_at' => date("Y-m-d H:i:s", time())
+                ))) {
+            log_message('error', print_r($this->db->error(), true));
+        }           
+    }
+
+    public function updateVendorsWithdraw($data)
+    {
+        $this->db->where('vendor_id', $data['vendor_id']);
+        if (!$this->db->update('vendors_balances', array(
+                    'balances' => $data['balances'],
+                    'withdraw_amount' => $data['withdraw_amount'],
                     'updated_at' => date("Y-m-d H:i:s", time())
                 ))) {
             log_message('error', print_r($this->db->error(), true));
@@ -911,14 +1032,9 @@ class Public_model extends CI_Model
     
     public function changeAlipayPayStatus($data, $pay_status)
     {
-        $result = $this->getOrderSource($data->out_trade_no);
-        if(empty($result)){
+        $orderInfo = $this->getOrderInfo($data->out_trade_no);
+        if(empty($orderInfo )){
             log_message('error', "can not find the order,order id:".$data->out_trade_no);
-            return;
-        }
-        $commissionRet = $this->countCommission($data->total_amount);
-        if(empty($commissionRet)){
-            log_message('error', "count commssion error");
             return;
         }
         
@@ -931,29 +1047,33 @@ class Public_model extends CI_Model
             log_message('error', print_r($this->db->error(), true));
         }
         
-        $orderIds = $this->queryChildOrders($data->out_trade_no);
-        foreach($orderIds as $orderId){
-            $this->db->where('order_id', $orderId["order_id"]);
+        $venders_order = $this->queryChildOrders($data->out_trade_no);
+        foreach($venders_order as $order){
+            $this->db->where('order_id', $order["order_id"]);
             if (!$this->db->update('vendors_orders', array(
                         'pay_status' => $pay_status
                     ))) {
                 log_message('error', print_r($this->db->error(), true));
             }
             
-            $vendor_balances = $this->accumuVendorsBalances($orderId["vendor_id"], $commissionRet);
-            $this->updateVendorsBalances($vendor_balances);            
+            $vendor_balances = $this->accumuVendorsBalances($order);
+            if(!empty($vendor_balances)){
+                $this->updateVendorsBalances($vendor_balances);                  
+            }          
         }
         
-        if( $result['order_source'] == 20){
+        if( $orderInfo ['order_source'] == 20){
             $this->changeAlipayOrderStatus($data->out_trade_no, 30);
-            $this->updateBondPayStatus($result['user_id'], 1);            
+            $this->updateBondPayStatus($orderInfo ['user_id'], 1);            
         }
         else{
             $this->manageQuantitiesAndProcurement($data->out_trade_no);
         }
         
-        $platform_balances = $this->accumuPlatformBalances($data, $commissionRet);
-        $this->updatePlatformBalances($platform_balances);
+        $platform_balances = $this->accumuPlatformBalances($orderInfo);
+        if(!empty($vendor_balances)){
+            $this->updatePlatformBalances($platform_balances);
+        }
         
         if ($this->db->trans_status() === FALSE) {
             $this->db->trans_rollback();
@@ -967,7 +1087,7 @@ class Public_model extends CI_Model
     public function queryChildOrders($order_id)
     {
         $this->db->where('parent_order_id', $order_id);
-        $this->db->select('order_id, vendor_id');
+        $this->db->select('order_id, vendor_id, vendor_share, shipping_amount');
         $result1 = $this->db->get('vendors_orders');
         return $result1->result_array();        
     }   
@@ -1153,14 +1273,16 @@ class Public_model extends CI_Model
         return $result['count'];
     }
 
-    public function getVendorUnsettledOrders()
+    public function getVendorTransferOrders()
     {
-        $this->db->select('count(distinct remote_addr) as count');
+        $this->db->select('vendors_orders.vendor_id, vendors_orders.order_id, vendors_orders.vendor_share, vendors_orders.shipping_amount, vendors.vendor_alipay_account, vendors.name, vendors.vendor_real_name');
         $this->db->where('order_status', 10);
+        $this->db->where('pay_status', 20);        
         $this->db->where('delivery_status', 20);
-        $this->db->where('receipt_status', 20);        
+        $this->db->where('receipt_status', 20);
+        $this->db->join('vendors', 'vendors_orders.vendor_id = vendors.id', 'inner');         
         $query = $this->db->get('vendors_orders');
-        return $query->row_array();
+        return $query->result_array();
     }
     
     public function getUserLoginStatus($user_id)
@@ -1318,7 +1440,7 @@ class Public_model extends CI_Model
                 return $d !== false ? $d : $v;
             }, $v);
         }
-//        $result['orders_num'] = count($result);
+//      $result['orders_num'] = count($result);
         return $result;
     }
 
