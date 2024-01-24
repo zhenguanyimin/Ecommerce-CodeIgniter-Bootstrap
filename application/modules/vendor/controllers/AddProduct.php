@@ -37,6 +37,7 @@ class AddProduct extends VENDOR_Controller
             //是否已缴纳商户保证金判断
             if($this->Home_admin_model->getValueStore('vendorBond') > 0 && $this->Vendorprofile_model->getVendorStatus($this->vendor_id) == 1 
                     && $this->Public_model->getBondPayStatus($this->vendor_id) == 0 && $this->Products_model->productsCount($this->vendor_id) > 2){ //需缴纳商户保证金
+                $order_amount = number_format( $this->Home_admin_model->getValueStore('vendorBond'), 6);
                 $order_info = [
                     "name" => $this->vendor_name,
                     "email" => $_SESSION['logged_vendor'],
@@ -46,6 +47,7 @@ class AddProduct extends VENDOR_Controller
                     "post_code" => "123456",
                     "notes" => "商户诚信保证金",
                     "user_id" => $this->vendor_id,
+                    'vendor_id' => $this->vendor_id,                    
                     "id" => [],
                     'referrer' => "",
                     'clean_referrer' => "",
@@ -54,10 +56,10 @@ class AddProduct extends VENDOR_Controller
 		    'alipay_status' => "",
                     'discountCode' => "",
                     'date' => time(),
-                    'final_amount' => number_format( $this->Home_admin_model->getValueStore('vendorBond'), 6),
-                    'payAmount' => number_format( $this->Home_admin_model->getValueStore('vendorBond'), 6),                    
-                    'vendor_share' => number_format( 0.0, 6),
-                    "commission" => number_format( 0.0, 6),
+                    'final_amount' => $order_amount,
+                    'vendor_final_amount' => $order_amount,
+                    'payAmount' =>  number_format($order_amount, 2),                    
+                    'finalShippingAmount' => 0,
                     'shipping_amount' => 0,                    
                     "discountAmount" => number_format( 0.0, 6),                     
                     'order_source' => "20",

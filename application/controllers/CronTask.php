@@ -107,6 +107,7 @@ class CronTask extends MY_Controller
         $this->handleUserOffline();
         $this->handleVendorOffline();
         $this->handleVendorTransfer();
+        $this->handleParentOrderStatus();
     }
     
     public function handleUserOffline()
@@ -120,19 +121,20 @@ class CronTask extends MY_Controller
         log_message("debug", "handleVendorOffline");
         $this->Public_model->handleVendorOffline();
     }
-    
-    public function handleVendorTransfer()
-    {
-        log_message("debug", "handleVendorTransfer");
-        Pay::config($this->alipay_config);
 
-        $transferOrders = $this->Public_model->getVendorTransferOrders();
+    public function excuteVendorTransfer($transferOrders)
+    {
         if(empty($transferOrders)){
             log_message("debug", "transferOrders empty");
             return;
         }
 
         foreach ($transferOrders as $order){
+            $vendor_payment_log = $this->Public_model->getSuccVendorPaymentLog($order['order_id']);
+            if(!empty($vendor_payment_log)){
+                log_message('error', "order has beed transferred, skipped, order_id:".$order['order_id']);
+                continue;       
+            }     
             $transferAmount = $order['vendor_share']+$order['shipping_amount'];
             log_message("debug", "transfer to vendor:".$order['name'].", vendor_id:".$order['vendor_id'].", order_id:".$order['order_id'].", real name:".$order['vendor_real_name'].", alipay account:".$order['vendor_alipay_account'].", amount:".$transferAmount);
             $balances = $this->Public_model->getVendorsBalances($order['vendor_id']);
@@ -156,7 +158,7 @@ class CronTask extends MY_Controller
                     'name' => $order['vendor_real_name']
                 ],
             ]); 
-            log_message("debug", "transfer result:".$result);            
+            log_message("debug", "transfer result:".$result);        
             $response = json_decode($result, true);
             if($response['code'] == 10000){
                 log_message("debug", "transfer success");
@@ -167,7 +169,27 @@ class CronTask extends MY_Controller
                 $response['status'] = "FAIL";
             }
             $this->Public_model->updateVendorPaymentLog($order, $response);            
-        }
-    }    
+        }        
+    }
+    
+    public function handleVendorTransfer()
+    {
+        log_message("debug", "handleVendorTransfer");
+        Pay::config($this->alipay_config);
+
+        log_message("debug", "transfer share to vendor ");        
+        $transferOrders = $this->Public_model->getVendorTransferOrders();
+        $this->excuteVendorTransfer($transferOrders);
+
+        log_message("debug", "return bond to vendor ");         
+        $vendorBondOrders = $this->Public_model->getVendorBondOrders();
+        $this->excuteVendorTransfer($vendorBondOrders);        
+    }
+
+    public function handleParentOrderStatus()
+    {
+        log_message("debug", "handleParentOrderStatus");
+        $this->Public_model->handleParentOrderStatus();
+    }
 }
 
