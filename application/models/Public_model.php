@@ -495,7 +495,7 @@ class Public_model extends CI_Model
             $post["pay_fee_amount"] = number_format($count_result['order_pay_fee_amount'], 6);          
         }
         else{
-            $count_result = $this->countCommission($post['final_amount']);            
+            $count_result = $this->countCommission($post['payAmount'], $post['final_amount']);            
             $post["vendor_share"] = number_format( $count_result['order_vendors_amount'], 6);
             $post["commission"] = number_format($count_result['order_platform_amount'], 6);                
             $post["pay_fee_amount"] = number_format($count_result['order_pay_fee_amount'], 6);             
@@ -611,7 +611,7 @@ class Public_model extends CI_Model
                     log_message("debug", "vendor_id:".$productInfo['vendor_id']);
                     $post["vendor_id"] = $productInfo['vendor_id'];
                     $vendorAmount = $this->getVendorOrderAmount($productInfo['vendor_id'], $vendors_amount);
-                    $count_result = $this->countCommission($vendorAmount['vendor_final_amount']);
+                    $count_result = $this->countCommission($vendorAmount['vendor_final_amount']+$vendorAmount['vendor_shipping_amount'], $vendorAmount['vendor_final_amount']);
                     $post["vendor_final_amount"] = number_format($vendorAmount['vendor_final_amount'], 6);
                     $post["shipping_amount"] = $vendorAmount['vendor_shipping_amount'];                    
                     $post["vendor_share"] = number_format($count_result['order_vendors_amount'], 6);
@@ -750,6 +750,19 @@ class Public_model extends CI_Model
             return true;
         }                 
     }
+
+    public function updateOrderReceiptStatus($order)
+    {
+        $this->db->where('order_id', $order["order_id"]);
+        if (!$this->db->update('vendors_orders', array(
+                    'receipt_status' => self::DELIVERED,
+                    'order_status' => self::COMPLETED,            
+                    'receipt_time' => time()
+                ))) {
+            log_message('error', print_r($this->db->error(), true));
+            show_error(lang('database_error'));
+        }
+    }    
     
     public function updateBondPayStatus($vendor_id, $status)
     {
@@ -925,14 +938,14 @@ class Public_model extends CI_Model
         }
     }
 
-    public function countCommission($order_amount)
+    public function countCommission($payAmount, $order_amount)
     {
         $return_result = array();
         $commissonRate = number_format($this->Home_admin_model->getValueStore('commissonRate')/100.0, 3);      
         $realCommissonRate = $commissonRate - self::ALIPAY_COMMISSION_RATE;
         log_message("debug", "commissonRate:".$commissonRate.", realCommissonRate:".$realCommissonRate.", order_amount:".$order_amount);
         
-        $return_result['order_pay_fee_amount'] = $order_amount*self::ALIPAY_COMMISSION_RATE;
+        $return_result['order_pay_fee_amount'] = $payAmount*self::ALIPAY_COMMISSION_RATE;
         log_message("debug", "order_pay_fee_amount:".$return_result['order_pay_fee_amount']);
 
         $return_result['order_platform_amount'] = $order_amount*$realCommissonRate;
@@ -1348,6 +1361,17 @@ class Public_model extends CI_Model
         $this->db->where('delivery_status', 20);
         $this->db->where('receipt_status', 20);
         $this->db->join('vendors', 'vendors_orders.vendor_id = vendors.id', 'inner');         
+        $query = $this->db->get('vendors_orders');
+        return $query->result_array();
+    }
+
+    public function getAutoReceiptOrders()
+    {
+        $this->db->select('vendor_id, order_id, delivery_time');
+        $this->db->where('order_status', 10);
+        $this->db->where('pay_status', 20);        
+        $this->db->where('delivery_status', 20);      
+        $this->db->where('receipt_status', 10);       
         $query = $this->db->get('vendors_orders');
         return $query->result_array();
     }

@@ -36,8 +36,8 @@ class Checkout extends MY_Controller
                 'alipay_public_cert_path' => '/home/lighthouse/aplipay_cert_product/alipayCertPublicKey_RSA2.crt',
                 // 必填-支付宝根证书 路径
                 'alipay_root_cert_path' => '/home/lighthouse/aplipay_cert_product/alipayRootCert.crt',            
-                'return_url' => 'https://买买买.cn/checkout/returnCallback',
-                'notify_url' => 'https://159.75.179.165/checkout/notifyCallback',
+                'return_url' => 'http://买买买.cn:8080/checkout/returnCallback',
+                'notify_url' => 'http://159.75.179.165:8080/checkout/notifyCallback',
                 // 选填-第三方应用授权token
                 'app_auth_token' => '',
                 // 选填-服务商模式下的服务商 id，当 mode 为 Pay::MODE_SERVICE 时使用该参数
@@ -48,7 +48,7 @@ class Checkout extends MY_Controller
             ]
         ],  
         'logger' => [ // optional
-            'enable' => false,
+            'enable' => true,
             'file' => './logs/alipay.log',
             'level' => 'info', // 建议生产环境等级调整为 info，开发环境为 debug
             'type' => 'single', // optional, 可选 daily.
