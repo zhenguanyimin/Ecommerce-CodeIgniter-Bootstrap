@@ -165,7 +165,7 @@
                             <i class="fa fa-chevron-up" aria-hidden="true"></i>
                         </a>
                         <?php if($order['pay_status'] == 20 && $order['delivery_status'] == 10 && $order['order_source'] != 20){ ?>
-                            <a href="javascript:void(0);" data-toggle="modal" data-target="#addExpressNo"  class="btn btn-sm btn-green show-more">发货</a>                                
+                            <a href="javascript:void(0);" data-toggle="modal" data-target="#addExpressNo" data-order_id= <?= $order['order_id'] ?> class="btn btn-sm btn-green show-more">发货</a>                                
                         <?php }?>                     
                     </td>                     
                 </tr>
@@ -230,11 +230,11 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <form action="" method="POST" action="<?= base_url('vendor/orders?queryOrderType='.$queryOrderType) ?>">
-                <input type="hidden" name="order_id" value="<?= $order_id ?>">;
+                <input type="hidden" name="order_id" id="delivery_order_id" value="">;
                 <input type="hidden" name="delivery_time" value="<?= time() ?>">;      
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel"><?=lang('order_delivery') ?></h4>
+                    <h4 class="modal-title" id="myModalLabel"><?= lang('order_delivery') ?></h4>
                 </div>
                 <div class="modal-body">
                     <?php if ($this->session->flashdata('error')) { ?>
@@ -271,4 +271,11 @@
                                 $('#addExpressNo').modal('show');
 <?php } ?>
                         });
+                        
+		$('#addExpressNo').on('show.bs.modal', function (event) {
+		  var button = $(event.relatedTarget) 
+		  var order_id = button.data('order_id')
+		  var modal = $(this)
+		  modal.find('#delivery_order_id').val(order_id)
+		})                      
 </script>

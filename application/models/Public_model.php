@@ -751,7 +751,7 @@ class Public_model extends CI_Model
         }                 
     }
 
-    public function updateOrderReceiptStatus($order)
+    public function updateOrderCompleted($order)
     {
         $this->db->where('order_id', $order["order_id"]);
         if (!$this->db->update('vendors_orders', array(
