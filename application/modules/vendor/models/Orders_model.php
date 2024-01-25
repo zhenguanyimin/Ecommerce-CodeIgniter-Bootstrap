@@ -283,8 +283,7 @@ class Orders_model extends CI_Model
     {
         $this->db->where('order_id', $post["order_id"]);
         if (!$this->db->update('vendors_orders', array(
-                    'receipt_status' => $post['receipt_status'],
-                    'order_status' => self::COMPLETED,            
+                    'receipt_status' => $post['receipt_status'],         
                     'receipt_time' => time()
                 ))) {
             log_message('error', print_r($this->db->error(), true));

@@ -55,6 +55,7 @@ class Orders extends VENDOR_Controller
         $head['description'] = self::QueryOrderTypeDesc[$queryOrderType];
         $head['keywords'] = '';
         if (isset($_POST['express_no'])) {
+            print_r($_POST);
             $this->orderDelivery();
         }
         if ($this->session->flashdata('post')) {

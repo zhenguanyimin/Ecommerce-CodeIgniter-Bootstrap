@@ -147,7 +147,8 @@ class CronTask extends MY_Controller
                 log_message('error', "transfer_amount out of range, total_amount:".$balances['total_amount'].", balances:".$balances['balances'].", transfer_amount:".$transferAmount);
                 continue;                 
             }
-            $order['transfer_amount'] = number_format($transferAmount-0.005, 2);            
+            $order['transfer_amount'] = number_format($transferAmount-0.005, 2); 
+            log_message("debug", "transfer real amount:".$order['transfer_amount']);
             $result = Pay::alipay()->transfer([
                 'out_biz_no' => $order['order_id'],
                 'trans_amount' => $order['transfer_amount'],
@@ -204,7 +205,7 @@ class CronTask extends MY_Controller
         foreach ($orders as $order){
             if(time() - $order['delivery_time'] > AUTO_RECEIPT_PRODUCTS_TIME){
                 log_message("debug", "auto receipt product, order_id:".$order['order_id']);                
-                $this->Public_model->updateOrderReceiptStatus($order);                
+                $this->Public_model->updateOrderCompleted($order);                
             }
         }
     }    
