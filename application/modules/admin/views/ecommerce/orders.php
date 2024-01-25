@@ -28,11 +28,23 @@ $payTypeEnum = array(
     20 => "支付宝支付",
 );
 
-$orderStatus = array(
+
+ $orderStatus = array(
     10 => "进行中",
     20 => "取消",
     21 => "待取消",
-    30 => "已完成",                        
+    30 => "已完成",
+);
+ 
+$queryOrderType = array(
+    -1 => "全部",
+    10 => "已付款",
+    20 => "已发货",        
+    30 => "已收货",
+    40 => "已完成",    
+    50 => "已取消",
+    60 => "待取消",      
+    70 => "未支付",        
 ); 
 ?>
 <div>
@@ -58,6 +70,16 @@ $orderStatus = array(
                 <input value="<?= isset($_GET['searchValue']) ? htmlspecialchars($_GET['searchValue']) : '' ?>" placeholder="请输入关键词" type="text"  name="searchValue" id="searchValue" style="height: 34px;" class="clear-control">                
             </div>
         </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="form-group">
+                <label for="orderSource" title="订单状态" class="">订单状态:</label>
+                <select class="selectpicker" name="queryOrderType" id="queryOrderType" data-width="50%">
+                    <?php foreach ($queryOrderType as $id => $name) { ?>
+                        <option <?= isset($_GET['queryOrderType']) && $_GET['queryOrderType'] == $id ? 'selected' : '' ?> value="<?= $id ?>"><?= htmlspecialchars($name) ?></option>
+                    <?php } ?>                                                   
+                </select>
+            </div>
+        </div>        
         <div class="col-lg-4 col-md-6">
             <div class="form-group">
                 <label for="orderSource" title="订单来源" class="">订单来源:</label>
@@ -67,20 +89,10 @@ $orderStatus = array(
                     <?php } ?>                                                   
                 </select>
             </div>
-        </div>
-        <div class="col-lg-4 col-md-6">
-            <div class="form-group">
-                <label for="payType" title="支付方式" class="">支付方式:</label>
-                <select class="selectpicker" name="payType" id="payType" data-width="50%"> 
-                    <?php foreach ($payTypes as $id => $name) { ?>
-                        <option <?= isset($_GET['payType']) && $_GET['payType'] == $id ? 'selected' : '' ?> value="<?= $id ?>"><?= htmlspecialchars($name) ?></option>
-                    <?php } ?>                                
-                </select>  
-            </div>
-        </div>        
+        </div>      
     </div>
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-lg-4 col-md-6">
             <div class="form-group">
                 <label for="deliveryType" title="配送方式" class="">配送方式:</label>                
                 <select class="selectpicker" name="deliveryType" id="deliveryType" data-width="50%"> 
@@ -89,8 +101,18 @@ $orderStatus = array(
                     <?php } ?>                                
                 </select>
             </div>     
-        </div>        
-        <div class="col-sm-8">
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="form-group">
+                <label for="payType" title="支付方式" class="">支付方式:</label>
+                <select class="selectpicker" name="payType" id="payType" data-width="50%"> 
+                    <?php foreach ($payTypes as $id => $name) { ?>
+                        <option <?= isset($_GET['payType']) && $_GET['payType'] == $id ? 'selected' : '' ?> value="<?= $id ?>"><?= htmlspecialchars($name) ?></option>
+                    <?php } ?>                                
+                </select>  
+            </div>
+        </div>          
+        <div class="col-lg-5 col-md-6">
             <div class="form-group">
                 <label for="start_time">订单时间:</label> 
                 <input type="date" value="<?= isset($_GET['start_time']) ? htmlspecialchars($_GET['start_time']) : '' ?>" name="start_time" id="start_time" style="width:20%; height: 34px;" class="clear-control">

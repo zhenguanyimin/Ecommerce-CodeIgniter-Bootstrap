@@ -72,7 +72,7 @@
         </div>        
     </div>
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-lg-4 col-md-6">
             <div class="form-group">
                 <label for="deliveryType" title="配送方式" class="">配送方式:</label>                
                 <select class="selectpicker" name="deliveryType" id="deliveryType" data-width="50%"> 
@@ -82,7 +82,7 @@
                 </select>
             </div>     
         </div>        
-        <div class="col-sm-8">
+        <div class="col-lg-8 col-md-6">
             <div class="form-group">
                 <label for="start_time">订单时间:</label> 
                 <input type="date" value="<?= isset($_GET['start_time']) ? htmlspecialchars($_GET['start_time']) : '' ?>" name="start_time" id="start_time" style="width:20%; height: 34px;" class="clear-control">
