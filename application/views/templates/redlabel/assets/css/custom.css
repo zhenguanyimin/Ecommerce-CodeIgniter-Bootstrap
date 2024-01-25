@@ -450,7 +450,7 @@ circle:nth-child(1) {
 .bestseller_list {
     margin: 0px;
     height: 500px;
-    background-image: url(imgs/banner-right.jpg);;
+    background-image: url(imgs/banner-right.jpg);
     padding: 5px;
 }
 .bestseller_list .bestseller_nav {
