@@ -6,7 +6,19 @@ class Orders_model extends CI_Model
     const PAYSTATUS_PENDING = 10;
 
     // 支付成功
-    const PAYSTATUS_SUCCESS = 20;   
+    const PAYSTATUS_SUCCESS = 20;
+    
+    // 未发货
+    const NOT_DELIVERED = 10;
+
+    // 已发货
+    const DELIVERED = 20;
+    
+    // 未收货
+    const NOT_RECEIVED = 10;
+
+    // 已收货
+    const RECEIVED = 20;
     
     // 进行中
     const NORMAL = 10;
@@ -22,12 +34,13 @@ class Orders_model extends CI_Model
 
     //订单类型   
     const QUERY_ORDER_TYPE_ALL = -1;
-    const QUERY_ORDER_TYPE_DELIVERY = 10;
-    const QUERY_ORDER_TYPE_RECEIPT = 20;
-    const QUERY_ORDER_TYPE_UNPAY = 30;
+    const QUERY_ORDER_TYPE_PAYED = 10;    
+    const QUERY_ORDER_TYPE_DELIVERY = 20;
+    const QUERY_ORDER_TYPE_RECEIPT = 30;
     const QUERY_ORDER_TYPE_COMPLETED = 40;
     const QUERY_ORDER_TYPE_CANCELED = 50;
     const QUERY_ORDER_TYPE_AFTERSALES = 60;    
+    const QUERY_ORDER_TYPE_UNPAY = 70;
     
     public function __construct()
     {
@@ -155,8 +168,8 @@ class Orders_model extends CI_Model
             'deliveryType' => -1,   // 配送方式
             'start_time' => '',     // 起始时间
             'end_time' => '',       // 截止时间
-            'queryOrderType' => -1,   // 订单类型(-1所有订单 10待发货 20待收货 30未支付 40已完成 50已取消 60售后管理)
-        ]);
+            'queryOrderType' => -1,   // 订单类型(-1所有订单 10已付款 20已发货 30已收货 40已完成 50已取消 60待取消 70未支付)
+        ]);         
         // 检索查询条件
         $filter = [];
         // 关键词
@@ -194,6 +207,48 @@ class Orders_model extends CI_Model
         $params['payType'] > -1 && $filter[] = ['pay_type =', (int)$params['payType']];
         // 配送方式
         $params['deliveryType'] > -1 && $filter[] = ['delivery_type =', (int)$params['deliveryType']];
+
+        //订单查询类型
+        if($params['queryOrderType'] == self::QUERY_ORDER_TYPE_PAYED){
+            $filter[] = ['pay_status =', self::PAYSTATUS_SUCCESS];
+            $filter[] = ['order_status =', self::NORMAL];            
+        }            
+        else if($params['queryOrderType'] == self::QUERY_ORDER_TYPE_DELIVERY){
+            $filter[] = ['pay_status =', self::PAYSTATUS_SUCCESS];
+            $filter[] = ['delivery_status =', self::DELIVERED];
+            $filter[] = ['order_status =', self::NORMAL];            
+        }
+        else if($params['queryOrderType'] == self::QUERY_ORDER_TYPE_RECEIPT){
+            $filter[] = ['pay_status =', self::PAYSTATUS_SUCCESS];
+            $filter[] = ['delivery_status =', self::DELIVERED];
+            $filter[] = ['receipt_status =', self::RECEIVED];
+            $filter[] = ['order_status =', self::NORMAL];            
+        }
+        else if($params['queryOrderType'] == self::QUERY_ORDER_TYPE_UNPAY){
+            $filter[] = ['pay_status =', self::PAYSTATUS_PENDING];
+            $filter[] = ['delivery_status =', self::NOT_DELIVERED];
+            $filter[] = ['receipt_status =', self::NOT_RECEIVED];
+            $filter[] = ['order_status =', self::NORMAL];
+        }        
+        else if($params['queryOrderType'] == self::QUERY_ORDER_TYPE_COMPLETED){
+            $filter[] = ['pay_status =', self::PAYSTATUS_SUCCESS];
+            $filter[] = ['delivery_status =', self::DELIVERED];
+            $filter[] = ['receipt_status =', self::RECEIVED];
+            $filter[] = ['order_status =', self::COMPLETED];
+        }        
+        else if($params['queryOrderType'] == self::QUERY_ORDER_TYPE_CANCELED){
+            $filter[] = ['pay_status =', self::PAYSTATUS_SUCCESS];
+            $filter[] = ['delivery_status =', self::DELIVERED];
+            $filter[] = ['receipt_status =', self::RECEIVED];
+            $filter[] = ['order_status =', self::CANCELLED];
+        }
+        
+        else if($params['queryOrderType'] == self::QUERY_ORDER_TYPE_AFTERSALES){
+            $filter[] = ['pay_status =', self::PAYSTATUS_SUCCESS];
+            $filter[] = ['delivery_status =', self::DELIVERED];
+            $filter[] = ['receipt_status =', self::RECEIVED];
+            $filter[] = ['order_status =', self::APPLY_CANCEL];
+        }
         
         foreach($filter as $v) {
             $this->db->where($v[0], $v[1]);
