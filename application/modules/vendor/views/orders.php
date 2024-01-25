@@ -165,7 +165,7 @@
                             <i class="fa fa-chevron-up" aria-hidden="true"></i>
                         </a>
                         <?php if($order['pay_status'] == 20 && $order['delivery_status'] == 10 && $order['order_source'] != 20){ ?>
-                            <a href="javascript:void(0);" data-toggle="modal" data-target="#addExpressNo" data-order_id= <?= $order['order_id'] ?> class="btn btn-sm btn-green show-more">发货</a>                                
+                            <a href="javascript:void(0);" data-toggle="modal" data-target="#addExpressNo" data-order_id= "<?= $order['order_id'] ?>" class="btn btn-sm btn-green show-more">发货</a>                                
                         <?php }?>                     
                     </td>                     
                 </tr>
@@ -256,7 +256,7 @@
                     <div class="form-group">请手动录入物流单号或快递单号</div>                        
                 </div>
                 <div class="modal-footer">
-                    <button type="button" onclick="location.href = '<?= base_url('vendor/orders?queryOrderType='.$queryOrderType) ?>';" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" onclick="location.href = '<?= base_url('vendor/orders?queryOrderType='.$queryOrderType) ?>'" class="btn btn-default" data-dismiss="modal">取消</button>
                     <button type="submit" name="submit" class="btn btn-primary">确定</button>
                 </div>
             </form>
