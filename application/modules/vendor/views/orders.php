@@ -40,20 +40,20 @@
     <div class="row">
         <div class="col-lg-4 col-md-6">
             <div class="form-group">
-                <label for="searchValue" title="关键词" class="">关键词</label>
-                <input type="hidden" name="queryOrderType" value="<?= $queryOrderType ?>">;
-                <select class="selectpicker" name="searchType" id="searchType">
+                <label for="searchValue" title="关键词" class="">关键词:</label>
+                <input type="hidden" name="queryOrderType" value="<?= $queryOrderType ?>">
+                <select class="selectpicker" name="searchType" id="searchType" data-width="30%">
                     <?php foreach ($searchTypes as $id => $name) { ?>
                         <option <?= isset($_GET['searchType']) && $_GET['searchType'] == $id ? 'selected' : '' ?> value="<?= $id ?>"><?= htmlspecialchars($name) ?></option>
                     <?php } ?>                                                
                 </select>        
-                <input value="<?= isset($_GET['searchValue']) ? htmlspecialchars($_GET['searchValue']) : '' ?>" placeholder="请输入关键词" type="text"  name="searchValue" id="searchValue" style="height: 34px;" class="clear-control">                
+                <input value="<?= isset($_GET['searchValue']) ? htmlspecialchars($_GET['searchValue']) : '' ?>" placeholder="请输入关键词" type="text"  name="searchValue" id="searchValue" style="width:40%;height: 34px;" class="clear-control">                
             </div>
         </div>
         <div class="col-lg-4 col-md-6">
             <div class="form-group">
-                <label for="orderSource" title="订单来源" class="">订单来源</label>
-                <select class="selectpicker" name="orderSource" id="orderSource">
+                <label for="orderSource" title="订单来源" class="">订单来源:</label>
+                <select class="selectpicker" name="orderSource" id="orderSource" data-width="50%">
                     <?php foreach ($orderSources as $id => $name) { ?>
                         <option <?= isset($_GET['orderSource']) && $_GET['orderSource'] == $id ? 'selected' : '' ?> value="<?= $id ?>"><?= htmlspecialchars($name) ?></option>
                     <?php } ?>                                                   
@@ -62,8 +62,8 @@
         </div>
         <div class="col-lg-4 col-md-6">
             <div class="form-group">
-                <label for="payType" title="支付方式" class="">支付方式</label>
-                <select class="selectpicker" name="payType" id="payType"> 
+                <label for="payType" title="支付方式" class="">支付方式:</label>
+                <select class="selectpicker" name="payType" id="payType" data-width="50%"> 
                     <?php foreach ($payTypes as $id => $name) { ?>
                         <option <?= isset($_GET['payType']) && $_GET['payType'] == $id ? 'selected' : '' ?> value="<?= $id ?>"><?= htmlspecialchars($name) ?></option>
                     <?php } ?>                                
@@ -72,10 +72,10 @@
         </div>        
     </div>
     <div class="row">
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             <div class="form-group">
-                <label for="deliveryType" title="配送方式" class="">配送方式</label>                
-                <select class="selectpicker" name="deliveryType" id="deliveryType"> 
+                <label for="deliveryType" title="配送方式" class="">配送方式:</label>                
+                <select class="selectpicker" name="deliveryType" id="deliveryType" data-width="50%"> 
                     <?php foreach ($deliveryTypes as $id => $name) { ?>
                         <option <?= isset($_GET['deliveryType']) && $_GET['deliveryType'] == $id ? 'selected' : '' ?> value="<?= $id ?>"><?= htmlspecialchars($name) ?></option>
                     <?php } ?>                                
