@@ -38,7 +38,7 @@ class Orders extends VENDOR_Controller
         self::QUERY_ORDER_TYPE_AFTERSALES => "售后管理",     
     );
     
-    private $num_rows = 20;
+    private $num_rows = 10;
 
     public function __construct()
     {
@@ -55,14 +55,15 @@ class Orders extends VENDOR_Controller
         $head['description'] = self::QueryOrderTypeDesc[$queryOrderType];
         $head['keywords'] = '';
         if (isset($_POST['express_no'])) {
-            print_r($_POST);
             $this->orderDelivery();
         }
         if ($this->session->flashdata('post')) {
             $_POST = $this->session->flashdata('post');
         }      
-        $rowscount = $this->Orders_model->ordersCount($this->vendor_id);
+        $rowscount = $this->Orders_model->ordersCount($_GET, $this->vendor_id);
+        $data['page'] = $page;        
         $data['orders'] = $this->Orders_model->orders($this->num_rows, $page, $_GET, $this->vendor_id);
+        $data['links_pagination'] = pagination('vendor/orders', $rowscount, $this->num_rows, 3);        
         $data['expresses'] = $this->Public_model->getAllExpress();
         $data['queryOrderType'] = $queryOrderType;
         $this->load->view('_parts/header', $head);
