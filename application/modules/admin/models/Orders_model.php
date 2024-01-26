@@ -48,12 +48,24 @@ class Orders_model extends CI_Model
         $this->load->library('encryption');
     }
 
-    public function ordersCount($onlyNew = false)
+    public function ordersCount($big_get = [], $order_by)
     {
-        if ($onlyNew == true) {
-            $this->db->where('viewed', 0);
+        if ($order_by != null) {
+            $this->db->order_by($order_by, 'DESC');
+        } else {
+            $this->db->order_by('orders.id', 'DESC');
         }
-        return $this->db->count_all_results('orders');
+        $this->db->select('count(orders.id) as row_nums');
+        $this->db->join('orders_clients', 'orders_clients.for_id = orders.id', 'inner');
+        $this->db->join('users_public', 'users_public.id = orders.user_id', 'inner');        
+        $this->db->join('discount_codes', 'discount_codes.code = orders.discount_code', 'left');
+        // 检索查询条件
+        $query = $big_get;        
+        $this->queryFilter($query);        
+        $result1 = $this->db->get('orders');
+        $result = $result1->row_array();
+//        log_message("debug", "row_nums:".$result['row_nums']);
+        return $result['row_nums'];
     }
 
     public function getTotalAmount()
@@ -89,7 +101,7 @@ class Orders_model extends CI_Model
         if ($order_by != null) {
             $this->db->order_by($order_by, 'DESC');
         } else {
-            $this->db->order_by('id', 'DESC');
+            $this->db->order_by('orders.id', 'DESC');
         }
         $this->db->select('orders.*, orders_clients.name,'
                 . 'orders_clients.email, orders_clients.phone, '
@@ -101,8 +113,8 @@ class Orders_model extends CI_Model
         // 检索查询条件
         $query = $big_get;        
         $this->queryFilter($query);        
-        $result = $this->db->get('orders', $limit, $page);
-        $result = $result->result_array();
+        $result1 = $this->db->get('orders', $limit, $page);
+        $result = $result1->result_array();
         if(!count($result)) return $result;
         
         foreach($result as $k => $v) {
@@ -111,7 +123,7 @@ class Orders_model extends CI_Model
                 return $d !== false ? $d : $v;
             }, $v);
         }
-
+        
         return $result;
     }
 

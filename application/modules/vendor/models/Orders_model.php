@@ -47,10 +47,23 @@ class Orders_model extends CI_Model
         $this->load->library('encryption');
     }
 
-    public function ordersCount($vendor_id)
+    public function ordersCount($big_get = [], $vendor_id)
     {
+        // 设置订单类型条件
+//        $dataTypeFilter = $this->getFilterDataType($dataType);
         $this->db->where('vendor_id', $vendor_id);
-        return $this->db->count_all_results('vendors_orders');
+        $this->db->order_by('vendors_orders.id', 'DESC');
+        $this->db->select('count(vendors_orders.id) as row_nums');
+        $this->db->join('vendors_orders_clients', 'vendors_orders_clients.for_id = vendors_orders.id', 'inner');
+        $this->db->join('users_public', 'users_public.id = vendors_orders.customer_id', 'inner');
+        $this->db->join('discount_codes', 'discount_codes.code = vendors_orders.discount_code', 'left');
+        // 检索查询条件
+        $query = $big_get;      
+        $this->queryFilter($query);
+        $results = $this->db->get('vendors_orders');
+        $result = $results->row_array();
+        log_message("debug", "row_nums:".$result['row_nums']);
+        return $result['row_nums'];
     }
     
     public function newOrdersCheck($vendor_id, $order_type)

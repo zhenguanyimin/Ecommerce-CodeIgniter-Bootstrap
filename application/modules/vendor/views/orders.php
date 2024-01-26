@@ -97,8 +97,9 @@
     </div>
 </form>   
 </div>
+<?php if (!empty($orders)) {?>
 <div class="content orders-page">
-    <table class="table">
+    <table class="table table-condensed table-bordered table-striped">
         <thead class="blue-grey lighten-4">
             <tr>
                 <th>序号</th>
@@ -106,19 +107,19 @@
                 <th><?= lang('time_created') ?></th>
                 <th><?= lang('order_type') ?></th>
                 <th><?= lang('pay_type') ?></th>
-                <th><?= lang('phone') ?></th>
                 <th><?= lang('usr_order_status') ?></th>
                 <th><?= lang('status') ?></th>
                 <th>订单总金额</th>
-                <th>商户销售金额</th>
-                <th>佣金金额</th>
+                <th>商户分成</th>
+                <th>平台佣金</th>
+                <th>支付手续费</th>
                 <th>运费</th>                  
                 <th class="text-right"><i class="fa fa-list" aria-hidden="true"></i>操作</th>
             </tr>
         </thead>
         <tbody>
             <?php
-            $i = 0;
+            $i = $page;
             $order_id = "";
             foreach ($orders as $order) {
                 $order_id = $order['order_id'];
@@ -129,14 +130,13 @@
                         # <?= $order['order_id'] ?>
                         <?php if ($order['order_source'] != 20 && $order['delivery_status'] == 10) { ?>
                             <div id="new-order-alert-<?= $order['id'] ?>">
-                                <img src="<?= base_url('assets/imgs/new-blinking.gif') ?>" style="width:100px;" alt="blinking">
+                                <img src="<?= base_url('assets/imgs/new-blinking.gif') ?>" style="width:60px;" alt="blinking">
                             </div>
                         <?php } ?>
                     </td>                    
                     <td><?= date('Y-m-d H:i:s', $order['date']) ?></td>
                     <td><?= array_key_exists($order['order_source'], $orderSources)? $orderSources[$order['order_source']]:"未知"?></td>
                     <td><?= array_key_exists($order['pay_type'], $payTypeEnum)? $payTypeEnum[$order['pay_type']]:"未知"?></td>
-                    <td><?= $order['phone'] ?></td>
                     <td><span class="<?= $order['order_status'] == 30 ? "ant-tag-green":"ant-tag"?>"><?= array_key_exists($order['order_status'], $orderStatus)? $orderStatus[$order['order_status']]:"进行中"?></span></td>                    
                     <td>
                         <p>
@@ -154,18 +154,19 @@
                         </p>
                         <?php }?>
                     </td>
-                    <td><?= $order['total_amount'] . CURRENCY ?></td>
-                    <td><?= $order['vendor_share'] . CURRENCY ?></td>
-                    <td><?= $order['commission'] . CURRENCY ?></td>
-                    <td><?= $order['shipping_amount'] . CURRENCY ?></td>                     
-                    <td class="text-right" >
+                    <td><?= number_format($order['total_amount'], 2). CURRENCY ?></td>
+                    <td><?= number_format($order['vendor_share'], 2). CURRENCY ?></td>
+                    <td><?= number_format($order['commission'], 2). CURRENCY ?></td>
+                    <td><?= number_format($order['pay_fee_amount'], 2). CURRENCY ?></td>
+                    <td><?= number_format($order['shipping_amount'], 2). CURRENCY ?></td>                     
+                    <td class="text-right">
                         <a href="javascript:void(0);" class="btn btn-sm btn-green show-more" data-show-tr="<?= $i ?>">
                             详情
                             <i class="fa fa-chevron-down" aria-hidden="true"></i>
                             <i class="fa fa-chevron-up" aria-hidden="true"></i>
                         </a>
                         <?php if($order['pay_status'] == 20 && $order['delivery_status'] == 10 && $order['order_source'] != 20){ ?>
-                            <a href="javascript:void(0);" data-toggle="modal" data-target="#addExpressNo" data-order_id= "<?= $order['order_id'] ?>" class="btn btn-sm btn-green show-more">发货</a>                                
+                            <a href="javascript:void(0);" data-toggle="modal" data-target="#addExpressNo" data-order_id= "<?= $order['order_id'] ?>" class="btn btn-sm btn-green">发货</a>                                
                         <?php }?>                     
                     </td>                     
                 </tr>
@@ -226,6 +227,10 @@
         </tbody>
     </table>
 </div>
+<?= $links_pagination ?>
+<?php } else { ?>
+    <div class="alert alert-info">没有订单!</div>
+<?php }?>  
 <div class="modal fade" id="addExpressNo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">

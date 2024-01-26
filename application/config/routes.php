@@ -159,6 +159,7 @@ $route['(\w{2})/vendor/add/product'] = "vendor/AddProduct";
 $route['vendor/edit/product/(:num)'] = "vendor/AddProduct/index/$1";
 $route['(\w{2})/vendor/edit/product/(:num)'] = "vendor/AddProduct/index/$1";
 $route['vendor/orders'] = "vendor/Orders";
+$route['vendor/orders/(:num)'] = "vendor/orders/index/$1";
 $route['(\w{2})/vendor/orders'] = "vendor/Orders";
 $route['vendor/delivery'] = "vendor/Delivery";
 $route['(\w{2})/vendor/delivery'] = "vendor/Delivery";

@@ -140,20 +140,20 @@ if (!isset($_GET['settings'])) {
                         <th><?= lang('time_created') ?></th>
                         <th><?= lang('name') ?></th>
                         <th><?= lang('order_type') ?></th>
-                        <th><?= lang('pay_type') ?></th>
                         <th><?= lang('phone') ?></th>
                         <th><?= lang('usr_order_status') ?></th>
                         <th><?= lang('status') ?></th>
                         <th>订单总金额</th>
-                        <th>商户销售金额</th>
-                        <th>佣金金额</th>
+                        <th>商户分成</th>
+                        <th>平台佣金</th>
+                        <th>支付手续费</th>                        
                         <th><?= lang('shipping') ?></th>                  
                         <th class="text-right"><i class="fa fa-list" aria-hidden="true"></i>操作</th>                       
                     </tr>
                 </thead>
                 <tbody>
                     <?php
-                    $i = 0;
+                    $i = $page;
                     $order_id = "";
                     foreach ($orders as $order) {
                         $order_id = $order['order_id'];
@@ -164,8 +164,6 @@ if (!isset($_GET['settings'])) {
                             <td><?= date('Y-m-d H:i:s', $order['date']) ?></td>
                             <td><?= $order['name'] ?></td>
                             <td><?= array_key_exists($order['order_source'], $orderSources)? $orderSources[$order['order_source']]:"未知" ?></td>
-<!--                            <td><?= array_key_exists($order['pay_type'], $payTypeEnum)? $payTypeEnum[$order['pay_type']]:"未知" ?></td>-->
-                            <td><?= array_key_exists($order['pay_type'], $payTypeEnum)? $payTypeEnum[$order['pay_type']]:"未知"?></td>
                             <td><?= $order['phone'] ?></td>
                             <td><span class="<?= $order['order_status'] == 30 ? "ant-tag-green":"ant-tag"?>"><?= array_key_exists($order['order_status'], $orderStatus)? $orderStatus[$order['order_status']]:"进行中"?></span></td>                    
                             <td>
@@ -187,6 +185,7 @@ if (!isset($_GET['settings'])) {
                             <td><?= $order['total_amount'] . CURRENCY ?></td>
                             <td><?= $order['vendor_share'] . CURRENCY ?></td>
                             <td><?= $order['commission'] . CURRENCY ?></td>
+                            <td><?= $order['pay_fee_amount'] . CURRENCY ?></td>                            
                             <td><?= $order['shipping_amount'] . CURRENCY ?></td>                             
                             <td class="text-center">
                             <a href="javascript:void(0);" class="btn btn-default more-info" data-toggle="modal" data-target="#modalPreviewMoreInfo" style="margin-top:10%;" data-more-info="<?= $order['order_id'] ?>">
