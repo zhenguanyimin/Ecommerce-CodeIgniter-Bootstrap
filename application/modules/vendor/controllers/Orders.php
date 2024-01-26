@@ -63,9 +63,9 @@ class Orders extends VENDOR_Controller
         $rowscount = $this->Orders_model->ordersCount($_GET, $this->vendor_id);
         $data['page'] = $page;        
         $data['orders'] = $this->Orders_model->orders($this->num_rows, $page, $_GET, $this->vendor_id);
-        $data['links_pagination'] = pagination('vendor/orders', $rowscount, $this->num_rows, 3);        
-        $data['expresses'] = $this->Public_model->getAllExpress();
+        $data['links_pagination'] = pagination('vendor/orders', $rowscount, $this->num_rows, 3);
         $data['queryOrderType'] = $queryOrderType;
+        $data['expresses'] = $this->Public_model->getAllExpress();
         $this->load->view('_parts/header', $head);
         $this->load->view('orders', $data);
         $this->load->view('_parts/footer');
