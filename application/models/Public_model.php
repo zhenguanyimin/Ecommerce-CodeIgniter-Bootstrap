@@ -1524,16 +1524,28 @@ class Public_model extends CI_Model
         return $query;
     }
 
-    public function getUserOrdersHistoryCount($userId)
+    public function getUserOrdersHistoryCount($userId, $big_get = [])
     {
         $this->db->where('user_id', $userId);
-        return $this->db->count_all_results('orders');
+        $this->db->order_by('orders.id', 'DESC');
+        $this->db->select('count(orders.id) as row_nums');
+        $this->db->join('orders_clients', 'orders_clients.for_id = orders.id', 'inner');
+        $this->db->join('vendors_orders', 'vendors_orders.parent_order_id = orders.order_id', 'inner'); 
+        $this->db->join('vendors', 'vendors_orders.vendor_id = vendors.id', 'inner');        
+        $this->db->join('discount_codes', 'discount_codes.code = orders.discount_code', 'left');
+        // 检索查询条件
+        $query = $big_get;        
+        $this->queryFilter($query);        
+        $results = $this->db->get('orders');
+        $result = $results->row_array();
+        log_message("debug", "row_nums:".$result['row_nums']);
+        return $result['row_nums'];
     }
 
-    public function getUserOrdersHistory($userId, $big_get, $page)
+    public function getUserOrdersHistory($userId, $big_get, $limit, $page)
     {
         $this->db->where('user_id', $userId);
-        $this->db->order_by('id', 'DESC');
+        $this->db->order_by('orders.id', 'DESC');
         $this->db->select('orders.*, orders_clients.name,'
                 . ' orders_clients.email, orders_clients.phone,'
                 . ' orders_clients.address, orders_clients.city, orders_clients.post_code,'
@@ -1548,8 +1560,8 @@ class Public_model extends CI_Model
         // 检索查询条件
         $query = $big_get;        
         $this->queryFilter($query);        
-        $result = $this->db->get('orders', $page);
-        $result = $result->result_array();
+        $results = $this->db->get('orders', $limit, $page);
+        $result = $results->result_array();
         if(!count($result)) return $result;
         
         foreach($result as $k => $v) {
@@ -1558,7 +1570,7 @@ class Public_model extends CI_Model
                 return $d !== false ? $d : $v;
             }, $v);
         }
-//      $result['orders_num'] = count($result);
+
         return $result;
     }
 

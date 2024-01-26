@@ -7,7 +7,7 @@ class Users extends MY_Controller
 
     private $registerErrors = array();
     private $user_id;
-    private $num_rows = 5;
+    private $num_rows = 10;
     
     CONST USER_STATUS_OFFLINE = 0;    
     CONST USER_STATUS_ONLINE = 1;
@@ -129,7 +129,7 @@ class Users extends MY_Controller
         $head['description'] = lang('my_acc');
         $head['keywords'] = str_replace(" ", ",", $head['title']);
         $data['userInfo'] = $this->Public_model->getUserProfileInfo($_SESSION['logged_user']);    
-        $data['links_pagination'] = pagination('myaccount', 5, 5, 2);
+        $data['links_pagination'] = pagination('myaccount', 10, $this->num_rows, 3);
         $this->render('user', $head, $data);
     }
 
@@ -147,11 +147,11 @@ class Users extends MY_Controller
         $head['description'] = self::QueryOrderTypeDesc[$queryOrderType];
         $head['keywords'] = str_replace(" ", ",", $head['title']);
         $data['userInfo'] = $this->Public_model->getUserProfileInfo($_SESSION['logged_user']);
-//        $rowscount = $this->Public_model->getUserOrdersHistoryCount($_SESSION['logged_user'], $queryOrderType);
-        $data['orders_history'] = $this->Public_model->getUserOrdersHistory($_SESSION['logged_user'], $_GET, $page);
-        $url = 'userorders?queryOrderType='.$queryOrderType;
-//        $data['links_pagination'] = pagination($url, count($data['orders_history']), $this->num_rows, 2);
-        $data['links_pagination'] = pagination($url, 5, 5, 2);
+        $rowscount = $this->Public_model->getUserOrdersHistoryCount($_SESSION['logged_user'], $_GET);
+        $data['page'] = $page;
+        $data['orders_history'] = $this->Public_model->getUserOrdersHistory($_SESSION['logged_user'], $_GET, $this->num_rows, $page);
+        $data['queryOrderType'] = $queryOrderType;
+        $data['links_pagination'] = pagination("userorders", $rowscount, $this->num_rows, 3);
         $this->render('user_orders', $head, $data);
     }
     
