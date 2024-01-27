@@ -33,7 +33,7 @@ class Orders extends ADMIN_Controller
         if (isset($_GET['order_by'])) {
             $order_by = $_GET['order_by'];
         }
-        $rowscount = $this->Orders_model->ordersCount($_GET, $order_by);
+        $rowscount = $this->Orders_model->queryOrdersCount($_GET, $order_by);
         $data['page'] = $page;
         $data['orders'] = $this->Orders_model->orders($this->num_rows, $page, $_GET, $order_by);
         $data['links_pagination'] = pagination('admin/orders', $rowscount, $this->num_rows, 3);

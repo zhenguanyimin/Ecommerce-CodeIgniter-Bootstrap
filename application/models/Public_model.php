@@ -131,6 +131,14 @@ class Public_model extends CI_Model
         return $query->result_array();
     }
   
+    public function getExpressInfo($express_id)
+    {
+        $this->db->select('express_name, kuaidi100_code');
+        $this->db->where('express_id', $express_id);
+        $result = $this->db->get('express_info');
+        return $result->row_array();      
+    }
+    
     public function getProducts($limit = null, $start = null, $big_get = [], $vendor_id = false)
     {
         if ($limit !== null && $start !== null) {
@@ -1061,6 +1069,22 @@ class Public_model extends CI_Model
         return $result->row_array();           
     }
     
+    public function getVendorInfo($vendor_id)
+    {
+        $this->db->select('name, email');
+        $this->db->where('id', $vendor_id);        
+        $result = $this->db->get('vendors');
+        return $result->row_array();           
+    }    
+
+    public function getVendorOrderInfo($order_id)
+    {
+        $this->db->select('vendor_id');
+        $this->db->where('order_id', $order_id);
+        $result = $this->db->get('vendors_orders');
+        return $result->row_array();        
+    } 
+    
     public function updatePlatformBalances($data)
     {
         if (!$this->db->update('platform_balances', array(
@@ -1155,7 +1179,7 @@ class Public_model extends CI_Model
     public function queryChildOrders($order_id)
     {
         $this->db->where('parent_order_id', $order_id);
-        $this->db->select('order_id, vendor_id, vendor_share, shipping_amount, order_status');
+        $this->db->select('order_id, vendor_id, vendor_share, shipping_amount, order_status, products');
         $result1 = $this->db->get('vendors_orders');
         return $result1->result_array();        
     }   

@@ -48,7 +48,16 @@ class Orders_model extends CI_Model
         $this->load->library('encryption');
     }
 
-    public function ordersCount($big_get = [], $order_by)
+
+    public function ordersCount($onlyNew = false)
+    {
+       if ($onlyNew == true) {
+           $this->db->where('viewed', 0);
+       }
+       return $this->db->count_all_results('orders');
+    }
+
+    public function queryOrdersCount($big_get = [], $order_by)
     {
         if ($order_by != null) {
             $this->db->order_by($order_by, 'DESC');
