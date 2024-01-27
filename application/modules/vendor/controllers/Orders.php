@@ -60,7 +60,7 @@ class Orders extends VENDOR_Controller
         if ($this->session->flashdata('post')) {
             $_POST = $this->session->flashdata('post');
         }      
-        $rowscount = $this->Orders_model->ordersCount($_GET, $this->vendor_id);
+        $rowscount = $this->Orders_model->queryOrdersCount($_GET, $this->vendor_id);
         $data['page'] = $page;        
         $data['orders'] = $this->Orders_model->orders($this->num_rows, $page, $_GET, $this->vendor_id);
         $data['links_pagination'] = pagination('vendor/orders', $rowscount, $this->num_rows, 3);
@@ -85,13 +85,67 @@ class Orders extends VENDOR_Controller
             echo '1';
         }
     }
+
+    public function sendNotificationsToVendors($data) {
+        $venders_order = $this->Public_model->getVendorOrderInfo($data['order_id']);
+        if(empty($venders_order)){
+            log_message("debug", "notify vendors empty");
+            return;
+        }        
+        foreach($venders_order as $order){
+            $vendorInfo = $this->Public_model->getVendorInfo($order['vendor_id']);
+            if(empty($vendorInfo)){
+                log_message("debug", "vendors info empty, vendor_id:".$order['vendor_id']);
+                continue;
+            }
+            $this->sendNotificationsToVendor($vendorInfo, $data);
+        }  
+    }
+
+    /*
+     * Send notifications to vendor associated with the order
+     */
+
+    private function sendNotificationsToVendor($vendor, $data)
+    {
+        $myDomain = $this->config->item('base_url');
+        $this->sendmail->clearAddresses();
+        log_message("debug", "send ".$data['suject']." notifications to vendor:".$vendor['name']);
+        $this->sendmail->sendTo($vendor['email'], $vendor['name'], $data['suject'], $data['email_content'].$myDomain);
+    }
+
+    /*
+     * Send notifications to users that have nofify=1 in /admin/adminusers
+     */
+
+    private function sendNotifications($data)
+    {
+        $users = $this->Public_model->getNotifyUsers();
+        $myDomain = $this->config->item('base_url');
+        if (!empty($users)) {
+            $this->sendmail->clearAddresses();
+            foreach ($users as $user) {
+                log_message("debug", "send ".$data['suject']." notifications to Admin");
+                $this->sendmail->sendTo($user, 'Admin', $data['suject'], $data['email_content'].$myDomain);
+            }
+        }
+    }
     
     public function orderDelivery()
     {
         $isValid = $this->validateExpress();
         if ($isValid === true) {
+            $expressInfo = $this->Public_model->getExpressInfo($_POST['express_id']);
+            $_POST["express_name"] = $expressInfo['express_name'];
             $_POST["delivery_status"] = self::DELIVERED;
             $this->Orders_model->updateOrderDeliveryStatus($_POST);
+            
+            $data = array();
+            $data['order_id'] = $_POST['order_id'];
+            $data['suject'] = '卖家已发货通知';
+            $data['email_content'] = '卖家已发货, 订单号:'.$data['order_id'].', 快递公司:'.$_POST['express_name'].', 快递单号:'.$_POST['express_no'].'，请登录管理系统及时确认呦';            
+            $this->sendNotificationsToVendors($data);
+            $this->sendNotifications($data);
             $this->session->set_flashdata('success', 'Changes are saved');
         } else {
             $this->session->set_flashdata('error', $isValid);
@@ -110,7 +164,16 @@ class Orders extends VENDOR_Controller
             $this->session->set_flashdata('error', "订单未付款或未发货，确认收货有误");           
         }
         else{
-            $this->Orders_model->updateOrderReceiptStatus($_POST);                
+            $_POST["express_no"] = $pay_status_array['express_no'];
+            $_POST["express_name"] = $pay_status_array['express_company'];            
+            $this->Orders_model->updateOrderReceiptStatus($_POST);
+            
+            $data = array();
+            $data['order_id'] = $_POST['order_id'];
+            $data['suject'] = '买家已收货通知';
+            $data['email_content'] = '买家已收货, 订单号:'.$data['order_id'].', 快递公司:'.$_POST['express_name'].', 快递单号:'.$_POST['express_no'].'，请登录管理系统及时确认呦';            
+            $this->sendNotificationsToVendors($data);
+            $this->sendNotifications($data);            
         }
         redirect('userorders?queryOrderType='.$_GET["queryOrderType"]); 
     }

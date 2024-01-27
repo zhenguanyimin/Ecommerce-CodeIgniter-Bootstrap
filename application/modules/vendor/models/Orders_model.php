@@ -47,7 +47,15 @@ class Orders_model extends CI_Model
         $this->load->library('encryption');
     }
 
-    public function ordersCount($big_get = [], $vendor_id)
+    public function ordersCount($onlyNew = false)
+    {
+       if ($onlyNew == true) {
+           $this->db->where('viewed', 0);
+       }
+       return $this->db->count_all_results('orders');
+    }
+     
+    public function queryOrdersCount($big_get = [], $vendor_id)
     {
         // 设置订单类型条件
 //        $dataTypeFilter = $this->getFilterDataType($dataType);
@@ -307,7 +315,7 @@ class Orders_model extends CI_Model
     public function getOrderPayStatus($order_id)
     {
         $this->db->where('order_id', $order_id);
-        $this->db->select('pay_status');
+        $this->db->select('pay_status, express_company, express_no');
         $this->db->limit(1);
         $result1 = $this->db->get('vendors_orders');
         return $result1->row_array();

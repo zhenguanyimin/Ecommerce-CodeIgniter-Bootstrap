@@ -207,6 +207,18 @@ class Checkout extends MY_Controller
     }
 
     /*
+     * Send notifications to vendor associated with the order
+     */
+
+    private function sendNotificationsToVendor($vendor, $order_id)
+    {
+        $myDomain = $this->config->item('base_url');
+        $this->sendmail->clearAddresses();
+        log_message("debug", "send order payed notifications to vendor:".$vendor['name']);
+        $this->sendmail->sendTo($vendor['email'], $vendor['name'], '订单已付款通知', '客户已购买您的商品,订单号:'.$order_id.'，请登录商户管理系统及时发货呦'.$myDomain);
+    }
+    
+    /*
      * Send notifications to users that have nofify=1 in /admin/adminusers
      */
 
@@ -217,7 +229,8 @@ class Checkout extends MY_Controller
         if (!empty($users)) {
             $this->sendmail->clearAddresses();
             foreach ($users as $user) {
-                $this->sendmail->sendTo($user, 'Admin', 'New order in ' . $myDomain, 'Hello, you have new order. Can check it in /admin/orders');
+                log_message("debug", "send order payed notifications to Admin");
+                $this->sendmail->sendTo($user, 'Admin', '订单已付款通知', '新增一个已付款订单，请登录平台管理系统查看！'.$myDomain);
             }
         }
     }
@@ -545,7 +558,23 @@ class Checkout extends MY_Controller
         
         return true;       
     }
-        
+    
+    public function sendNotificationsToVendors($data) {
+        $venders_order = $this->Public_model->queryChildOrders($data->out_trade_no);
+        if(empty($venders_order)){
+            log_message("debug", "notify vendors empty");
+            return;
+        }        
+        foreach($venders_order as $order){
+            $vendorInfo = $this->Public_model->getVendorInfo($order['vendor_id']);
+            if(empty($vendorInfo)){
+                log_message("debug", "vendors info empty, vendor_id:".$order['vendor_id']);
+                continue;
+            }
+            $this->sendNotificationsToVendor($vendorInfo, $order['order_id']);
+        }  
+    }
+    
     public function handleNotifyCallback($data)
     {
         if($this->notifyDataValidate($data)){
@@ -555,6 +584,9 @@ class Checkout extends MY_Controller
             $result = $this->Public_model->changeAlipayPayStatus($data, self::PAYSTATUS_SUCCESS);
             if ($result == true){            
                 log_message("debug", "change alipay pay status success");
+                //发送邮件通知给商户及管理员
+                $this->sendNotificationsToVendors($data);
+                $this->sendNotifications();
             }
             else{
                 log_message("debug", "change alipay pay status fail");
