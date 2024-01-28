@@ -134,6 +134,9 @@ class Auth extends VENDOR_Controller
     
     public function register()
     {
+        //暂时屏蔽商户注册接口
+        return;
+        
         $data = array();
         $head = array();
         $head['title'] = lang('vendor_register');

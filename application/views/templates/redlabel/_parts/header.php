@@ -44,8 +44,8 @@
                 <?php } else { ?>
 			   <a href="<?= LANG_URL . '/register' ?>" class="btn btn-default"><?= lang('register') ?></a>
 			   <a href="<?= LANG_URL . '/login' ?>" class="btn btn-default"><?= lang('login') ?></a>
-			   <a href="<?= LANG_URL . '/vendor/login' ?>" class="btn btn-default" style="float: right"><?= lang('vendor_login') ?></a>                              
-                           <a href="<?= LANG_URL . '/vendor/register' ?>" class="btn btn-default" style="float: right"><?= lang('vendor_register') ?></a>                        
+<!--			   <a href="<?= LANG_URL . '/vendor/login' ?>" class="btn btn-default" style="float: right"><?= lang('vendor_login') ?></a>                              
+                           <a href="<?= LANG_URL . '/vendor/register' ?>" class="btn btn-default" style="float: right"><?= lang('vendor_register') ?></a>                        -->
 			</div>
                  </div>
                 <?php } ?>
