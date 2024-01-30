@@ -1,7 +1,6 @@
 /attachments/shop_images/*
 /application/logs/*
 /yoshop
-/.htaccess
 /index.php
 /logs
 /vendor/*
