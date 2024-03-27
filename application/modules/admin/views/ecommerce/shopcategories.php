@@ -106,7 +106,7 @@
                             <select class="form-control" name="sub_for">
                                 <option value="0">None</option>
                                 <?php
-                                foreach ($shop_categories as $key_cat => $shop_categorie) {
+                                foreach ($all_categories as $key_cat => $shop_categorie) {
                                     $aa = '';
                                     foreach ($shop_categorie['info'] as $ff) {
                                         $aa .= '[' . $ff['abbr'] . ']' . $ff['name'] . '/';

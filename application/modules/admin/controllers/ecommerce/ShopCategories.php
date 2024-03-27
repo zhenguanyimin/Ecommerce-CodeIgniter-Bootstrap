@@ -28,6 +28,7 @@ class ShopCategories extends ADMIN_Controller
         $head['description'] = '!';
         $head['keywords'] = '';
         $data['shop_categories'] = $this->Categories_model->getShopCategories($this->num_rows, $page);
+        $data['all_categories'] = $this->Categories_model->getShopCategories();
         $data['languages'] = $this->Languages_model->getLanguages();
         $rowscount = $this->Categories_model->categoriesCount();
         $data['links_pagination'] = pagination('admin/shopcategories', $rowscount, $this->num_rows, 3);
