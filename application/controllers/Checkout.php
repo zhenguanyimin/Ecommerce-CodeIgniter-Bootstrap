@@ -173,7 +173,13 @@ class Checkout extends MY_Controller
                 $_POST['referrer'] = $this->session->userdata('referrer');
                 $_POST['clean_referrer'] = cleanReferral($_POST['referrer']);
                 if(!isset($_POST['user_id'])){
-                    $_POST['user_id'] = isset($_SESSION['logged_user']) ? $_SESSION['logged_user'] : 0;                    
+                    if(!isset($_SESSION['logged_user'])){
+                        redirect(LANG_URL . '/login');                
+                    }                    
+                    else {
+                        $_POST['user_id'] = $_SESSION['logged_user'];
+                    }                    
+                    
                 }
                 $this->countPayAmount();
                 $orderId = $this->Public_model->setOrder($_POST);
