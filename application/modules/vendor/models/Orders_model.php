@@ -209,18 +209,12 @@ class Orders_model extends CI_Model
         }
         // 起止时间
         if ($params['start_time'] != '') {
-            $start_time = \DateTime::createFromFormat('Y-m-d', $params['start_time']);
-            if($start_time) {
-                $time = $start_time->getTimestamp();
-                $filter[] = ['vendors_orders.date >=', $time];
-            }
+            $timestamp = strtotime($params['start_time']);               
+            $filter[] = ['vendors_orders.date >=', $timestamp];
         }        
         if ($params['end_time'] != '') {
-            $end_time = \DateTime::createFromFormat('Y-m-d', $params['end_time']);
-            if($end_time) {
-                $time = $end_time->getTimestamp();
-                $filter[] = ['vendors_orders.date <', $time];
-            }
+            $timestamp = strtotime($params['end_time']) + 24*3600;               
+            $filter[] = ['vendors_orders.date <=', $timestamp];     
         }
         
         // 订单来源
